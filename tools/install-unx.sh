@@ -13,7 +13,7 @@ else
 fi
 
 download2 https://github.com/yihui/tinytex/raw/master/tools/texlive.profile
-download  https://github.com/yihui/tinytex/raw/master/tools/install-base.sh | sh -s $@
+download  https://github.com/yihui/tinytex/raw/master/tools/install-base.sh | sh -s "$@"
 rm -r install-tl-* texlive.profile
 
 rm -rf $TEXDIR
@@ -21,10 +21,11 @@ mkdir -p $TEXDIR
 mv texlive/* $TEXDIR
 rm -r texlive
 
-PATH=$TEXDIR/bin/*:$PATH
+cd $TEXDIR/bin/*
+PATH=.:$PATH
 download https://github.com/yihui/tinytex/raw/master/tools/install-recommended.sh | sh
 
-if [ $1 = '--admin' ]; then
+if [ "$1" = '--admin' ]; then
   sudo $TEXDIR/bin/*/tlmgr path add
 else
   $TEXDIR/bin/*/tlmgr path add
