@@ -21,11 +21,6 @@ mkdir -p $TEXDIR
 mv texlive/* $TEXDIR
 rm -r texlive
 
-if [ $(uname) = 'Darwin' ]; then
-  $TEXDIR/bin/*/tlmgr path add
-else
-  mkdir -p $HOME/bin
-  ln -s $TEXDIR/bin/*/* $HOME/bin
-fi
+$TEXDIR/bin/*/tlmgr path add
 
 download https://github.com/yihui/tinytex/raw/master/tools/install-recommended.sh | sh

@@ -2,7 +2,15 @@
 
 echo "Downloading install-tl-unx.tar.gz ..."
 TLURL="http://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz"
-which curl && curl -LO $TLURL || wget $TLURL
+if [ $(uname) = 'Darwin' ]; then
+  curl -LO $TLURL
+else
+  wget $TLURL
+  # ask `tlmgr path add` to add binaries to ~/bin instead of /usr/local/bin
+  # because the latter is usually not writable on Linux
+  mkdir -p $HOME/bin
+  echo "tlpdbopt_sys_bin ${HOME}/bin" >> texlive.profile
+fi
 tar -xzf install-tl-unx.tar.gz && rm install-tl-unx.tar.gz
 
 mkdir texlive
