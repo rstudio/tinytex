@@ -1,6 +1,6 @@
 #!/bin/sh
 
-echo "Downloading install-tl-unx.tar.gz ..."
+echo "Downloading install-tl-unx.tar.gz to ${PWD} ..."
 TLURL="http://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz"
 if [ $(uname) = 'Darwin' ]; then
   curl -LO $TLURL
