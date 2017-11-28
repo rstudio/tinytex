@@ -12,4 +12,3 @@ rm -r texlive
 $TEXDIR/bin/*/tlmgr path add
 
 curl -sL https://github.com/yihui/tinytex/raw/master/tools/install-recommended.sh | sh
-tlmgr path add
