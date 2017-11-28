@@ -7,9 +7,11 @@ if [ $(uname) = 'Darwin' ]; then
 else
   wget $TLURL
   # ask `tlmgr path add` to add binaries to ~/bin instead of /usr/local/bin
-  # because the latter is usually not writable on Linux
-  mkdir -p $HOME/bin
-  echo "tlpdbopt_sys_bin ${HOME}/bin" >> texlive.profile
+  # if the latter is not writable on Linux unless in sudo
+  if [ ! -w '/usr/local/bin' ]; then
+    mkdir -p $HOME/bin
+    echo "tlpdbopt_sys_bin ${HOME}/bin" >> texlive.profile
+  fi
 fi
 tar -xzf install-tl-unx.tar.gz
 rm install-tl-unx.tar.gz
