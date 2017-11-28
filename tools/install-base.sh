@@ -1,7 +1,8 @@
 #!/bin/sh
 
 echo "Downloading install-tl-unx.tar.gz ..."
-curl -LO http://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz
+TLURL="http://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz"
+which curl && curl -LO $TLURL || wget $TLURL
 tar -xzf install-tl-unx.tar.gz && rm install-tl-unx.tar.gz
 
 mkdir texlive

@@ -24,7 +24,7 @@ mkdir -p $TEXDIR
 mv texlive/* $TEXDIR
 rm -r texlive
 
-if [ $(uname) == 'Darwin' ]; then
+if [ $(uname) = 'Darwin' ]; then
   $TEXDIR/bin/*/tlmgr path add
 else
   mkdir -p $HOME/bin
