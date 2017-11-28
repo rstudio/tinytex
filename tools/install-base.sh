@@ -1,5 +1,6 @@
 #!/bin/sh
 
+echo "Downloading install-tl-unx.tar.gz ..."
 curl -LO http://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz
 tar -xzf install-tl-unx.tar.gz && rm install-tl-unx.tar.gz
 
