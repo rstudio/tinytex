@@ -13,7 +13,7 @@ else
 fi
 
 download2 https://github.com/yihui/tinytex/raw/master/tools/texlive.profile
-download  https://github.com/yihui/tinytex/raw/master/tools/install-base.sh | sh -s "$@"
+download  https://github.com/yihui/tinytex/raw/master/tools/install-base.sh | sh -s - "$@"
 rm -r install-tl-* texlive.profile
 
 rm -rf $TEXDIR
