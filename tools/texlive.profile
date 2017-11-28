@@ -1,14 +1,14 @@
 selected_scheme scheme-infraonly
 
-TEXDIR ./texlive
+TEXDIR ./
 
-TEXMFSYSCONFIG ./texlive/texmf-config
+TEXMFSYSCONFIG ./texmf-config
 TEXMFCONFIG $TEXMFSYSCONFIG
 
-TEXMFLOCAL ./texlive/texmf-local
+TEXMFLOCAL ./texmf-local
 TEXMFHOME $TEXMFLOCAL
 
-TEXMFSYSVAR ./texlive/texmf-var
+TEXMFSYSVAR ./texmf-var
 TEXMFVAR $TEXMFSYSVAR
 
 option_doc 0
