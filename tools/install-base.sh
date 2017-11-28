@@ -6,9 +6,10 @@ if [ $(uname) = 'Darwin' ]; then
   curl -LO $TLURL
 else
   wget $TLURL
-  # ask `tlmgr path add` to add binaries to ~/bin instead of /usr/local/bin
-  # if the latter is not writable on Linux unless in sudo
-  if [ ! -w '/usr/local/bin' ]; then
+  # ask `tlmgr path add` to add binaries to ~/bin instead of the default
+  # /usr/local/bin unless this script is invoked with the argument '--admin'
+  # (e.g., users want to make LaTeX binaries available system-wide)
+  if [ ! $1 = '--admin' ]; then
     mkdir -p $HOME/bin
     echo "tlpdbopt_sys_bin ${HOME}/bin" >> texlive.profile
   fi
