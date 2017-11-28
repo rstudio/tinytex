@@ -21,9 +21,7 @@ mkdir -p $TEXDIR
 mv texlive/* $TEXDIR
 rm -r texlive
 
-cd $TEXDIR/bin/*
-PATH=.:$PATH
-download https://github.com/yihui/tinytex/raw/master/tools/install-recommended.sh | sh
+$TEXDIR/bin/*/tlmgr install $(download https://github.com/yihui/tinytex/raw/master/tools/pkgs-custom.txt | tr '\n' ' ')
 
 if [ "$1" = '--admin' ]; then
   sudo $TEXDIR/bin/*/tlmgr path add
