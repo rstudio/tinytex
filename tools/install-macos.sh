@@ -6,6 +6,7 @@ curl -sL https://github.com/yihui/tinytex/raw/master/tools/install-base.sh | sh
 rm -r install-tl-* texlive.profile
 
 TEXDIR=~/Library/TinyTeX
+rm -rf $TEXDIR
 mkdir -p $TEXDIR
 mv texlive/* $TEXDIR
 rm -r texlive
