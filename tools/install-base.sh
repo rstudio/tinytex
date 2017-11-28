@@ -11,7 +11,8 @@ else
   mkdir -p $HOME/bin
   echo "tlpdbopt_sys_bin ${HOME}/bin" >> texlive.profile
 fi
-tar -xzf install-tl-unx.tar.gz && rm install-tl-unx.tar.gz
+tar -xzf install-tl-unx.tar.gz
+rm install-tl-unx.tar.gz
 
 mkdir texlive
 cd texlive
