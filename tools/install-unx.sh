@@ -1,11 +1,11 @@
 #!/bin/sh
 
-if [[ ! -d $TMPDIR ]]; then
+if [ ! -d $TMPDIR ]; then
   TMPDIR=/tmp
 fi
 cd $TMPDIR
 
-if [[ $(uname) == 'Darwin' ]]; then
+if [ $(uname) = 'Darwin' ]; then
   TEXDIR=~/Library/TinyTeX
   alias download='curl -sL'
   alias download2='curl -sLO'
@@ -23,6 +23,12 @@ rm -rf $TEXDIR
 mkdir -p $TEXDIR
 mv texlive/* $TEXDIR
 rm -r texlive
-$TEXDIR/bin/*/tlmgr path add
+
+if [ $(uname) == 'Darwin' ]; then
+  $TEXDIR/bin/*/tlmgr path add
+else
+  mkdir -p $HOME/bin
+  ln -s $TEXDIR/bin/*/* $HOME/bin
+fi
 
 download https://github.com/yihui/tinytex/raw/master/tools/install-recommended.sh | sh
