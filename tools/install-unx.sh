@@ -1,9 +1,6 @@
 #!/bin/sh
 
-if [ ! -d $TMPDIR ]; then
-  TMPDIR=/tmp
-fi
-cd $TMPDIR
+cd ${TMPDIR:-/tmp}
 
 if [ $(uname) = 'Darwin' ]; then
   TEXDIR=~/Library/TinyTeX
