@@ -3,7 +3,7 @@ all: base custom
 base:
 	./install-base.sh
 
-custom:
+custom: base
 	./texlive/bin/*/tlmgr install $(cat pkgs-custom.txt | tr '\n' ' ')
 
 bin:
