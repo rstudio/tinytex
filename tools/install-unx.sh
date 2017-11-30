@@ -14,7 +14,7 @@ fi
 
 download2 https://github.com/yihui/tinytex/raw/master/tools/texlive.profile
 download  https://github.com/yihui/tinytex/raw/master/tools/install-base.sh | sh -s - "$@"
-rm -r install-tl-* texlive.profile
+rm texlive.profile
 
 rm -rf $TEXDIR
 mkdir -p $TEXDIR
