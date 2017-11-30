@@ -8,8 +8,10 @@ class Tinytex < Formula
   skip_clean :la
 
   def install
-    system "make && make bin"
-    prefix.install Dir["texlive/", "bin/"]
+    cd "tools" do
+      system "make && make bin"
+      prefix.install Dir["texlive/", "bin/"]
+    end
   end
 
   def post_install

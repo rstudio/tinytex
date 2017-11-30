@@ -1,10 +1,10 @@
 all: base custom
 
 base:
-	./tools/install-base.sh
+	./install-base.sh
 
 custom:
-	./texlive/bin/*/tlmgr install $(cat tools/pkgs-custom.txt | tr '\n' ' ')
+	./texlive/bin/*/tlmgr install $(cat pkgs-custom.txt | tr '\n' ' ')
 
 bin:
 	mkdir bin && cd bin && ln -s ../texlive/bin/*/* ./
