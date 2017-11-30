@@ -1,8 +1,8 @@
 class Tinytex < Formula
   desc "Tiny and easy-to-maintain LaTeX distribution based on TeXLive"
   homepage "https://github.com/yihui/tinytex"
-  url "https://github.com/yihui/tinytex/archive/v0.0.tar.gz"
-  sha256 "63fcf687035dfe1f07d0cb171ba97513a27ccd91adae5c983ba8d6a6c642a16c"
+  url "https://github.com/yihui/tinytex/archive/v0.1.tar.gz"
+  sha256 "1906ca8721847a73a52d9d11e9810eb2025aed150298eb595584d1aa2e320b7b"
   head "https://github.com/yihui/tinytex/archive/master.tar.gz"
 
   def install
