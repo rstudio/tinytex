@@ -5,8 +5,6 @@ class Tinytex < Formula
   sha256 "63fcf687035dfe1f07d0cb171ba97513a27ccd91adae5c983ba8d6a6c642a16c"
   head "https://github.com/yihui/tinytex/archive/master.tar.gz"
 
-  skip_clean :la
-
   def install
     cd "tools" do
       system "make && make bin"
