@@ -7,7 +7,8 @@ class Tinytex < Formula
 
   def install
     cd "tools" do
-      system "make && make bin"
+      system "make"
+      system "make", "bin"
       prefix.install Dir["texlive/", "bin/"]
     end
   end
@@ -40,11 +41,11 @@ class Tinytex < Formula
 
     system "#{bin}/pdflatex", "test.tex"
     assert_predicate testpath/"test.pdf", :exist?, "Failed to compile to PDF via pdflatex"
-    system "rm test.pdf"
+    rm "test.pdf"
 
     system "#{bin}/xelatex",  "test.tex"
     assert_predicate testpath/"test.pdf", :exist?, "Failed to compile to PDF via xelatex"
-    system "rm test.pdf"
+    rm "test.pdf"
 
     system "#{bin}/lualatex", "test.tex"
   end
