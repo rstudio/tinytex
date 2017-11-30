@@ -23,6 +23,7 @@ class Tinytex < Formula
     system "#{bin}/pdflatex", "--version"
     system "#{bin}/xelatex",  "--version"
     system "#{bin}/lualatex", "--version"
+
     (testpath/"test.tex").write <<~EOS
       \\nonstopmode
       \\documentclass{article}
@@ -36,8 +37,15 @@ class Tinytex < Formula
       A simple math expression: $$S_n=\\sum X_{i=1}^n$$
       \\end{document}
     EOS
+
     system "#{bin}/pdflatex", "test.tex"
+    assert_predicate testpath/"test.pdf", :exist?, "Failed to compile to PDF via pdflatex"
+    system "rm test.pdf"
+
     system "#{bin}/xelatex",  "test.tex"
+    assert_predicate testpath/"test.pdf", :exist?, "Failed to compile to PDF via xelatex"
+    system "rm test.pdf"
+
     system "#{bin}/lualatex", "test.tex"
   end
 end
