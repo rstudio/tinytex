@@ -31,6 +31,7 @@ tlmgr = function(args = character(), ..., .quiet = FALSE) {
   system2('tlmgr', args, ...)
 }
 
+tlmgr_available = function() Sys.which('tlmgr') != ''
 
 #' @param what A search keyword as a (Perl) regular expression.
 #' @param file Whether to treat \code{what} as a filename (pattern).

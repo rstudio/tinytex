@@ -1,2 +1,2 @@
-#' @import stats utils
+#' @import stats utils tools
 NULL
