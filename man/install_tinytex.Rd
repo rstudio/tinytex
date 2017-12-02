@@ -2,14 +2,18 @@
 % Please edit documentation in R/install.R
 \name{install_tinytex}
 \alias{install_tinytex}
-\title{Install TinyTeX}
+\alias{uninstall_tinytex}
+\title{Install/Uninstall TinyTeX}
 \usage{
 install_tinytex()
+
+uninstall_tinytex()
 }
 \description{
-Download the installation script from \url{https://github.com/yihui/tinytex}
-according to the platform (Unix or Windows), and execute it to install
-TinyTeX.
+The function \code{install_tinytex()} downloads the installation script from
+\url{https://github.com/yihui/tinytex} according to the platform (Unix or
+Windows), and executes it to install TinyTeX (a custom LaTeX distribution
+based on TeX Live). The function \code{uninstall_tinytex()} removes TinyTeX.
 }
 \references{
 TinyTeX homepage: \url{https://yihui.name/tinytex/}.
