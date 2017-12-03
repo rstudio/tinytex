@@ -10,7 +10,8 @@
 #' necessary (the \file{*.idx} file exists), run the bibliography engine
 #' \command{bibtex} or \command{biber} to make the bibliography if necessary
 #' (the \file{*.aux} or \file{*.bcf} file exists), and finally run the LaTeX
-#' engine a number of times (twice by default).
+#' engine a number of times (the maximum is 10 by default) to resolve all
+#' cross-references.
 #' @param file A LaTeX file path.
 #' @param engine A LaTeX engine.
 #' @param bib_engine A bibliography engine.
@@ -18,25 +19,26 @@
 #'   \code{TRUE} if the command \command{latexmk} is not available). You can set
 #'   the global option \code{options(tinytex.latexmk.emulation = TRUE)} to
 #'   always use emulation.
-#' @param times The number of times to run the LaTeX engine when using
-#'   emulation. You can set the global option \code{tinytex.compile.times},
-#'   e.g., \code{options(tinytex.compile.times = 3)}.
+#' @param max_times The maximum number of times to rerun the LaTeX engine when
+#'   using emulation. You can set the global option
+#'   \code{tinytex.compile.max_times}, e.g.,
+#'   \code{options(tinytex.compile.max_times = 3)}.
 #' @param install_packages Whether to automatically install missing LaTeX
 #'   packages found by \code{\link{find_packages}()} from the LaTeX log. This
 #'   argument is only for the emulation mode and TeX Live.
 #' @export
 latexmk = function(
   file, engine = c('pdflatex', 'xelatex', 'lualatex'), bib_engine = c('bibtex', 'biber'),
-  emulation = TRUE, times = 2, install_packages = emulation && tlmgr_available()
+  emulation = TRUE, max_times = 10, install_packages = emulation && tlmgr_available()
 ) {
   if (!grepl('[.]tex$', file))
     stop("The input file '", file, "' does not appear to be a LaTeX document")
   engine = match.arg(engine)
   if (missing(emulation))
     emulation = getOption('tinytex.latexmk.emulation', Sys.which('latexmk') == '')
-  if (missing(times)) times = getOption('tinytex.compile.times', 2)
+  if (missing(max_times)) max_times = getOption('tinytex.compile.max_times', 10)
   if (emulation || Sys.which('perl') == '' || system2_quiet('latexmk', '-v') != 0) {
-    return(latexmk_emu(file, engine, bib_engine, times, install_packages))
+    return(latexmk_emu(file, engine, bib_engine, max_times, install_packages))
   }
   system2_quiet('latexmk', c(
     '-pdf -latexoption=-halt-on-error -interaction=batchmode',
@@ -91,10 +93,10 @@ latexmk_emu = function(file, engine, bib_engine = c('bibtex', 'biber'), times, i
   })
 
   fileq = shQuote(file)
+  logfile = gsub('[.][[:alnum:]]+$', '.log', file)
   retry = 0
   run_engine = function() {
     system2_quiet(engine, c('-halt-on-error -interaction=batchmode', fileq), error = {
-      logfile = gsub('[.][[:alnum:]]+$', '.log', file)
       if (install_packages && file.exists(logfile) &&
           retry <= getOption('tinytex.retry.install_packages', 20)) {
         pkgs = find_packages(logfile)
@@ -128,7 +130,12 @@ latexmk_emu = function(file, engine, bib_engine = c('bibtex', 'biber'), times, i
         stop("Failed to build the bibliography via ", bib_engine, call. = FALSE)
       })
   }
-  for (i in seq_len(times)) run_engine()
+  for (i in seq_len(times)) {
+    if (file.exists(logfile)) {
+      if (!any(grepl('(Rerun to get|Please \\(re\\)run) ', readLines(logfile)))) break
+    } else warning('The LaTeX log file "', logfile, '" is not found')
+    run_engine()
+  }
 }
 
 require_bibtex = function(aux) {
