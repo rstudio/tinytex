@@ -264,3 +264,8 @@ find_packages = function(log, text = readLines(log), quiet = FALSE) {
 texhash = function() system2('texhash')
 
 fmtutil = function() system2('fmtutil-sys', '--all')
+
+# look up files in the Kpathsea library, e.g., kpsewhich('Sweave.sty')
+kpsewhich = function(filename, options = character()) {
+  system2('kpsewhich', c(options, shQuote(filename)))
+}
