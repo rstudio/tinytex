@@ -27,6 +27,10 @@
 #' # list all installed LaTeX packages
 #' tlmgr(c('info', '--list', '--only-installed', '--data', 'name'))
 tlmgr = function(args = character(), ..., .quiet = FALSE) {
+  if (!tlmgr_available()) {
+    warning('TeX Live does not seem to be installed. See https://yihui.name/tinytex/.')
+    invisible(invisible(127L))
+  }
   if (!.quiet) message(paste(c('tlmgr', args), collapse = ' '))
   system2('tlmgr', args, ...)
 }
