@@ -105,7 +105,7 @@ latexmk_emu = function(file, engine, bib_engine = c('bibtex', 'biber'), times, i
       }
       keep_log <<- TRUE
       show_latex_error(logfile, file)
-    })
+    }, fail_rerun = FALSE)
   }
   run_engine()
   # generate index
@@ -145,11 +145,11 @@ tweak_aux = function(aux, x = readLines(aux)) {
   writeLines(x, aux)
 }
 
-system2_quiet = function(..., error = NULL) {
+system2_quiet = function(..., error = NULL, fail_rerun = TRUE) {
   # run the command quietly if possible
   res = system2(..., stdout = FALSE, stderr = FALSE)
   # if failed, use the normal mode
-  if (res != 0) res = system2(...)
+  if (fail_rerun && res != 0) res = system2(...)
   # if still fails, run the error callback
   if (res != 0) error  # lazy evaluation
   invisible(res)
