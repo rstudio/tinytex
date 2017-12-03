@@ -1,13 +1,16 @@
 Package: tinytex
 Type: Package
-Title: A Collection of Helper Functions to Install and Maintain TeX Live
+Title: Helper Functions to Install and Maintain LaTeX, and Compile LaTeX Documents
 Version: 0.0.3
 Authors@R: c(
   person("Yihui", "Xie", role = c("aut", "cre", "cph"), email = "xie@yihui.name", comment = c(ORCID = "0000-0003-0645-5666")),
   person(family = "RStudio, Inc.", role = "cph"),
   person()
   )
-Description: Helper functions for the LaTeX distribution named 'TinyTeX'.
+Description: Helper functions to install and maintain the LaTeX distribution
+  named 'TinyTeX', which is small and portable version of TeX Live. This package
+  also contains helper functions to compile LaTeX documents, and install missing
+  LaTeX packages automatically.
 License: MIT + file LICENSE
 URL: https://yihui.name/tinytex/
 BugReports: https://github.com/yihui/tinytex/issues
