@@ -24,7 +24,7 @@
 #'   \code{tinytex.compile.max_times}, e.g.,
 #'   \code{options(tinytex.compile.max_times = 3)}.
 #' @param install_packages Whether to automatically install missing LaTeX
-#'   packages found by \code{\link{find_packages}()} from the LaTeX log. This
+#'   packages found by \code{\link{parse_packages}()} from the LaTeX log. This
 #'   argument is only for the emulation mode and TeX Live.
 #' @export
 latexmk = function(
@@ -95,7 +95,7 @@ latexmk_emu = function(file, engine, bib_engine = c('bibtex', 'biber'), times, i
     system2_quiet(engine, c('-halt-on-error -interaction=batchmode', fileq), error = {
       if (install_packages && file.exists(logfile) &&
           retry <= getOption('tinytex.retry.install_packages', 20)) {
-        pkgs = find_packages(logfile)
+        pkgs = parse_packages(logfile)
         if (length(pkgs)) {
           retry <<- retry + 1
           message('Trying to automatically install missing LaTeX packages...')
@@ -214,7 +214,7 @@ exist_files = function(files) {
 #' @param quiet Whether to suppress messages when finding packages.
 #' @return A character vector of LaTeX package names.
 #' @export
-find_packages = function(log, text = readLines(log), quiet = FALSE) {
+parse_packages = function(log, text = readLines(log), quiet = FALSE) {
   # possible errors are like:
   # ! LaTeX Error: File `framed.sty' not found.
   # /usr/local/bin/mktexpk: line 123: mf: command not found

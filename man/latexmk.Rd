@@ -35,7 +35,7 @@ using emulation. You can set the global option
 \code{options(tinytex.compile.max_times = 3)}.}
 
 \item{install_packages}{Whether to automatically install missing LaTeX
-packages found by \code{\link{find_packages}()} from the LaTeX log. This
+packages found by \code{\link{parse_packages}()} from the LaTeX log. This
 argument is only for the emulation mode and TeX Live.}
 
 \item{...}{Arguments to be passed to \code{latexmk()} (other than
