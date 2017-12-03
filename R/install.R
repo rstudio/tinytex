@@ -7,7 +7,18 @@
 #' @references TinyTeX homepage: \url{https://yihui.name/tinytex/}.
 #' @export
 install_tinytex = function() {
-  owd = setwd(tempdir()); on.exit(setwd(owd), add = TRUE)
+  if (tlmgr_available() && !is_tinytex()) warning(
+    'It seems TeX Live has been installed. You may need to uninstall it.'
+  )
+  owd = setwd(tempdir())
+  on.exit({
+    setwd(owd)
+    p = Sys.which('tlmgr')
+    if (!is_tinytex()) warning(
+      'TinyTeX was not successfully installed or configured.',
+      if (p != '') c('tlmgr was found at ', p, '.')
+    )
+  }, add = TRUE)
   switch(
     .Platform$OS.type,
     'unix' = {
@@ -41,4 +52,8 @@ uninstall_tinytex = function() {
   )
   tlmgr_path('remove')
   unlink(target, recursive = TRUE)
+}
+
+is_tinytex = function(path = Sys.which('tlmgr')) {
+  grepl('tinytex', path, ignore.case = TRUE)
 }
