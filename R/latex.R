@@ -100,6 +100,7 @@ latexmk_emu = function(file, engine, bib_engine = c('bibtex', 'biber'), times, i
         pkgs = find_packages(logfile)
         if (length(pkgs)) {
           retry <<- retry + 1
+          message('Trying to automatically install missing LaTeX packages...')
           if (tlmgr_install(pkgs) == 0) run_engine()
         }
       }
