@@ -26,7 +26,7 @@ install_tinytex = function() {
         'https://github.com/yihui/tinytex/raw/master/tools/install-unx.sh',
         'install-unx.sh'
       )
-      system2('sh', 'install-unix.sh')
+      system2('sh', 'install-unx.sh')
     },
     'windows' = {
       download.file(
