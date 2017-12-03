@@ -21,7 +21,7 @@ install_tinytex = function() {
     )
   }, add = TRUE)
   switch(
-    .Platform$OS.type,
+    os,
     'unix' = {
       download.file(
         'https://github.com/yihui/tinytex/raw/master/tools/install-unx.sh',
@@ -44,7 +44,7 @@ install_tinytex = function() {
 #' @export
 uninstall_tinytex = function() {
   target = switch(
-    .Platform$OS.type,
+    os,
     'windows' = file.path(
       Sys.getenv('APPDATA', stop('Environment variable "APPDATA" not set.')), 'TinyTeX'
     ),
@@ -57,6 +57,6 @@ uninstall_tinytex = function() {
 
 is_tinytex = function(path = Sys.which('tlmgr')) {
   if (path == '') return(FALSE)
-  if (.Platform$OS.type == 'unix') path = Sys.readlink(path)
+  if (os == 'unix') path = Sys.readlink(path)
   grepl('tinytex', path, ignore.case = TRUE)
 }

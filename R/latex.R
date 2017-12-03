@@ -133,7 +133,7 @@ require_bibtex = function(aux) {
   x = readLines(aux)
   r = length(grep('^\\\\citation\\{', x)) && length(grep('^\\\\bibdata\\{', x)) &&
     length(grep('^\\\\bibstyle\\{', x))
-  if (r && !tlmgr_available() && .Platform$OS.type == 'windows') tweak_aux(aux, x)
+  if (r && !tlmgr_available() && os == 'windows') tweak_aux(aux, x)
   r
 }
 
