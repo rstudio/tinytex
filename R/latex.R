@@ -207,7 +207,7 @@ exist_files = function(files) {
 #' Analyze the error messages in a LaTeX log file to figure out the names of
 #' missing LaTeX packages that caused the errors. These packages can be
 #' installed via \code{\link{tlmgr_install}()}. Searching for missing packages
-#' is based on \command{tlmgr search --global --file}.
+#' is based on \code{\link{tlmgr_search}()}.
 #' @param log Path to the LaTeX log file (typically named \file{*.log}).
 #' @param text A character vector of the error log (read from the file provided
 #'   by the \code{log} argument by default).

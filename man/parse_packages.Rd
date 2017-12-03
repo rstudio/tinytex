@@ -21,5 +21,5 @@ A character vector of LaTeX package names.
 Analyze the error messages in a LaTeX log file to figure out the names of
 missing LaTeX packages that caused the errors. These packages can be
 installed via \code{\link{tlmgr_install}()}. Searching for missing packages
-is based on \command{tlmgr search --global --file}.
+is based on \code{\link{tlmgr_search}()}.
 }
