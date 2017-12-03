@@ -8,7 +8,7 @@
 \title{Compile a LaTeX document to PDF}
 \usage{
 latexmk(file, engine = c("pdflatex", "xelatex", "lualatex"), bib_engine = c("bibtex", 
-    "biber"), emulation = TRUE, times = 2, install_packages = emulation && 
+    "biber"), emulation = TRUE, max_times = 10, install_packages = emulation && 
     tlmgr_available())
 
 pdflatex(...)
@@ -29,9 +29,10 @@ lualatex(...)
 the global option \code{options(tinytex.latexmk.emulation = TRUE)} to
 always use emulation.}
 
-\item{times}{The number of times to run the LaTeX engine when using
-emulation. You can set the global option \code{tinytex.compile.times},
-e.g., \code{options(tinytex.compile.times = 3)}.}
+\item{max_times}{The maximum number of times to rerun the LaTeX engine when
+using emulation. You can set the global option
+\code{tinytex.compile.max_times}, e.g.,
+\code{options(tinytex.compile.max_times = 3)}.}
 
 \item{install_packages}{Whether to automatically install missing LaTeX
 packages found by \code{\link{find_packages}()} from the LaTeX log. This
@@ -52,5 +53,6 @@ The \command{latexmk} emulation works like this: run the LaTeX engine once
 necessary (the \file{*.idx} file exists), run the bibliography engine
 \command{bibtex} or \command{biber} to make the bibliography if necessary
 (the \file{*.aux} or \file{*.bcf} file exists), and finally run the LaTeX
-engine a number of times (twice by default).
+engine a number of times (the maximum is 10 by default) to resolve all
+cross-references.
 }
