@@ -12,6 +12,7 @@ install_tinytex = function() {
   )
   owd = setwd(tempdir())
   on.exit({
+    unlink(c('install-unx.bat', 'install-windows.bat'))
     setwd(owd)
     p = Sys.which('tlmgr')
     if (!is_tinytex()) warning(
