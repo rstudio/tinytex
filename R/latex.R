@@ -118,6 +118,8 @@ latexmk_emu = function(file, engine, bib_engine = c('bibtex', 'biber'), times, i
   }
   # generate bibliography
   bib_engine = match.arg(bib_engine)
+  if (install_packages && bib_engine == 'biber' && Sys.which('biber') == '')
+    tlmgr_install('biber')
   aux_ext = if ((biber <- bib_engine == 'biber')) '.bcf' else '.aux'
   aux = sub('[.]tex$', aux_ext, file)
   if (file.exists(aux)) {
