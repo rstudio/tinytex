@@ -56,5 +56,7 @@ uninstall_tinytex = function() {
 }
 
 is_tinytex = function(path = Sys.which('tlmgr')) {
+  if (path == '') return(FALSE)
+  if (.Platform$OS.type == 'unix') path = Sys.readlink(path)
   grepl('tinytex', path, ignore.case = TRUE)
 }
