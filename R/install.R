@@ -15,7 +15,9 @@ install_tinytex = function() {
     unlink(c('install-unx.bat', 'install-windows.bat'))
     setwd(owd)
     p = Sys.which('tlmgr')
-    if (!is_tinytex()) warning(
+    if (os == 'windows') message(
+      'Restart your R session and check if tinytex:::is_tinytex() is TRUE.'
+    ) else if (!is_tinytex()) warning(
       'TinyTeX was not successfully installed or configured.',
       if (p != '') c('tlmgr was found at ', p, '.')
     )
