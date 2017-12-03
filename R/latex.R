@@ -71,29 +71,25 @@ latexmk_emu = function(file, engine, bib_engine = c('bibtex', 'biber'), times, i
   on.exit(setwd(owd), add = TRUE)
   # only use basename because bibtex may not work with full path
   file = basename(file)
+  aux = c(
+    'log', 'aux', 'bbl', 'blg', 'fls', 'out', 'lof', 'lot', 'idx', 'toc',
+    'nav', 'snm', 'vrb', 'ilg', 'ind', 'bcf', 'run.xml'
+  )
+  base = tools::file_path_sans_ext(file)
+  aux_files = paste(base, aux, sep = '.')
+  logfile = aux_files[1]; unlink(logfile)  # clean up the log before compilation
 
-  file_with_same_base = function(file) {
-    files = list.files()
-    files = files[utils::file_test('-f', files)]
-    base = tools::file_path_sans_ext(file)
-    normalizePath(files[tools::file_path_sans_ext(files) == base])
-  }
   # clean up aux files from LaTeX compilation
-  files1 = file_with_same_base(file)
+  files1 = exist_files(aux_files)
   keep_log = FALSE
   on.exit(add = TRUE, {
-    files2 = file_with_same_base(file)
+    files2 = exist_files(aux_files)
     files3 = setdiff(files2, files1)
-    aux = c(
-      'aux', 'log', 'bbl', 'blg', 'fls', 'out', 'lof', 'lot', 'idx', 'toc',
-      'nav', 'snm', 'vrb', 'ilg', 'ind'
-    )
-    if (keep_log) aux = setdiff(aux, 'log')
-    unlink(files3[tools::file_ext(files3) %in% aux])
+    if (keep_log) files3 = setdiff(files3, logfile)
+    unlink(files3)
   })
 
   fileq = shQuote(file)
-  logfile = gsub('[.][[:alnum:]]+$', '.log', file)
   retry = 0
   run_engine = function() {
     system2_quiet(engine, c('-halt-on-error -interaction=batchmode', fileq), error = {
@@ -199,6 +195,11 @@ check_latexmk_version = function() {
     'You may need to update the latexmk package or your LaTeX distribution.',
     call. = FALSE
   )
+}
+
+# return file paths that exist
+exist_files = function(files) {
+  files[utils::file_test('-f', files)]
 }
 
 #' Find missing LaTeX packages from a LaTeX log file
