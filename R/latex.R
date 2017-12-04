@@ -75,7 +75,7 @@ latexmk_emu = function(file, engine, bib_engine = c('bibtex', 'biber'), times, i
     'log', 'aux', 'bbl', 'blg', 'fls', 'out', 'lof', 'lot', 'idx', 'toc',
     'nav', 'snm', 'vrb', 'ilg', 'ind', 'bcf', 'run.xml'
   )
-  base = tools::file_path_sans_ext(file)
+  base = gsub('[.]tex$', '', file)
   aux_files = paste(base, aux, sep = '.')
   logfile = aux_files[1]; unlink(logfile)  # clean up the log before compilation
 
@@ -103,7 +103,7 @@ latexmk_emu = function(file, engine, bib_engine = c('bibtex', 'biber'), times, i
         }
       }
       keep_log <<- TRUE
-      show_latex_error(logfile, file)
+      show_latex_error(file, logfile)
     }, fail_rerun = FALSE)
   }
   run_engine()
@@ -162,7 +162,7 @@ system2_quiet = function(..., error = NULL, fail_rerun = TRUE) {
 }
 
 # parse the LaTeX log and show error messages
-show_latex_error = function(logfile, file) {
+show_latex_error = function(file, logfile = gsub('[.]tex$', '.log', file)) {
   e = c('Failed to compile ', file, '.')
   if (!file.exists(logfile)) stop(e, call. = FALSE)
   x = readLines(logfile, warn = FALSE)
