@@ -24,7 +24,9 @@ rm -r texlive
 $TEXDIR/bin/*/tlmgr install $(download https://github.com/yihui/tinytex/raw/master/tools/pkgs-custom.txt | tr '\n' ' ')
 
 if [ "$1" = '--admin' ]; then
-  sudo $TEXDIR/bin/*/tlmgr path add
+  if [ "$2" != '--no-path' ]; then
+    sudo $TEXDIR/bin/*/tlmgr path add
+  fi
 else
   $TEXDIR/bin/*/tlmgr path add
 fi
