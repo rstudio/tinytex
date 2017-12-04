@@ -10,4 +10,4 @@ The installation and maintenance of LaTeX have bothered me for several years. Ye
 
 I believe these problems can be solved by TinyTeX, a different LaTeX distribution based on TeXLive that is small in size (about 150Mb) but still functions well in most cases. Even if you run into the problem of missing LaTeX packages, it should be super clear to you what you need to do. The manual should be at most two pages long.
 
-Please see the full documentation at <https://yihui.name/tinytex/>. Obviously I hope it is not too long.
+This repo contains the installation scripts of TinyTeX (under the `tools` directory) and the R companion package **tinytex**. Please see the full documentation at <https://yihui.name/tinytex/>. Obviously I hope it is not too long.
