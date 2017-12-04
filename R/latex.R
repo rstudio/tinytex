@@ -93,16 +93,19 @@ latexmk_emu = function(file, engine, bib_engine = c('bibtex', 'biber'), times, i
   })
 
   fileq = shQuote(file)
-  retry = 0
+  retry = 0; pkgs_last = character()
   run_engine = function() {
     system2_quiet(engine, c('-halt-on-error -interaction=batchmode', fileq), error = {
       if (install_packages && file.exists(logfile) &&
-          retry <= getOption('tinytex.retry.install_packages', 20)) {
+          retry <= getOption('tinytex.retry.install_packages', 30)) {
         pkgs = parse_packages(logfile)
-        if (length(pkgs)) {
+        if (length(pkgs) && !identical(pkgs, pkgs_last)) {
           retry <<- retry + 1
           message('Trying to automatically install missing LaTeX packages...')
-          if (tlmgr_install(pkgs) == 0) run_engine()
+          if (tlmgr_install(pkgs) == 0) {
+            pkgs_last <<- pkgs
+            run_engine()
+          }
         }
       }
       keep_log <<- TRUE
