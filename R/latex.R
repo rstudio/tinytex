@@ -226,10 +226,14 @@ parse_packages = function(log, text = readLines(log), quiet = FALSE) {
   # /usr/local/bin/mktexpk: line 123: mf: command not found
   # ! Font U/psy/m/n/10=psyr at 10.0pt not loadable: Metric (TFM) file not found
   # ! The font "FandolSong-Regular" cannot be found.
+  # ! Package babel Error: Unknown option `ngerman'. Either you misspelled it
+  # (babel)                or the language definition file ngerman.ldf was not found.
+  regf = '[-[:alnum:]]+[.][[:alpha:]]{1,3}'
   r = c(
-    ".*! LaTeX Error: File `([-[:alnum:]]+[.][[:alpha:]]{1,3})' not found.*",
+    sprintf(".*! LaTeX Error: File `(%s)' not found.*", regf),
     ".*! Font [^=]+=([^ ]+).+ not loadable.*",
     '.*! The font "([^"]+)" cannot be found.*',
+    sprintf('.*the language definition file (%s) .*', regf),
     ".*: ([a-z]+): command not found.*"
   )
   x = grep(paste(r, collapse = '|'), text, value = TRUE)
