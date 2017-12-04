@@ -242,7 +242,7 @@ parse_packages = function(log, text = readLines(log), quiet = FALSE) {
     z = grep(p, x, value = TRUE)
     v = gsub(p, '\\1', z)
     if (length(v) == 0 || !(p %in% r[2:3])) return(v)
-    i = !grepl('[.]', z)
+    i = !grepl('[.]', v)
     v[i] = paste0(v[i], '[.](tfm|afm|mf|otf)')
     v
   })))
