@@ -221,9 +221,12 @@ parse_packages = function(log, text = readLines(log), quiet = FALSE) {
   # possible errors are like:
   # ! LaTeX Error: File `framed.sty' not found.
   # /usr/local/bin/mktexpk: line 123: mf: command not found
+  # ! Font U/psy/m/n/10=psyr at 10.0pt not loadable: Metric (TFM) file not found
+  # ! The font "FandolSong-Regular" cannot be found.
   r = c(
     ".*! LaTeX Error: File `([-[:alnum:]]+[.][[:alpha:]]{1,3})' not found.*",
     ".*! Font [^=]+=([^ ]+).+ not loadable.*",
+    '.*! The font "([^"]+)" cannot be found.*',
     ".*: ([a-z]+): command not found.*"
   )
   x = grep(paste(r, collapse = '|'), text, value = TRUE)
@@ -238,12 +241,9 @@ parse_packages = function(log, text = readLines(log), quiet = FALSE) {
   x = unique(unlist(lapply(r, function(p) {
     z = grep(p, x, value = TRUE)
     v = gsub(p, '\\1', z)
-    if (length(v) == 0 || p != r[2]) return(v)
-    # figure out the font file extension (use default: tfm); an example error:
-    # ! Font U/psy/m/n/10=psyr at 10.0pt not loadable: Metric (TFM) file not found
-    p = '.*: Metric \\(([[:alpha:]]+)\\) file not found.*'
-    i = grepl(p, z)
-    v = paste(v, ifelse(i, tolower(gsub(p, '\\1', z)), 'tfm'), sep = '.')
+    if (length(v) == 0 || !(p %in% r[2:3])) return(v)
+    i = !grepl('[.]', z)
+    v[i] = paste0(v[i], '[.](tfm|afm|mf|otf)')
     v
   })))
   for (j in seq_along(x)) {
