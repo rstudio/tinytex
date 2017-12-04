@@ -228,12 +228,14 @@ parse_packages = function(log, text = readLines(log), quiet = FALSE) {
   # ! The font "FandolSong-Regular" cannot be found.
   # ! Package babel Error: Unknown option `ngerman'. Either you misspelled it
   # (babel)                or the language definition file ngerman.ldf was not found.
+  # !pdfTeX error: pdflatex (file 8r.enc): cannot open encoding file for reading
   regf = '[-[:alnum:]]+[.][[:alpha:]]{1,3}'
   r = c(
     sprintf(".*! LaTeX Error: File `(%s)' not found.*", regf),
     ".*! Font [^=]+=([^ ]+).+ not loadable.*",
     '.*! The font "([^"]+)" cannot be found.*',
     sprintf('.*the language definition file (%s) .*', regf),
+    sprintf('.* \\(file (%s)\\): cannot open .*', regf),
     ".*: ([a-z]+): command not found.*"
   )
   x = grep(paste(r, collapse = '|'), text, value = TRUE)
