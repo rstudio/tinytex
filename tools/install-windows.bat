@@ -1,3 +1,5 @@
+where /q powershell || echo powershell not found && exit /b
+
 rem switch to a temp directory, whichever works
 cd /d "%TMP%"
 cd /d "%TEMP%"

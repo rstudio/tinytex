@@ -32,6 +32,10 @@ install_tinytex = function() {
       system2('sh', 'install-unx.sh')
     },
     'windows' = {
+      if (Sys.which('powershell') == '') stop(
+        'Installing TinyTeX requires PowerShell: ',
+        'https://docs.microsoft.com/en-us/powershell/scripting/setup/starting-windows-powershell-on-earlier-versions-of-windows'
+      )
       download.file(
         'https://github.com/yihui/tinytex/raw/master/tools/install-windows.bat',
         'install-windows.bat'
