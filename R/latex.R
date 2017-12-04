@@ -236,7 +236,15 @@ parse_packages = function(log, text = readLines(log), quiet = FALSE) {
     return(invisible(pkgs))
   }
   x = unique(unlist(lapply(r, function(p) {
-    gsub(p, '\\1', grep(p, x, value = TRUE))
+    z = grep(p, x, value = TRUE)
+    v = gsub(p, '\\1', z)
+    if (length(v) == 0 || p != r[2]) return(v)
+    # figure out the font file extension (use default: tfm); an example error:
+    # ! Font U/psy/m/n/10=psyr at 10.0pt not loadable: Metric (TFM) file not found
+    p = '.*: Metric \\(([[:alpha:]]+)\\) file not found.*'
+    i = grepl(p, z)
+    v = paste(v, ifelse(i, tolower(gsub(p, '\\1', z)), 'tfm'), sep = '.')
+    v
   })))
   for (j in seq_along(x)) {
     l = tlmgr_search(paste0('/', x[j]), stdout = TRUE, .quiet = quiet)
