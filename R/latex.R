@@ -44,6 +44,9 @@ latexmk = function(
     '-pdf -latexoption=-halt-on-error -interaction=batchmode',
     paste0('-pdflatex=', engine), shQuote(file)
   ), error = {
+    if (install_packages && !emulation) warning(
+      'latexmk(install_packages = TRUE) does not work when emulation = FALSE'
+    )
     check_latexmk_version()
     show_latex_error(file)
   })
