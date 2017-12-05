@@ -226,6 +226,7 @@ parse_packages = function(log, text = readLines(log), quiet = FALSE) {
   # ! Package babel Error: Unknown option `ngerman'. Either you misspelled it
   # (babel)                or the language definition file ngerman.ldf was not found.
   # !pdfTeX error: pdflatex (file 8r.enc): cannot open encoding file for reading
+  # ! CTeX fontset `fandol' is unavailable in current mode
   regf = '[-[:alnum:]]+[.][[:alpha:]]{1,3}'
   r = c(
     sprintf(".*! LaTeX Error: File `(%s)' not found.*", regf),
@@ -233,6 +234,7 @@ parse_packages = function(log, text = readLines(log), quiet = FALSE) {
     '.*! The font "([^"]+)" cannot be found.*',
     sprintf('.*the language definition file (%s) .*', regf),
     sprintf('.* \\(file (%s)\\): cannot open .*', regf),
+    ".*! CTeX fontset `([^']+)' is unavailable.*",
     ".*: ([a-z]+): command not found.*"
   )
   x = grep(paste(r, collapse = '|'), text, value = TRUE)
@@ -255,6 +257,7 @@ parse_packages = function(log, text = readLines(log), quiet = FALSE) {
   for (j in seq_along(x)) {
     l = tlmgr_search(paste0('/', x[j]), stdout = TRUE, .quiet = quiet)
     if (length(l) == 0) next
+    if (x[j] == 'fandol') return(x[j])  # a known package
     # why $? e.g. searching for mf returns a list like this
     # metafont.x86_64-darwin:
     #     bin/x86_64-darwin/mf       <- what we want
