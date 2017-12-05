@@ -11,6 +11,7 @@ Description: Helper functions to install and maintain the LaTeX distribution
   named 'TinyTeX', which is small and portable version of TeX Live. This package
   also contains helper functions to compile LaTeX documents, and install missing
   LaTeX packages automatically.
+Suggests: testit
 License: MIT + file LICENSE
 URL: https://yihui.name/tinytex/
 BugReports: https://github.com/yihui/tinytex/issues
