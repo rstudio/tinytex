@@ -49,12 +49,11 @@ install_tinytex = function() {
       x = readLines('texlive.profile')
       writeLines(gsub('./', './TinyTeX/', x, fixed = TRUE), 'texlive.profile')
       unzip('install-tl.zip')
-      local({
-        owd = setwd(list.files('.', '^install-tl-.*')); on.exit(setwd(owd), add = TRUE)
+      in_dir(list.files('.', '^install-tl-.*'), {
         message('Starting to install TinyTeX to ', appdata, '. It will take a few minutes.')
         (if (interactive()) function(msg) utils::winDialog('ok', msg) else message)(paste0(
           'Next you may see two error dialog boxs about the missing luatex.dll, ',
-          'and an error message like "Use of uninitialized value in bitwise or (|)..." at the end. ',
+          'and an error message like "Use of uninitialized value in bitwise or (|)..." in the end. ',
           'These messages can be ignored. When installation is complete, ',
           'please restart ', if (Sys.getenv('RSTUDIO') != '') 'RStudio' else 'R', '.'
         ))
@@ -97,4 +96,9 @@ is_tinytex = function(path = Sys.which('tlmgr')) {
   if (path == '') return(FALSE)
   if (os == 'unix') path = Sys.readlink(path)
   grepl('tinytex', path, ignore.case = TRUE)
+}
+
+in_dir = function(dir, expr) {
+  owd = setwd(dir); on.exit(setwd(owd), add = TRUE)
+  expr
 }
