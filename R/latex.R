@@ -227,15 +227,14 @@ parse_packages = function(log, text = readLines(log), quiet = FALSE) {
   # (babel)                or the language definition file ngerman.ldf was not found.
   # !pdfTeX error: pdflatex (file 8r.enc): cannot open encoding file for reading
   # ! CTeX fontset `fandol' is unavailable in current mode
-  regf = '[-[:alnum:]]+[.][[:alpha:]]{1,3}'
   r = c(
     ".*! Font [^=]+=([^ ]+).+ not loadable.*",
     '.*! The font "([^"]+)" cannot be found.*',
-    sprintf(".*! LaTeX Error: File `(%s)' not found.*", regf),
-    sprintf('.*the language definition file (%s) .*', regf),
-    sprintf('.* \\(file (%s)\\): cannot open .*', regf),
+    ".*! LaTeX Error: File `([^']+)' not found.*",
+    '.*the language definition file ([^ ]+) .*',
+    '.* \\(file ([^)]+)\\): cannot open .*',
     ".*! CTeX fontset `([^']+)' is unavailable.*",
-    ".*: ([a-z]+): command not found.*"
+    ".*: ([^:]+): command not found.*"
   )
   x = grep(paste(r, collapse = '|'), text, value = TRUE)
   pkgs = character()
