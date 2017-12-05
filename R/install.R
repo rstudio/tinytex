@@ -12,7 +12,7 @@ install_tinytex = function() {
   )
   owd = setwd(tempdir())
   on.exit({
-    unlink(c('install-unx.bat', 'install-windows.bat'))
+    unlink(c('install-unx.sh', 'install-tl.zip', 'pkgs-custom.txt', 'texlive.profile'))
     setwd(owd)
     p = Sys.which('tlmgr')
     if (os == 'windows') message(
@@ -32,15 +32,36 @@ install_tinytex = function() {
       system2('sh', 'install-unx.sh')
     },
     'windows' = {
-      if (Sys.which('powershell') == '') stop(
-        'Installing TinyTeX requires PowerShell: ',
-        'https://docs.microsoft.com/en-us/powershell/scripting/setup/starting-windows-powershell-on-earlier-versions-of-windows'
+      appdata = win_app_dir()
+      unlink('install-tl-*', recursive = TRUE)
+      download.file(
+        'http://mirror.ctan.org/systems/texlive/tlnet/install-tl.zip',
+        'install-tl.zip', mode = 'wb'
       )
       download.file(
-        'https://github.com/yihui/tinytex/raw/master/tools/install-windows.bat',
-        'install-windows.bat'
+        'https://github.com/yihui/tinytex/raw/master/tools/pkgs-custom.txt',
+        'pkgs-custom.txt'
       )
-      system2('install-windows.bat', invisible = FALSE)
+      download.file(
+        'https://github.com/yihui/tinytex/raw/master/tools/texlive.profile',
+        'texlive.profile'
+      )
+      x = readLines('texlive.profile')
+      writeLines(gsub('./', './TinyTeX/', x, fixed = TRUE), 'texlive.profile')
+      unzip('install-tl.zip')
+      local({
+        owd = setwd(list.files('.', '^install-tl-.*')); on.exit(setwd(owd), add = TRUE)
+        shell('echo | install-tl-windows.bat -profile=../texlive.profile', invisible = FALSE)
+        system2(
+          'TinyTeX\\bin\\win32\\tlmgr',
+          c('install', 'latex-bin', 'xetex', readLines('../pkgs-custom.txt'))
+        )
+        file.remove('TinyTeX/install-tl.log')
+        unlink(file.path(appdata, 'TinyTeX'), recursive = TRUE)
+        file.copy('TinyTeX', appdata, recursive = TRUE)
+      })
+      unlink('install-tl-*', recursive = TRUE)
+      system2(file.path(appdata, 'TinyTeX', 'bin', 'win32', 'tlmgr'), 'path add')
     },
     stop('This platform is not supported.')
   )
@@ -51,14 +72,16 @@ install_tinytex = function() {
 uninstall_tinytex = function() {
   target = switch(
     os,
-    'windows' = file.path(
-      Sys.getenv('APPDATA', stop('Environment variable "APPDATA" not set.')), 'TinyTeX'
-    ),
+    'windows' = file.path(win_app_dir(), 'TinyTeX'),
     'unix' = if (Sys.info()[['sysname']] == 'Darwin') '~/Library/TinyTeX' else '~/.TinyTeX',
     stop('This platform is not supported.')
   )
   tlmgr_path('remove')
   unlink(target, recursive = TRUE)
+}
+
+win_app_dir = function() {
+  Sys.getenv('APPDATA', stop('Environment variable "APPDATA" not set.'))
 }
 
 is_tinytex = function(path = Sys.which('tlmgr')) {
