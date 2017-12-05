@@ -81,7 +81,9 @@ uninstall_tinytex = function() {
 }
 
 win_app_dir = function() {
-  Sys.getenv('APPDATA', stop('Environment variable "APPDATA" not set.'))
+  d = Sys.getenv('APPDATA')
+  if (d == '') stop('Environment variable "APPDATA" not set.')
+  d
 }
 
 is_tinytex = function(path = Sys.which('tlmgr')) {
