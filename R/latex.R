@@ -229,9 +229,9 @@ parse_packages = function(log, text = readLines(log), quiet = FALSE) {
   # ! CTeX fontset `fandol' is unavailable in current mode
   regf = '[-[:alnum:]]+[.][[:alpha:]]{1,3}'
   r = c(
-    sprintf(".*! LaTeX Error: File `(%s)' not found.*", regf),
     ".*! Font [^=]+=([^ ]+).+ not loadable.*",
     '.*! The font "([^"]+)" cannot be found.*',
+    sprintf(".*! LaTeX Error: File `(%s)' not found.*", regf),
     sprintf('.*the language definition file (%s) .*', regf),
     sprintf('.* \\(file (%s)\\): cannot open .*', regf),
     ".*! CTeX fontset `([^']+)' is unavailable.*",
@@ -249,7 +249,7 @@ parse_packages = function(log, text = readLines(log), quiet = FALSE) {
   x = unique(unlist(lapply(r, function(p) {
     z = grep(p, x, value = TRUE)
     v = gsub(p, '\\1', z)
-    if (length(v) == 0 || !(p %in% r[2:3])) return(v)
+    if (length(v) == 0 || !(p %in% r[1:2])) return(v)
     i = !grepl('[.]', v)
     v[i] = paste0(v[i], '[.](tfm|afm|mf|otf)')
     v
