@@ -218,26 +218,8 @@ exist_files = function(files) {
 #' @return A character vector of LaTeX package names.
 #' @export
 parse_packages = function(log, text = readLines(log), quiet = FALSE) {
-  # possible errors are like:
-  # ! LaTeX Error: File `framed.sty' not found.
-  # /usr/local/bin/mktexpk: line 123: mf: command not found
-  # ! Font U/psy/m/n/10=psyr at 10.0pt not loadable: Metric (TFM) file not found
-  # ! The font "FandolSong-Regular" cannot be found.
-  # ! Package babel Error: Unknown option `ngerman'. Either you misspelled it
-  # (babel)                or the language definition file ngerman.ldf was not found.
-  # !pdfTeX error: pdflatex (file 8r.enc): cannot open encoding file for reading
-  # ! CTeX fontset `fandol' is unavailable in current mode
-  r = c(
-    ".*! Font [^=]+=([^ ]+).+ not loadable.*",
-    '.*! The font "([^"]+)" cannot be found.*',
-    ".*! LaTeX Error: File `([^']+)' not found.*",
-    '.*the language definition file ([^ ]+) .*',
-    '.* \\(file ([^)]+)\\): cannot open .*',
-    ".*! CTeX fontset `([^']+)' is unavailable.*",
-    ".*: ([^:]+): command not found.*"
-  )
-  x = grep(paste(r, collapse = '|'), text, value = TRUE)
   pkgs = character()
+  x = detect_files(text)
   if (length(x) == 0) {
     if (!quiet) message(
       'I was unable to find any missing LaTeX packages from the error log',
@@ -245,14 +227,6 @@ parse_packages = function(log, text = readLines(log), quiet = FALSE) {
     )
     return(invisible(pkgs))
   }
-  x = unique(unlist(lapply(r, function(p) {
-    z = grep(p, x, value = TRUE)
-    v = gsub(p, '\\1', z)
-    if (length(v) == 0 || !(p %in% r[1:2])) return(v)
-    i = !grepl('[.]', v)
-    v[i] = paste0(v[i], '[.](tfm|afm|mf|otf)')
-    v
-  })))
   for (j in seq_along(x)) {
     l = tlmgr_search(paste0('/', x[j]), stdout = TRUE, .quiet = quiet)
     if (length(l) == 0) next
@@ -277,6 +251,37 @@ parse_packages = function(log, text = readLines(log), quiet = FALSE) {
   }
   pkgs = gsub('[.].*', '', pkgs)  # e.g., 'metafont.x86_64-darwin'
   unique(pkgs)
+}
+
+# find filenames (could also be font names) from LaTeX error logs
+detect_files = function(text) {
+  # possible errors are like:
+  # ! LaTeX Error: File `framed.sty' not found.
+  # /usr/local/bin/mktexpk: line 123: mf: command not found
+  # ! Font U/psy/m/n/10=psyr at 10.0pt not loadable: Metric (TFM) file not found
+  # ! The font "FandolSong-Regular" cannot be found.
+  # ! Package babel Error: Unknown option `ngerman'. Either you misspelled it
+  # (babel)                or the language definition file ngerman.ldf was not found.
+  # !pdfTeX error: pdflatex (file 8r.enc): cannot open encoding file for reading
+  # ! CTeX fontset `fandol' is unavailable in current mode
+  r = c(
+    ".*! Font [^=]+=([^ ]+).+ not loadable.*",
+    '.*! The font "([^"]+)" cannot be found.*',
+    ".*! LaTeX Error: File `([^']+)' not found.*",
+    '.*the language definition file ([^ ]+) .*',
+    '.* \\(file ([^)]+)\\): cannot open .*',
+    ".*! CTeX fontset `([^']+)' is unavailable.*",
+    ".*: ([^:]+): command not found.*"
+  )
+  x = grep(paste(r, collapse = '|'), text, value = TRUE)
+  if (length(x) > 0) unique(unlist(lapply(r, function(p) {
+    z = grep(p, x, value = TRUE)
+    v = gsub(p, '\\1', z)
+    if (length(v) == 0 || !(p %in% r[1:2])) return(v)
+    i = !grepl('[.]', v)
+    v[i] = paste0(v[i], '[.](tfm|afm|mf|otf)')
+    v
+  })))
 }
 
 # it should be rare that we need to manually run texhash
