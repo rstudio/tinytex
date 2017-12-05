@@ -76,12 +76,7 @@ install_tinytex = function() {
 #' @rdname install_tinytex
 #' @export
 uninstall_tinytex = function() {
-  target = switch(
-    os,
-    'windows' = file.path(win_app_dir(), 'TinyTeX'),
-    'unix' = if (Sys.info()[['sysname']] == 'Darwin') '~/Library/TinyTeX' else '~/.TinyTeX',
-    stop('This platform is not supported.')
-  )
+  target = texlive_root()
   tlmgr_path('remove')
   unlink(target, recursive = TRUE)
 }
@@ -92,10 +87,36 @@ win_app_dir = function() {
   d
 }
 
-is_tinytex = function(path = Sys.which('tlmgr')) {
-  if (path == '') return(FALSE)
-  if (os == 'unix') path = Sys.readlink(path)
-  grepl('tinytex', path, ignore.case = TRUE)
+texlive_root = function() {
+  path = Sys.which('tlmgr')
+  if (path == '') return(path)
+  root_dir = function(path, ...) {
+    dir = normalizePath(file.path(dirname(path), ...), mustWork = TRUE)
+    if (!'bin' %in% list.files(dir)) stop(
+      dir, ' does not seem to be the root directory of TeXLive (no "bin/" dir under it)'
+    )
+    dir
+  }
+  if (os == 'windows') return(root_dir(path, '..', '..'))
+  if (Sys.readlink(path) == '') stop(
+    'Cannot figure out the root directory of TeX Live from ', path,
+    ' (not a symlink on ', os, ')'
+  )
+  path = symlink_root(path)
+  root_dir(normalizePath(path), '..', '..', '..')
+}
+
+# trace a symlink to its final destination
+symlink_root = function(path) {
+  path = normalizePath(path, mustWork = TRUE)
+  path2 = Sys.readlink(path)
+  if (path2 == '') return(path)  # no longer a symlink; must be resolved now
+  # path2 may still be a _relative_ symlink
+  in_dir(dirname(path), symlink_root(path2))
+}
+
+is_tinytex = function() {
+  tolower(basename(texlive_root())) == 'tinytex'
 }
 
 in_dir = function(dir, expr) {
