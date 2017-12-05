@@ -3,7 +3,6 @@ where /q powershell || echo powershell not found && exit /b
 rem switch to a temp directory, whichever works
 cd /d "%TMP%"
 cd /d "%TEMP%"
-cd /d "%TMPDIR%"
 
 rem in case there is a leftover install-tl-* dir, delete it
 for /d %%G in ("install-tl-*") do rd /s /q "%%~G"
