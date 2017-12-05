@@ -51,6 +51,14 @@ install_tinytex = function() {
       unzip('install-tl.zip')
       local({
         owd = setwd(list.files('.', '^install-tl-.*')); on.exit(setwd(owd), add = TRUE)
+        (if (interactive()) function(msg) utils::winDialog('ok', msg) else message)(paste0(
+          'Starting to install TinyTeX to ', appdata,
+          '. It will take a few minutes.\n\n',
+          'You may see two error dialog boxes about the missing luatex.dll during the installation, ',
+          ' and an error message like "Use of uninitialized value in bitwise or (|)..." at the end. ',
+          'These messages can be safely ignored. When installation is complete, ',
+          'please restart ', if (Sys.getenv('RSTUDIO') != '') 'RStudio' else 'R', '.'
+        ))
         shell('echo | install-tl-windows.bat -profile=../texlive.profile', invisible = FALSE)
         system2(
           'TinyTeX\\bin\\win32\\tlmgr',
