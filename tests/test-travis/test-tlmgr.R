@@ -6,9 +6,8 @@ assert('tlmgr is available', {
 
 assert('tlmgr_search() searches the online TeX Live database', {
   res = tlmgr_search('/framed', stdout = TRUE)
-  message(paste(res, sep = '\n'))
 
-  ('framed:' %==% res)
+  ('framed:' %in% res)
   (any(grepl('/framed[.]sty$', res)))
 })
 
