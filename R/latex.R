@@ -259,14 +259,18 @@ detect_files = function(text) {
   # ! LaTeX Error: File `framed.sty' not found.
   # /usr/local/bin/mktexpk: line 123: mf: command not found
   # ! Font U/psy/m/n/10=psyr at 10.0pt not loadable: Metric (TFM) file not found
+  # !pdfTeX error: /usr/local/bin/pdflatex (file tcrm0700): Font tcrm0700 at 600 not found
   # ! The font "FandolSong-Regular" cannot be found.
   # ! Package babel Error: Unknown option `ngerman'. Either you misspelled it
   # (babel)                or the language definition file ngerman.ldf was not found.
   # !pdfTeX error: pdflatex (file 8r.enc): cannot open encoding file for reading
   # ! CTeX fontset `fandol' is unavailable in current mode
+  # Package widetext error: Install the flushend package which is a part of sttools
   r = c(
     ".*! Font [^=]+=([^ ]+).+ not loadable.*",
     '.*! The font "([^"]+)" cannot be found.*',
+    '.*!.+ error:.+\\(file ([^)]+)\\): .*',
+    '.*Package widetext error: Install the ([^ ]+) package.*',
     ".*! LaTeX Error: File `([^']+)' not found.*",
     '.*the language definition file ([^ ]+) .*',
     '.* \\(file ([^)]+)\\): cannot open .*',
@@ -277,7 +281,8 @@ detect_files = function(text) {
   if (length(x) > 0) unique(unlist(lapply(r, function(p) {
     z = grep(p, x, value = TRUE)
     v = gsub(p, '\\1', z)
-    if (length(v) == 0 || !(p %in% r[1:2])) return(v)
+    if (length(v) == 0 || !(p %in% r[1:4])) return(v)
+    if (p == r[4]) return(paste0(v, '.sty'))
     i = !grepl('[.]', v)
     v[i] = paste0(v[i], '[.](tfm|afm|mf|otf)')
     v
