@@ -287,7 +287,9 @@ detect_files = function(text) {
 # it should be rare that we need to manually run texhash
 texhash = function() system2('texhash')
 
-fmtutil = function() system2('fmtutil-sys', '--all')
+fmtutil = function(usermode = FALSE) {
+  system2(if (usermode) 'fmtutil-user' else 'fmtutil-sys', '--all')
+}
 
 # look up files in the Kpathsea library, e.g., kpsewhich('Sweave.sty')
 kpsewhich = function(filename, options = character()) {

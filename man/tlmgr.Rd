@@ -10,15 +10,16 @@
 \alias{tlmgr_conf}
 \title{Run the TeX Live Manager}
 \usage{
-tlmgr(args = character(), ..., .quiet = FALSE)
+tlmgr(args = character(), usermode = FALSE, ..., .quiet = FALSE)
 
 tlmgr_search(what, file = TRUE, all = FALSE, global = TRUE, word = FALSE, ...)
 
-tlmgr_install(pkgs = character(), path = TRUE)
+tlmgr_install(pkgs = character(), usermode = FALSE, path = !usermode)
 
-tlmgr_remove(pkgs = character())
+tlmgr_remove(pkgs = character(), usermode = FALSE)
 
-tlmgr_update(all = TRUE, self = TRUE, more_args = character(), run_fmtutil = TRUE)
+tlmgr_update(all = TRUE, self = TRUE, more_args = character(), usermode = FALSE, 
+    run_fmtutil = TRUE)
 
 tlmgr_path(action = c("add", "remove"))
 
@@ -27,6 +28,15 @@ tlmgr_conf(more_args = character())
 \arguments{
 \item{args}{A character vector of arguments to be passed to the command
 \command{tlmgr}.}
+
+\item{usermode}{(For expert users only) Whether to use TeX Live's
+\href{https://www.tug.org/texlive/doc/tlmgr.html#USER-MODE}{user mode}. If
+\code{TRUE}, you must have run \code{tlmgr('init-usertree')} once before.
+This option allows you to manage a user-level texmf tree, e.g., install a
+LaTeX package to your home directory instead of the system directory, to
+which you do not have write permission. This option should not be needed on
+personal computers, and has some limitations, so please read the
+\pkg{tlmgr} manual very carefully before using it.}
 
 \item{...}{Additional arguments passed to \code{\link{system2}()} (e.g.,
 \code{stdout = TRUE} to capture stdout).}

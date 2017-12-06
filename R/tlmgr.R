@@ -8,6 +8,14 @@
 #' tasks. Please consult the \pkg{tlmgr} manual for full details.
 #' @param args A character vector of arguments to be passed to the command
 #'   \command{tlmgr}.
+#' @param usermode (For expert users only) Whether to use TeX Live's
+#'   \href{https://www.tug.org/texlive/doc/tlmgr.html#USER-MODE}{user mode}. If
+#'   \code{TRUE}, you must have run \code{tlmgr('init-usertree')} once before.
+#'   This option allows you to manage a user-level texmf tree, e.g., install a
+#'   LaTeX package to your home directory instead of the system directory, to
+#'   which you do not have write permission. This option should not be needed on
+#'   personal computers, and has some limitations, so please read the
+#'   \pkg{tlmgr} manual very carefully before using it.
 #' @param ... Additional arguments passed to \code{\link{system2}()} (e.g.,
 #'   \code{stdout = TRUE} to capture stdout).
 #' @param .quiet Whether to hide the actual command before executing it.
@@ -26,11 +34,12 @@
 #'
 #' # list all installed LaTeX packages
 #' tlmgr(c('info', '--list', '--only-installed', '--data', 'name'))
-tlmgr = function(args = character(), ..., .quiet = FALSE) {
+tlmgr = function(args = character(), usermode = FALSE, ..., .quiet = FALSE) {
   if (!tlmgr_available()) {
     warning('TeX Live does not seem to be installed. See https://yihui.name/tinytex/.')
     invisible(invisible(127L))
   }
+  if (usermode) args = c('--usermode', args)
   if (!.quiet) message(paste(c('tlmgr', args), collapse = ' '))
   system2('tlmgr', args, ...)
 }
@@ -62,17 +71,17 @@ tlmgr_search = function(what, file = TRUE, all = FALSE, global = TRUE, word = FA
 #'   even if no binary packages were installed).
 #' @rdname tlmgr
 #' @export
-tlmgr_install = function(pkgs = character(), path = TRUE) {
+tlmgr_install = function(pkgs = character(), usermode = FALSE, path = !usermode) {
   if (length(pkgs)) {
-    tlmgr(c('install', pkgs))
+    tlmgr(c('install', pkgs), usermode)
     if (path) tlmgr_path('add')
   }
 }
 
 #' @rdname tlmgr
 #' @export
-tlmgr_remove = function(pkgs = character()) {
-  if (length(pkgs)) tlmgr(c('remove', pkgs))
+tlmgr_remove = function(pkgs = character(), usermode = FALSE) {
+  if (length(pkgs)) tlmgr(c('remove', pkgs), usermode)
 }
 
 
@@ -83,9 +92,9 @@ tlmgr_remove = function(pkgs = character()) {
 #'   format and hyphenation files after updating \pkg{tlmgr}.
 #' @rdname tlmgr
 #' @export
-tlmgr_update = function(all = TRUE, self = TRUE, more_args = character(), run_fmtutil = TRUE) {
-  tlmgr(c('update', if (all) '--all', if (self) '--self', more_args))
-  if (run_fmtutil) fmtutil()
+tlmgr_update = function(all = TRUE, self = TRUE, more_args = character(), usermode = FALSE, run_fmtutil = TRUE) {
+  tlmgr(c('update', if (all) '--all', if (self && !usermode) '--self', more_args), usermode)
+  if (run_fmtutil) fmtutil(usermode)
 }
 
 
