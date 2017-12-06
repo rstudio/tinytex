@@ -76,7 +76,7 @@ latexmk_emu = function(file, engine, bib_engine = c('bibtex', 'biber'), times, i
   file = basename(file)
   aux = c(
     'log', 'aux', 'bbl', 'blg', 'fls', 'out', 'lof', 'lot', 'idx', 'toc',
-    'nav', 'snm', 'vrb', 'ilg', 'ind', 'bcf', 'run.xml'
+    'nav', 'snm', 'vrb', 'ilg', 'ind', 'xwm', 'bcf', 'run.xml'
   )
   base = gsub('[.]tex$', '', file)
   aux_files = paste(base, aux, sep = '.')
