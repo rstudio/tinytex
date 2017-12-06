@@ -92,9 +92,18 @@ latexmk_emu = function(file, engine, bib_engine = c('bibtex', 'biber'), times, i
     unlink(files3)
   })
 
-  fileq = shQuote(file); pkgs_last = character()
+  pkgs_last = character()
+  fileq = shQuote(file); filep = normalizePath(paste0(base, '.pdf'), mustWork = FALSE)
+  # backup the PDF output if it exists, and move it back if the compilation failed
+  if (file.exists(filep)) {
+    filep2 = normalizePath(tempfile('tinytex_', '.', '.pdf'), mustWork = FALSE)
+    if (file.rename(filep, filep2)) on.exit(
+      if (file.exists(filep)) file.remove(filep2) else file.rename(filep2, filep),
+      add = TRUE
+    )
+  }
   run_engine = function() {
-    system2_quiet(engine, c('-halt-on-error -interaction=batchmode', fileq), error = {
+    on_error  = function() {
       if (install_packages && file.exists(logfile)) {
         pkgs = parse_packages(logfile)
         if (length(pkgs) && !identical(pkgs, pkgs_last)) {
@@ -107,7 +116,14 @@ latexmk_emu = function(file, engine, bib_engine = c('bibtex', 'biber'), times, i
       }
       keep_log <<- TRUE
       show_latex_error(file, logfile)
-    }, fail_rerun = FALSE)
+    }
+    res = system2_quiet(
+      engine, c('-halt-on-error -interaction=batchmode', fileq),
+      error = on_error(), fail_rerun = FALSE
+    )
+    # PNAS you are the worst! Why don't you singal an error in case of missing packages?
+    if (res == 0 && !file.exists(filep)) on_error()
+    invisible(res)
   }
   run_engine()
   # generate index
