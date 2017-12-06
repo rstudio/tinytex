@@ -3,13 +3,13 @@ selected_scheme scheme-infraonly
 TEXDIR ./
 
 TEXMFSYSCONFIG ./texmf-config
-TEXMFCONFIG $TEXMFSYSCONFIG
+TEXMFCONFIG $HOME/.TinyTeX/texmf-config
 
 TEXMFLOCAL ./texmf-local
-TEXMFHOME $TEXMFLOCAL
+TEXMFHOME $HOME/.TinyTeX/texmf-home
 
 TEXMFSYSVAR ./texmf-var
-TEXMFVAR $TEXMFSYSVAR
+TEXMFVAR $HOME/.TinyTeX/texmf-var
 
 option_doc 0
 option_src 0
