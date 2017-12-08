@@ -21,6 +21,8 @@ lm
 luaotfload
 makeindex
 mathspec
+metafont
+mfware
 natbib
 oberdiek
 titling
