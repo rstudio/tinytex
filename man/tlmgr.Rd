@@ -14,7 +14,7 @@ tlmgr(args = character(), usermode = FALSE, ..., .quiet = FALSE)
 
 tlmgr_search(what, file = TRUE, all = FALSE, global = TRUE, word = FALSE, ...)
 
-tlmgr_install(pkgs = character(), usermode = FALSE, path = !usermode)
+tlmgr_install(pkgs = character(), usermode = FALSE, path = !usermode && os != "windows")
 
 tlmgr_remove(pkgs = character(), usermode = FALSE)
 

@@ -71,7 +71,7 @@ tlmgr_search = function(what, file = TRUE, all = FALSE, global = TRUE, word = FA
 #'   even if no binary packages were installed).
 #' @rdname tlmgr
 #' @export
-tlmgr_install = function(pkgs = character(), usermode = FALSE, path = !usermode) {
+tlmgr_install = function(pkgs = character(), usermode = FALSE, path = !usermode && os != 'windows') {
   if (length(pkgs)) {
     tlmgr(c('install', pkgs), usermode)
     if (path) tlmgr_path('add')
