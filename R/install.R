@@ -20,6 +20,7 @@ install_tinytex = function(force = FALSE, dir) {
   }
   user_dir = ''
   if (!missing(dir)) {
+    dir = gsub('[/\\]+$', '', dir)  # remove trailing slashes
     check_dir(dir)
     unlink(dir, recursive = TRUE)
     user_dir = normalizePath(dir, mustWork = FALSE)
