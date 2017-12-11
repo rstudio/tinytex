@@ -5,9 +5,15 @@
 \alias{uninstall_tinytex}
 \title{Install/Uninstall TinyTeX}
 \usage{
-install_tinytex()
+install_tinytex(force = FALSE, dir)
 
-uninstall_tinytex()
+uninstall_tinytex(force = FALSE, dir = texlive_root())
+}
+\arguments{
+\item{force}{Whether to force to install (override) or uninstall TinyTeX.}
+
+\item{dir}{The directory to install or uninstall TinyTeX (should not exist
+unless \code{force = TRUE}).}
 }
 \description{
 The function \code{install_tinytex()} downloads the installation script from
@@ -16,5 +22,6 @@ Windows), and executes it to install TinyTeX (a custom LaTeX distribution
 based on TeX Live). The function \code{uninstall_tinytex()} removes TinyTeX.
 }
 \references{
-TinyTeX homepage: \url{https://yihui.name/tinytex/}.
+See the TinyTeX documentation (\url{https://yihui.name/tinytex/})
+  for the default installation directories on different platforms.
 }
