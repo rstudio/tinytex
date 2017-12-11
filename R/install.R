@@ -95,7 +95,7 @@ install_tinytex = function(force = FALSE, dir) {
         file.copy(list.files('TinyTeX', full.names = TRUE), target, recursive = TRUE)
       })
       unlink('install-tl-*', recursive = TRUE)
-      system2(file.path(target, 'bin', 'win32', 'tlmgr'), 'path add')
+      system2(file.path(target, 'bin', 'win32', 'tlmgr'), c('path', 'add'))
     },
     stop('This platform is not supported.')
   )
