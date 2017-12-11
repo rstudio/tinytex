@@ -86,7 +86,13 @@ install_tinytex = function(force = FALSE, dir) {
           'These messages can be ignored. When installation is complete, ',
           'please restart ', if (Sys.getenv('RSTUDIO') != '') 'RStudio' else 'R', '.'
         ))
-        shell('echo | install-tl-windows.bat -profile=../texlive.profile', invisible = FALSE)
+        bat = readLines('install-tl-windows.bat')
+        # never PAUSE (no way to interactive with the Windows shell from R)
+        writeLines(
+          grep('^pause\\s*$', bat, ignore.case = TRUE, invert = TRUE, value = TRUE),
+          'install-tl-windows.bat'
+        )
+        shell('install-tl-windows.bat -profile=../texlive.profile', invisible = FALSE)
         system2(
           'TinyTeX\\bin\\win32\\tlmgr',
           c('install', 'latex-bin', 'xetex', readLines('../pkgs-custom.txt'))
