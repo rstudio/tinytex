@@ -87,7 +87,7 @@ install_tinytex = function(force = FALSE, dir) {
           'please restart ', if (Sys.getenv('RSTUDIO') != '') 'RStudio' else 'R', '.'
         ))
         bat = readLines('install-tl-windows.bat')
-        # never PAUSE (no way to interactive with the Windows shell from R)
+        # never PAUSE (no way to interact with the Windows shell from R)
         writeLines(
           grep('^pause\\s*$', bat, ignore.case = TRUE, invert = TRUE, value = TRUE),
           'install-tl-windows.bat'
