@@ -4,11 +4,29 @@
 #' \url{https://github.com/yihui/tinytex} according to the platform (Unix or
 #' Windows), and executes it to install TinyTeX (a custom LaTeX distribution
 #' based on TeX Live). The function \code{uninstall_tinytex()} removes TinyTeX.
-#' @references TinyTeX homepage: \url{https://yihui.name/tinytex/}.
+#' @param force Whether to force to install (override) or uninstall TinyTeX.
+#' @param dir The directory to install or uninstall TinyTeX (should not exist
+#'   unless \code{force = TRUE}).
+#' @references See the TinyTeX documentation (\url{https://yihui.name/tinytex/})
+#'   for the default installation directories on different platforms.
 #' @export
-install_tinytex = function() {
-  if (tlmgr_available() && !is_tinytex()) warning(
-    'It seems TeX Live has been installed. You may need to uninstall it.'
+install_tinytex = function(force = FALSE, dir) {
+  if (!is.logical(force)) stop('The argument "force" must take a logical value.')
+  check_dir = function(dir) {
+    if (dir_exists(dir) && !force) stop(
+      'The directory "', dir, '" exists. Please either delete it, ',
+      'or use install_tinytex(force = TRUE).'
+    )
+  }
+  user_dir = ''
+  if (!missing(dir)) {
+    check_dir(dir)
+    unlink(dir, recursive = TRUE)
+    user_dir = normalizePath(dir, mustWork = FALSE)
+  }
+  if (tlmgr_available() && !force) stop(
+    'It seems TeX Live has been installed (check tinytex:::texlive_root()). ',
+    'You may need to uninstall it.', call. = FALSE
   )
   owd = setwd(tempdir())
   on.exit({
@@ -30,9 +48,19 @@ install_tinytex = function() {
         'install-unx.sh'
       )
       system2('sh', 'install-unx.sh')
+      target = normalizePath(
+        if (Sys.info()[['sysname']] == 'Darwin') '~/Library/TinyTeX' else '~/.TinyTeX'
+      )
+      if (!dir_exists(target)) stop('Failed to install TinyTeX.')
+      if (!user_dir %in% c('', target)) {
+        dir.create(dirname(user_dir), showWarnings = FALSE, recursive = TRUE)
+        file.rename(target, user_dir)
+        bin = file.path(list.files(file.path(user_dir, 'bin'), full.names = TRUE), 'tlmgr')
+        system2(bin, c('path', 'add'))
+      }
     },
     'windows' = {
-      appdata = win_app_dir()
+      target = if (user_dir == '') win_app_dir('TinyTeX') else user_dir
       unlink('install-tl-*', recursive = TRUE)
       download.file(
         'http://mirror.ctan.org/systems/texlive/tlnet/install-tl.zip',
@@ -50,7 +78,7 @@ install_tinytex = function() {
       writeLines(gsub('./', './TinyTeX/', x, fixed = TRUE), 'texlive.profile')
       unzip('install-tl.zip')
       in_dir(list.files('.', '^install-tl-.*'), {
-        message('Starting to install TinyTeX to ', appdata, '. It will take a few minutes.')
+        message('Starting to install TinyTeX to ', target, '. It will take a few minutes.')
         (if (interactive()) function(msg) utils::winDialog('ok', msg) else message)(paste0(
           'Next you may see two error dialog boxs about the missing luatex.dll, ',
           'and an error message like "Use of uninitialized value in bitwise or (|)..." in the end. ',
@@ -63,11 +91,11 @@ install_tinytex = function() {
           c('install', 'latex-bin', 'xetex', readLines('../pkgs-custom.txt'))
         )
         file.remove('TinyTeX/install-tl.log')
-        unlink(file.path(appdata, 'TinyTeX'), recursive = TRUE)
-        file.copy('TinyTeX', appdata, recursive = TRUE)
+        dir.create(target, showWarnings = FALSE, recursive = TRUE)
+        file.copy(list.files('TinyTeX', full.names = TRUE), target, recursive = TRUE)
       })
       unlink('install-tl-*', recursive = TRUE)
-      system2(file.path(appdata, 'TinyTeX', 'bin', 'win32', 'tlmgr'), 'path add')
+      system2(file.path(target, 'bin', 'win32', 'tlmgr'), 'path add')
     },
     stop('This platform is not supported.')
   )
@@ -75,16 +103,20 @@ install_tinytex = function() {
 
 #' @rdname install_tinytex
 #' @export
-uninstall_tinytex = function() {
-  target = texlive_root()
+uninstall_tinytex = function(force = FALSE, dir = texlive_root()) {
+  if (dir == '') stop('TinyTeX does not seem to be installed.')
+  if (!is_tinytex() && !force) stop(
+    'Detected TeX Live at "', dir, '", but it appears to be TeX Live instead of TinyTeX. ',
+    'To uninstall TeX Live, use the argument force = TRUE.'
+  )
   tlmgr_path('remove')
-  unlink(target, recursive = TRUE)
+  unlink(dir, recursive = TRUE)
 }
 
-win_app_dir = function() {
+win_app_dir = function(...) {
   d = Sys.getenv('APPDATA')
   if (d == '') stop('Environment variable "APPDATA" not set.')
-  d
+  file.path(d, ...)
 }
 
 texlive_root = function() {
@@ -123,3 +155,5 @@ in_dir = function(dir, expr) {
   owd = setwd(dir); on.exit(setwd(owd), add = TRUE)
   expr
 }
+
+dir_exists = function(path) file_test('-d', path)
