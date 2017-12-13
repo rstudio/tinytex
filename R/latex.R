@@ -141,10 +141,34 @@ latexmk_emu = function(file, engine, bib_engine = c('bibtex', 'biber'), times, i
   aux_ext = if ((biber <- bib_engine == 'biber')) '.bcf' else '.aux'
   aux = sub('[.]tex$', aux_ext, file)
   if (file.exists(aux)) {
-    if (biber || require_bibtex(aux))
-      system2_quiet(bib_engine, shQuote(aux), error = {
+    if (biber || require_bibtex(aux)) {
+      blg = aux_files[4]  # bibliography log file
+      build_bib = function() system2_quiet(bib_engine, shQuote(aux), error = {
         stop("Failed to build the bibliography via ", bib_engine, call. = FALSE)
       })
+      build_bib()
+      check_blg = function() {
+        if (!file.exists(blg)) return(TRUE)
+        x = readLines(blg)
+        if (length(grep('error message', x)) == 0) return(TRUE)
+        warn = function() {
+          warning(
+            bib_engine, ' seems to have failed:\n\n', paste(x, collapse = '\n'),
+            call. = FALSE
+          )
+          TRUE
+        }
+        if (!tlmgr_available() || !install_packages) return(warn())
+        # install the possibly missing .bst package and rebuild bib
+        r = '.* open style file ([^ ]+).*'
+        pkgs = parse_packages(files = gsub(r, '\\1', grep(r, x, value = TRUE)))
+        if (length(pkgs) == 0) return(warn())
+        tlmgr_install(pkgs); build_bib()
+        FALSE
+      }
+      # check .blg at most 3 times for missing packages
+      for (i in 1:3) if (check_blg()) break
+    }
   }
   for (i in seq_len(times)) {
     if (file.exists(logfile)) {
@@ -231,12 +255,16 @@ exist_files = function(files) {
 #' @param log Path to the LaTeX log file (typically named \file{*.log}).
 #' @param text A character vector of the error log (read from the file provided
 #'   by the \code{log} argument by default).
+#' @param files A character vector of names of the missing files (automatically
+#'   detected from the \code{log} by default).
 #' @param quiet Whether to suppress messages when finding packages.
 #' @return A character vector of LaTeX package names.
 #' @export
-parse_packages = function(log, text = readLines(log), quiet = FALSE) {
+parse_packages = function(
+  log, text = readLines(log), files = detect_files(text), quiet = FALSE
+) {
   pkgs = character()
-  x = detect_files(text)
+  x = files
   if (length(x) == 0) {
     if (!quiet) message(
       'I was unable to find any missing LaTeX packages from the error log',

@@ -4,13 +4,16 @@
 \alias{parse_packages}
 \title{Find missing LaTeX packages from a LaTeX log file}
 \usage{
-parse_packages(log, text = readLines(log), quiet = FALSE)
+parse_packages(log, text = readLines(log), files = detect_files(text), quiet = FALSE)
 }
 \arguments{
 \item{log}{Path to the LaTeX log file (typically named \file{*.log}).}
 
 \item{text}{A character vector of the error log (read from the file provided
 by the \code{log} argument by default).}
+
+\item{files}{A character vector of filenames of the missing files
+(automatically detected from the \code{log} by default).}
 
 \item{quiet}{Whether to suppress messages when finding packages.}
 }
