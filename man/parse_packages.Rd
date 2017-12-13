@@ -12,8 +12,8 @@ parse_packages(log, text = readLines(log), files = detect_files(text), quiet = F
 \item{text}{A character vector of the error log (read from the file provided
 by the \code{log} argument by default).}
 
-\item{files}{A character vector of filenames of the missing files
-(automatically detected from the \code{log} by default).}
+\item{files}{A character vector of names of the missing files (automatically
+detected from the \code{log} by default).}
 
 \item{quiet}{Whether to suppress messages when finding packages.}
 }

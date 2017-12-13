@@ -25,10 +25,27 @@ install_tinytex = function(force = FALSE, dir) {
     unlink(dir, recursive = TRUE)
     user_dir = normalizePath(dir, mustWork = FALSE)
   }
-  if (tlmgr_available() && !force) stop(
-    'It seems TeX Live has been installed (check tinytex:::texlive_root()). ',
-    'You may need to uninstall it.', call. = FALSE
-  )
+  if (!force) {
+    msg = if (tlmgr_available()) {
+      system2('tlmgr', '--version')
+      c(
+        'Detected an existing tlmgr at ', Sys.which('tlmgr'), '. ',
+        'It seems TeX Live has been installed (check tinytex:::texlive_root()). '
+      )
+    } else if (Sys.which('pdftex') != '') {
+      system2('pdftex', '--version')
+      c(
+        'Detected an existing LaTeX distribution (e.g., pdftex is at ',
+        Sys.which('pdftex'), '). '
+      )
+    }
+    if (length(msg)) stop(
+      msg, 'You have to uninstall it, or use install_tinytex(force = TRUE) ',
+      'if you are sure TinyTeX can override it (e.g., you are a PATH expert or ',
+      'installed TinyTeX previously).',
+      call. = FALSE
+    )
+  }
   owd = setwd(tempdir())
   on.exit({
     unlink(c('install-unx.sh', 'install-tl.zip', 'pkgs-custom.txt', 'texlive.profile'))
