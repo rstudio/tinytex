@@ -72,10 +72,12 @@ tlmgr_search = function(what, file = TRUE, all = FALSE, global = TRUE, word = FA
 #' @rdname tlmgr
 #' @export
 tlmgr_install = function(pkgs = character(), usermode = FALSE, path = !usermode && os != 'windows') {
+  res = 0L
   if (length(pkgs)) {
-    tlmgr(c('install', pkgs), usermode)
+    res = tlmgr(c('install', pkgs), usermode)
     if (path) tlmgr_path('add')
   }
+  invisible(res)
 }
 
 #' @rdname tlmgr
