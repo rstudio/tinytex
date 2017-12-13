@@ -71,6 +71,7 @@ install_tinytex = function(force = FALSE, dir) {
         'https://github.com/yihui/tinytex/raw/master/tools/pkgs-custom.txt',
         'pkgs-custom.txt'
       )
+      pkgs_custom = readLines('pkgs-custom.txt')
       download.file(
         'https://github.com/yihui/tinytex/raw/master/tools/texlive.profile',
         'texlive.profile'
@@ -93,16 +94,16 @@ install_tinytex = function(force = FALSE, dir) {
           'install-tl-windows.bat'
         )
         shell('install-tl-windows.bat -profile=../texlive.profile', invisible = FALSE)
-        system2(
-          'TinyTeX\\bin\\win32\\tlmgr',
-          c('install', 'latex-bin', 'xetex', readLines('../pkgs-custom.txt'))
-        )
         file.remove('TinyTeX/install-tl.log')
         dir.create(target, showWarnings = FALSE, recursive = TRUE)
         file.copy(list.files('TinyTeX', full.names = TRUE), target, recursive = TRUE)
       })
       unlink('install-tl-*', recursive = TRUE)
-      system2(file.path(target, 'bin', 'win32', 'tlmgr'), c('path', 'add'))
+      in_dir(target, {
+        bin_tlmgr = file.path('bin', 'win32', 'tlmgr')
+        system2(bin_tlmgr, c('install', 'latex-bin', 'xetex', pkgs_custom))
+        system2(bin_tlmgr, c('path', 'add'))
+      })
     },
     stop('This platform is not supported.')
   )
