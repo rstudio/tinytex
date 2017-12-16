@@ -55,9 +55,9 @@ install_tinytex = function(force = FALSE, dir) {
       'Restart your R session and check if tinytex:::is_tinytex() is TRUE.'
     ) else if (!is_tinytex()) warning(
       'TinyTeX was not successfully installed or configured.',
-      if (p != '') c(' tlmgr was found at ', p, '.') else {
+      if (p != '') c(' tlmgr was found at ', p) else {
         c('Your PATH variable is ', Sys.getenv('PATH'))
-      }
+      }, '. See https://yihui.name/tinytex/faq/ for more information.'
     )
   }, add = TRUE)
   switch(
