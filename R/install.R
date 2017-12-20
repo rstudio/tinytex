@@ -75,9 +75,11 @@ install_tinytex = function(force = FALSE, dir) {
       if (!user_dir %in% c('', target)) {
         dir.create(dirname(user_dir), showWarnings = FALSE, recursive = TRUE)
         file.rename(target, user_dir)
+        target = user_dir
         bin = file.path(list.files(file.path(user_dir, 'bin'), full.names = TRUE), 'tlmgr')
         system2(bin, c('path', 'add'))
       }
+      message('TinyTeX installed to ', target)
     },
     'windows' = {
       target = if (user_dir == '') win_app_dir('TinyTeX') else user_dir
@@ -123,6 +125,7 @@ install_tinytex = function(force = FALSE, dir) {
         system2(bin_tlmgr, c('install', 'latex-bin', 'xetex', pkgs_custom))
         system2(bin_tlmgr, c('path', 'add'))
       })
+      message('TinyTeX installed to ', target)
     },
     stop('This platform is not supported.')
   )
