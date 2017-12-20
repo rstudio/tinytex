@@ -1,6 +1,7 @@
 # TinyTeX
 
 [![Build Status](https://travis-ci.org/yihui/tinytex.svg)](https://travis-ci.org/yihui/tinytex)
+[![Downloads from the RStudio CRAN mirror](https://cranlogs.r-pkg.org/badges/tinytex)](https://cran.rstudio.org/package=tinytex)
 
 The installation and maintenance of LaTeX have bothered me for several years. Yes, there are MiKTeX, MacTeX, and TeX Live, but the common problems are:
 
