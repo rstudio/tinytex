@@ -49,7 +49,7 @@ tlmgr = function(args = character(), usermode = FALSE, ..., .quiet = FALSE) {
 # inherited (https://github.com/rstudio/rstudio/issues/1878), and TinyTeX is
 # installed to ~/bin by default
 tweak_path = function() {
-  if (Sys.info()[['sysname']] != 'Linux') return()
+  if (!is_linux()) return()
   if (tlmgr_available()) return()
   old = Sys.getenv('PATH')
   Sys.setenv(PATH = paste(normalizePath('~/bin'), old, sep = .Platform$path.sep))
