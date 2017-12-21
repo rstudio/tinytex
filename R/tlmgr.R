@@ -52,7 +52,7 @@ tweak_path = function() {
   if (Sys.info()[['sysname']] != 'Linux') return()
   if (tlmgr_available()) return()
   old = Sys.getenv('PATH')
-  Sys.setenv(PATH = paste(old, normalizePath('~/bin'), sep = .Platform$path.sep))
+  Sys.setenv(PATH = paste(normalizePath('~/bin'), old, sep = .Platform$path.sep))
   do.call(
     on.exit, list(substitute(Sys.setenv(PATH = x), list(x = old)), add = TRUE),
     envir = parent.frame()
