@@ -25,6 +25,7 @@ install_tinytex = function(force = FALSE, dir) {
     unlink(dir, recursive = TRUE)
     user_dir = normalizePath(dir, mustWork = FALSE)
   }
+  tweak_path()
   if (!force) {
     msg = if (tlmgr_available()) {
       system2('tlmgr', '--version')
@@ -134,6 +135,7 @@ install_tinytex = function(force = FALSE, dir) {
 #' @rdname install_tinytex
 #' @export
 uninstall_tinytex = function(force = FALSE, dir = texlive_root()) {
+  tweak_path()
   if (dir == '') stop('TinyTeX does not seem to be installed.')
   if (!is_tinytex() && !force) stop(
     'Detected TeX Live at "', dir, '", but it appears to be TeX Live instead of TinyTeX. ',
@@ -150,6 +152,7 @@ win_app_dir = function(...) {
 }
 
 texlive_root = function() {
+  tweak_path()
   path = Sys.which('tlmgr')
   if (path == '') return(path)
   root_dir = function(path, ...) {

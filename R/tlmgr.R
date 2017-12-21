@@ -35,6 +35,7 @@
 #' # list all installed LaTeX packages
 #' tlmgr(c('info', '--list', '--only-installed', '--data', 'name'))
 tlmgr = function(args = character(), usermode = FALSE, ..., .quiet = FALSE) {
+  tweak_path()
   if (!tlmgr_available()) {
     warning('TeX Live does not seem to be installed. See https://yihui.name/tinytex/.')
     invisible(invisible(127L))
@@ -42,6 +43,20 @@ tlmgr = function(args = character(), usermode = FALSE, ..., .quiet = FALSE) {
   if (usermode) args = c('--usermode', args)
   if (!.quiet) message(paste(c('tlmgr', args), collapse = ' '))
   system2('tlmgr', args, ...)
+}
+
+# add ~/bin to PATH if necessary on Linux, because sometimes PATH may not be
+# inherited (https://github.com/rstudio/rstudio/issues/1878), and TinyTeX is
+# installed to ~/bin by default
+tweak_path = function() {
+  if (Sys.info()[['sysname']] != 'Linux') return()
+  if (tlmgr_available()) return()
+  old = Sys.getenv('PATH')
+  Sys.setenv(PATH = paste(old, normalizePath('~/bin'), sep = .Platform$path.sep))
+  do.call(
+    on.exit, list(substitute(Sys.setenv(PATH = x), list(x = old)), add = TRUE),
+    envir = parent.frame()
+  )
 }
 
 tlmgr_available = function() Sys.which('tlmgr') != ''
