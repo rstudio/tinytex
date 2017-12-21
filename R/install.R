@@ -181,7 +181,7 @@ symlink_root = function(path) {
 }
 
 is_tinytex = function() {
-  tolower(basename(texlive_root())) == 'tinytex'
+  gsub('^[.]', '', tolower(basename(texlive_root()))) == 'tinytex'
 }
 
 in_dir = function(dir, expr) {
