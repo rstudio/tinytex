@@ -154,7 +154,7 @@ win_app_dir = function(...) {
 texlive_root = function() {
   tweak_path()
   path = Sys.which('tlmgr')
-  if (path == '') return(path)
+  if (path == '') return('')
   root_dir = function(path, ...) {
     dir = normalizePath(file.path(dirname(path), ...), mustWork = TRUE)
     if (!'bin' %in% list.files(dir)) stop(
