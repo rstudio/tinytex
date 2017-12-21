@@ -50,7 +50,7 @@ tlmgr = function(args = character(), usermode = FALSE, ..., .quiet = FALSE) {
 # installed to ~/bin by default
 tweak_path = function() {
   if (!is_linux()) return()
-  if (tlmgr_available()) return()
+  if (tlmgr_available(TRUE)) return()
   old = Sys.getenv('PATH')
   Sys.setenv(PATH = paste(normalizePath('~/bin'), old, sep = .Platform$path.sep))
   do.call(
@@ -59,7 +59,12 @@ tweak_path = function() {
   )
 }
 
-tlmgr_available = function() Sys.which('tlmgr') != ''
+tlmgr_available = function(tinytex = FALSE) {
+  p = Sys.which('tlmgr'); a = p != ''
+  if (!a || !tinytex || !is_linux()) return(a)
+  # check if tlmgr is from ~/bin/tlmgr
+  p == normalizePath('~/bin/tlmgr', mustWork = FALSE)
+}
 
 #' @param what A search keyword as a (Perl) regular expression.
 #' @param file Whether to treat \code{what} as a filename (pattern).
