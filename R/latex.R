@@ -1,9 +1,9 @@
 #' Compile a LaTeX document to PDF
 #'
-#' The function \code{latexmk()} uses the system command \command{latexmk} to
-#' compile a LaTeX document to PDF; if \command{latexmk} is not available, use a
-#' simple emulation. The functions \code{pdflatex()}, \code{xelatex()}, and
-#' \code{lualatex()} are wrappers of \code{latexmk(engine =, emulation = TRUE)}.
+#' The function \code{latexmk()} emulates the system command \command{latexmk}
+#' (\url{https://ctan.org/pkg/latexmk}) to compile a LaTeX document to PDF. The
+#' functions \code{pdflatex()}, \code{xelatex()}, and \code{lualatex()} are
+#' wrappers of \code{latexmk(engine =, emulation = TRUE)}.
 #'
 #' The \command{latexmk} emulation works like this: run the LaTeX engine once
 #' (e.g., \command{pdflatex}), run \command{makeindex} to make the index if
@@ -12,13 +12,16 @@
 #' (the \file{*.aux} or \file{*.bcf} file exists), and finally run the LaTeX
 #' engine a number of times (the maximum is 10 by default) to resolve all
 #' cross-references.
+#'
+#' If \code{emulation = FALSE}, you need to make sure the executable
+#' \command{latexmk} is available in your system, otherwise \code{latexmk()}
+#' will fall back to \code{emulation = TRUE}. You can set the global option
+#' \code{options(tinytex.latexmk.emulation = FALSE)} to always avoid emulation
+#' (i.e., always use the executable \command{latexmk}).
 #' @param file A LaTeX file path.
 #' @param engine A LaTeX engine.
 #' @param bib_engine A bibliography engine.
-#' @param emulation Whether to use \command{latexmk} emulation (by default,
-#'   \code{TRUE} if the command \command{latexmk} is not available). You can set
-#'   the global option \code{options(tinytex.latexmk.emulation = TRUE)} to
-#'   always use emulation.
+#' @param emulation Whether to emulate the executable \command{latexmk} using R.
 #' @param max_times The maximum number of times to rerun the LaTeX engine when
 #'   using emulation. You can set the global option
 #'   \code{tinytex.compile.max_times}, e.g.,
@@ -36,10 +39,18 @@ latexmk = function(
   engine = gsub('^(pdf|xe|lua)(tex)$', '\\1la\\2', engine)  # normalize *tex to *latex
   engine = match.arg(engine)
   tweak_path()
-  if (missing(emulation))
-    emulation = getOption('tinytex.latexmk.emulation', Sys.which('latexmk') == '')
+  if (missing(emulation)) emulation = getOption('tinytex.latexmk.emulation', TRUE)
+  if (!emulation) {
+    if (Sys.which('latexmk') == '') {
+      warning('The executable "latexmk" not found in your system')
+      emulation = TRUE
+    } else if (system2_quiet('latexmk', '-v') != 0) {
+      warning('The executable "latexmk" was found but does not work')
+      emulation = TRUE
+    }
+  }
   if (missing(max_times)) max_times = getOption('tinytex.compile.max_times', 10)
-  if (emulation || Sys.which('perl') == '' || system2_quiet('latexmk', '-v') != 0) {
+  if (emulation) {
     return(latexmk_emu(file, engine, bib_engine, max_times, install_packages))
   }
   system2_quiet('latexmk', c(
