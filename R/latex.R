@@ -118,7 +118,7 @@ latexmk_emu = function(file, engine, bib_engine = c('bibtex', 'biber'), times, i
   run_engine = function() {
     on_error  = function() {
       if (install_packages && file.exists(logfile)) {
-        pkgs = parse_packages(logfile)
+        pkgs = parse_packages(logfile, quiet = c(TRUE, FALSE, FALSE))
         if (length(pkgs) && !identical(pkgs, pkgs_last)) {
           message('Trying to automatically install missing LaTeX packages...')
           if (tlmgr_install(pkgs) == 0) {
@@ -269,23 +269,28 @@ exist_files = function(files) {
 #'   by the \code{log} argument by default).
 #' @param files A character vector of names of the missing files (automatically
 #'   detected from the \code{log} by default).
-#' @param quiet Whether to suppress messages when finding packages.
+#' @param quiet Whether to suppress messages when finding packages. It should be
+#'   a logical vector of length 3: the first element indicates whether to
+#'   suppress the message when no missing LaTeX packages could be detected from
+#'   the log, the second element indicate whether to suppress the message when
+#'   searching for packages via \code{tlmgr_search()}, and the third element
+#'   indicates whether to warn if no packages could be found via
+#'   \code{tlmgr_search()}.
 #' @return A character vector of LaTeX package names.
 #' @export
 parse_packages = function(
-  log, text = readLines(log), files = detect_files(text), quiet = FALSE
+  log, text = readLines(log), files = detect_files(text), quiet = rep(FALSE, 3)
 ) {
-  pkgs = character()
-  x = files
+  pkgs = character(); quiet = rep_len(quiet, length.out = 3); x = files
   if (length(x) == 0) {
-    if (!quiet) message(
+    if (!quiet[1]) message(
       'I was unable to find any missing LaTeX packages from the error log',
       if (missing(log)) '.' else c(' ', log, '.')
     )
     return(invisible(pkgs))
   }
   for (j in seq_along(x)) {
-    l = tlmgr_search(paste0('/', x[j]), stdout = TRUE, .quiet = quiet)
+    l = tlmgr_search(paste0('/', x[j]), stdout = TRUE, .quiet = quiet[2])
     if (length(l) == 0) next
     if (x[j] == 'fandol') return(x[j])  # a known package
     # why $? e.g. searching for mf returns a list like this
@@ -295,7 +300,7 @@ parse_packages = function(
     #     bin/x86_64-darwin/mfplain  <- but this also matches /mf
     k = grep(paste0('/', x[j], '$'), l)  # only match /mf exactly
     if (length(k) == 0) {
-      if (!quiet) warning('Failed to find a package that contains ', x[j])
+      if (!quiet[3]) warning('Failed to find a package that contains ', x[j])
       next
     }
     k = k[k > 2]
