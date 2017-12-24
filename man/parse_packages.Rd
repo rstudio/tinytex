@@ -4,7 +4,8 @@
 \alias{parse_packages}
 \title{Find missing LaTeX packages from a LaTeX log file}
 \usage{
-parse_packages(log, text = readLines(log), files = detect_files(text), quiet = FALSE)
+parse_packages(log, text = readLines(log), files = detect_files(text), 
+    quiet = rep(FALSE, 3))
 }
 \arguments{
 \item{log}{Path to the LaTeX log file (typically named \file{*.log}).}
@@ -15,7 +16,13 @@ by the \code{log} argument by default).}
 \item{files}{A character vector of names of the missing files (automatically
 detected from the \code{log} by default).}
 
-\item{quiet}{Whether to suppress messages when finding packages.}
+\item{quiet}{Whether to suppress messages when finding packages. It should be
+a logical vector of length 3: the first element indicates whether to
+suppress the message when no missing LaTeX packages could be detected from
+the log, the second element indicate whether to suppress the message when
+searching for packages via \code{tlmgr_search()}, and the third element
+indicates whether to warn if no packages could be found via
+\code{tlmgr_search()}.}
 }
 \value{
 A character vector of LaTeX package names.
