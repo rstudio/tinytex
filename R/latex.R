@@ -346,6 +346,11 @@ detect_files = function(text) {
   })))
 }
 
+# a helper function that combines parse_packages() and tlmgr_install()
+parse_install = function(...) {
+  tlmgr_install(parse_packages(...))
+}
+
 # it should be rare that we need to manually run texhash
 texhash = function() {
   tweak_path()
