@@ -157,3 +157,19 @@ tlmgr_conf = function(more_args = character()) {
 r_texmf = function(action = c('add', 'remove')) {
   tlmgr_conf(c('auxtrees', match.arg(action), shQuote(file.path(R.home('share'), 'texmf'))))
 }
+
+#' Sizes of LaTeX packages in TeX Live
+#'
+#' Use the command \command{tlmgr info --list --only-installed} to obtain the
+#' sizes of installed LaTeX packages.
+#' @export
+#' @return A data frame of three columns: \code{package} is the package names,
+#'   \code{size} is the sizes in bytes, and \code{size_h} is the human-readable
+#'   version of sizes.
+tl_sizes = function() {
+  info = tlmgr(c('info', '--list', '--only-installed', '--data', 'name,size'), stdout = TRUE)
+  info = read.table(sep = ',', text = info, stringsAsFactors = FALSE, col.names = c('package', 'size'))
+  info = info[order(info[, 'size'], decreasing = TRUE), , drop = FALSE]
+  info$size_h = sapply(info[, 'size'], function(s) format(structure(s, class = 'object_size'), 'auto'))
+  info
+}
