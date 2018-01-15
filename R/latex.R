@@ -38,7 +38,7 @@ latexmk = function(
   max_times = 10, install_packages = emulation && tlmgr_available()
 ) {
   if (!grepl('[.]tex$', file))
-    stop("The input file '", file, "' does not appear to be a LaTeX document")
+    stop("The input file '", file, "' does not have the .tex extension")
   engine = gsub('^(pdf|xe|lua)(tex)$', '\\1la\\2', engine)  # normalize *tex to *latex
   engine = match.arg(engine)
   tweak_path()
