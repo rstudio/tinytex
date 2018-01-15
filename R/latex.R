@@ -19,10 +19,13 @@
 #' \code{options(tinytex.latexmk.emulation = FALSE)} to always avoid emulation
 #' (i.e., always use the executable \command{latexmk}).
 #' @param file A LaTeX file path.
-#' @param engine A LaTeX engine.
-#' @param bib_engine A bibliography engine.
-#' @param engine_args Command-line arguments to be passed to \code{engine},
-#'   e.g., \code{-shell-escape}.
+#' @param engine A LaTeX engine (can be set in the global option
+#'   \code{tinytex.engine}, e.g., \code{options(tinytex.engine = 'xelatex')}).
+#' @param bib_engine A bibliography engine (can be set in the global option
+#'   \code{tinytex.bib_engine}).
+#' @param engine_args Command-line arguments to be passed to \code{engine} (can
+#'   be set in the global option \code{tinytex.engine_args}, e.g.,
+#'   \code{options(tinytex.engine_args = '-shell-escape'}).
 #' @param emulation Whether to emulate the executable \command{latexmk} using R.
 #' @param max_times The maximum number of times to rerun the LaTeX engine when
 #'   using emulation. You can set the global option
@@ -39,10 +42,11 @@ latexmk = function(
 ) {
   if (!grepl('[.]tex$', file))
     stop("The input file '", file, "' does not have the .tex extension")
+  if (missing(engine)) engine = getOption('tinytex.engine', engine)
   engine = gsub('^(pdf|xe|lua)(tex)$', '\\1la\\2', engine)  # normalize *tex to *latex
   engine = match.arg(engine)
   tweak_path()
-  if (missing(emulation)) emulation = getOption('tinytex.latexmk.emulation', TRUE)
+  if (missing(emulation)) emulation = getOption('tinytex.latexmk.emulation', emulation)
   if (!emulation) {
     if (Sys.which('latexmk') == '') {
       warning('The executable "latexmk" not found in your system')
@@ -52,7 +56,9 @@ latexmk = function(
       emulation = TRUE
     }
   }
-  if (missing(max_times)) max_times = getOption('tinytex.compile.max_times', 10)
+  if (missing(max_times)) max_times = getOption('tinytex.compile.max_times', max_times)
+  if (missing(bib_engine)) bib_engine = getOption('tinytex.bib_engine', bib_engine)
+  if (missing(engine_args)) engine_args = getOption('tinytex.engine_args', engine_args)
   if (emulation) return(
     latexmk_emu(file, engine, bib_engine, engine_args, max_times, install_packages)
   )
