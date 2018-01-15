@@ -21,6 +21,8 @@
 #' @param file A LaTeX file path.
 #' @param engine A LaTeX engine.
 #' @param bib_engine A bibliography engine.
+#' @param engine_args Command-line arguments to be passed to \code{engine},
+#'   e.g., \code{-shell-escape}.
 #' @param emulation Whether to emulate the executable \command{latexmk} using R.
 #' @param max_times The maximum number of times to rerun the LaTeX engine when
 #'   using emulation. You can set the global option
@@ -31,8 +33,9 @@
 #'   argument is only for the emulation mode and TeX Live.
 #' @export
 latexmk = function(
-  file, engine = c('pdflatex', 'xelatex', 'lualatex'), bib_engine = c('bibtex', 'biber'),
-  emulation = TRUE, max_times = 10, install_packages = emulation && tlmgr_available()
+  file, engine = c('pdflatex', 'xelatex', 'lualatex'),
+  bib_engine = c('bibtex', 'biber'), engine_args = NULL, emulation = TRUE,
+  max_times = 10, install_packages = emulation && tlmgr_available()
 ) {
   if (!grepl('[.]tex$', file))
     stop("The input file '", file, "' does not appear to be a LaTeX document")
@@ -50,12 +53,12 @@ latexmk = function(
     }
   }
   if (missing(max_times)) max_times = getOption('tinytex.compile.max_times', 10)
-  if (emulation) {
-    return(latexmk_emu(file, engine, bib_engine, max_times, install_packages))
-  }
+  if (emulation) return(
+    latexmk_emu(file, engine, bib_engine, engine_args, max_times, install_packages)
+  )
   system2_quiet('latexmk', c(
     '-pdf -latexoption=-halt-on-error -interaction=batchmode',
-    paste0('-pdflatex=', engine), shQuote(file)
+    paste0('-pdflatex=', engine), engine_args, shQuote(file)
   ), error = {
     if (install_packages) warning(
       'latexmk(install_packages = TRUE) does not work when emulation = FALSE'
@@ -82,7 +85,10 @@ lualatex = function(...) latexmk(engine = 'lualatex', emulation = TRUE, ...)
 
 # a quick and dirty version of latexmk (should work reasonably well unless the
 # LaTeX document is extremely complicated)
-latexmk_emu = function(file, engine, bib_engine = c('bibtex', 'biber'), times, install_packages) {
+latexmk_emu = function(
+  file, engine, bib_engine = c('bibtex', 'biber'), engine_args = NULL, times = 10,
+  install_packages = FALSE
+) {
   owd = setwd(dirname(file))
   on.exit(setwd(owd), add = TRUE)
   # only use basename because bibtex may not work with full path
@@ -131,7 +137,7 @@ latexmk_emu = function(file, engine, bib_engine = c('bibtex', 'biber'), times, i
       show_latex_error(file, logfile)
     }
     res = system2_quiet(
-      engine, c('-halt-on-error -interaction=batchmode', shQuote(file)),
+      engine, c('-halt-on-error', '-interaction=batchmode', engine_args, shQuote(file)),
       error = on_error(), fail_rerun = FALSE
     )
     # PNAS you are the worst! Why don't you singal an error in case of missing packages?
