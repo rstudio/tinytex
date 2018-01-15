@@ -8,8 +8,8 @@
 \title{Compile a LaTeX document to PDF}
 \usage{
 latexmk(file, engine = c("pdflatex", "xelatex", "lualatex"), bib_engine = c("bibtex", 
-    "biber"), emulation = TRUE, max_times = 10, install_packages = emulation && 
-    tlmgr_available())
+    "biber"), engine_args = NULL, emulation = TRUE, max_times = 10, 
+    install_packages = emulation && tlmgr_available())
 
 pdflatex(...)
 
@@ -20,9 +20,15 @@ lualatex(...)
 \arguments{
 \item{file}{A LaTeX file path.}
 
-\item{engine}{A LaTeX engine.}
+\item{engine}{A LaTeX engine (can be set in the global option
+\code{tinytex.engine}, e.g., \code{options(tinytex.engine = 'xelatex')}).}
 
-\item{bib_engine}{A bibliography engine.}
+\item{bib_engine}{A bibliography engine (can be set in the global option
+\code{tinytex.bib_engine}).}
+
+\item{engine_args}{Command-line arguments to be passed to \code{engine} (can
+be set in the global option \code{tinytex.engine_args}, e.g.,
+\code{options(tinytex.engine_args = '-shell-escape'}).}
 
 \item{emulation}{Whether to emulate the executable \command{latexmk} using R.}
 
