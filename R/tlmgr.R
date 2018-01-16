@@ -155,8 +155,10 @@ tlmgr_conf = function(more_args = character()) {
 #' # all files under R's texmf tree
 #' list.files(file.path(R.home('share'), 'texmf'), recursive = TRUE, full.names = TRUE)
 r_texmf = function(action = c('add', 'remove')) {
-  tlmgr_conf(c('auxtrees', match.arg(action), shQuote(file.path(R.home('share'), 'texmf'))))
+  tlmgr_conf(c('auxtrees', match.arg(action), r_texmf_path()))
 }
+
+r_texmf_path = function() shQuote(file.path(R.home('share'), 'texmf'))
 
 #' Sizes of LaTeX packages in TeX Live
 #'
