@@ -31,8 +31,6 @@ mathalfa
 mathpazo
 mathtools
 mdframed
-metafont
-mfware
 microtype
 morefloats
 ms
