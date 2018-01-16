@@ -61,6 +61,11 @@ install_tinytex = function(force = FALSE, dir) {
       }, '. See https://yihui.name/tinytex/faq/ for more information.'
     )
   }, add = TRUE)
+
+  add_texmf = function(bin) {
+    system2(bin, c('conf', 'auxtrees', 'add', r_texmf_path()))
+  }
+
   switch(
     os,
     'unix' = {
@@ -77,9 +82,10 @@ install_tinytex = function(force = FALSE, dir) {
         dir.create(dirname(user_dir), showWarnings = FALSE, recursive = TRUE)
         file.rename(target, user_dir)
         target = user_dir
-        bin = file.path(list.files(file.path(user_dir, 'bin'), full.names = TRUE), 'tlmgr')
-        system2(bin, c('path', 'add'))
       }
+      bin = file.path(list.files(file.path(target, 'bin'), full.names = TRUE), 'tlmgr')
+      system2(bin, c('path', 'add'))
+      add_texmf(bin)
       message('TinyTeX installed to ', target)
     },
     'windows' = {
@@ -125,6 +131,7 @@ install_tinytex = function(force = FALSE, dir) {
         bin_tlmgr = file.path('bin', 'win32', 'tlmgr')
         system2(bin_tlmgr, c('install', 'latex-bin', 'xetex', pkgs_custom))
         system2(bin_tlmgr, c('path', 'add'))
+        add_texmf(bin)
       })
       message('TinyTeX installed to ', target)
     },
@@ -141,6 +148,7 @@ uninstall_tinytex = function(force = FALSE, dir = texlive_root()) {
     'Detected TeX Live at "', dir, '", but it appears to be TeX Live instead of TinyTeX. ',
     'To uninstall TeX Live, use the argument force = TRUE.'
   )
+  r_texmf('remove')
   tlmgr_path('remove')
   unlink(dir, recursive = TRUE)
 }
