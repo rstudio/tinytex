@@ -162,14 +162,20 @@ r_texmf = function(action = c('add', 'remove')) {
 #'
 #' Use the command \command{tlmgr info --list --only-installed} to obtain the
 #' sizes of installed LaTeX packages.
+#' @param show_total Whether to show the total size.
 #' @export
 #' @return A data frame of three columns: \code{package} is the package names,
 #'   \code{size} is the sizes in bytes, and \code{size_h} is the human-readable
 #'   version of sizes.
-tl_sizes = function() {
+tl_sizes = function(show_total = TRUE) {
   info = tlmgr(c('info', '--list', '--only-installed', '--data', 'name,size'), stdout = TRUE)
   info = read.table(sep = ',', text = info, stringsAsFactors = FALSE, col.names = c('package', 'size'))
   info = info[order(info[, 'size'], decreasing = TRUE), , drop = FALSE]
-  info$size_h = sapply(info[, 'size'], function(s) format(structure(s, class = 'object_size'), 'auto'))
+  info$size_h = sapply(info[, 'size'], auto_size)
+  rownames(info) = NULL
+  if (show_total) message('The total size is ', auto_size(sum(info$size)))
   info
 }
+
+# human-readable size from bytes
+auto_size = function(bytes) format(structure(bytes, class = 'object_size'), 'auto')

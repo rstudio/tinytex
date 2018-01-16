@@ -4,7 +4,10 @@
 \alias{tl_sizes}
 \title{Sizes of LaTeX packages in TeX Live}
 \usage{
-tl_sizes()
+tl_sizes(show_total = TRUE)
+}
+\arguments{
+\item{show_total}{Whether to show the total size.}
 }
 \value{
 A data frame of three columns: \code{package} is the package names,
