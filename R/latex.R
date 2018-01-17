@@ -59,9 +59,11 @@ latexmk = function(
   if (missing(max_times)) max_times = getOption('tinytex.compile.max_times', max_times)
   if (missing(bib_engine)) bib_engine = getOption('tinytex.bib_engine', bib_engine)
   if (missing(engine_args)) engine_args = getOption('tinytex.engine_args', engine_args)
-  if (emulation) return(
-    latexmk_emu(file, engine, bib_engine, engine_args, max_times, install_packages)
-  )
+  if (emulation) {
+    cwd = getwd() # collect working directory so can reset to it
+    on.exit(setwd(cwd), add = TRUE) # add reset to exit of function
+    return(latexmk_emu(file, engine, bib_engine, engine_args, max_times, install_packages))
+  }
   system2_quiet('latexmk', c(
     '-pdf -latexoption=-halt-on-error -interaction=batchmode',
     paste0('-pdflatex=', engine), engine_args, shQuote(file)
