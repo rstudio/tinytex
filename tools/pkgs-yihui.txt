@@ -52,6 +52,7 @@ sttools
 subfig
 subfigure
 tabu
+tex
 textcase
 threeparttable
 times
