@@ -110,12 +110,12 @@ latexmk_emu = function(
   # clean up aux files from LaTeX compilation
   files1 = exist_files(aux_files)
   keep_log = FALSE
-  on.exit(add = TRUE, {
+  on.exit({
     files2 = exist_files(aux_files)
     files3 = setdiff(files2, files1)
     if (keep_log) files3 = setdiff(files3, logfile)
     unlink(files3)
-  })
+  }, add = TRUE)
 
   pkgs_last = character()
   filep = normalizePath(paste0(base, '.pdf'), mustWork = FALSE)
