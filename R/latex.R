@@ -59,6 +59,9 @@ latexmk = function(
   if (missing(max_times)) max_times = getOption('tinytex.compile.max_times', max_times)
   if (missing(bib_engine)) bib_engine = getOption('tinytex.bib_engine', bib_engine)
   if (missing(engine_args)) engine_args = getOption('tinytex.engine_args', engine_args)
+  owd = setwd(dirname(file))
+  on.exit(setwd(owd), add = TRUE)
+  file = basename(file)
   if (emulation) return(
     latexmk_emu(file, engine, bib_engine, engine_args, max_times, install_packages)
   )
@@ -95,10 +98,6 @@ latexmk_emu = function(
   file, engine, bib_engine = c('bibtex', 'biber'), engine_args = NULL, times = 10,
   install_packages = FALSE
 ) {
-  owd = setwd(dirname(file))
-  on.exit(setwd(owd), add = TRUE)
-  # only use basename because bibtex may not work with full path
-  file = basename(file)
   aux = c(
     'log', 'aux', 'bbl', 'blg', 'fls', 'out', 'lof', 'lot', 'idx', 'toc',
     'nav', 'snm', 'vrb', 'ilg', 'ind', 'xwm', 'bcf', 'brf', 'run.xml'
