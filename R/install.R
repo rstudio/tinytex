@@ -136,15 +136,16 @@ install_tinytex = function(force = FALSE, dir, repository = 'ctan') {
       unlink('install-tl-*', recursive = TRUE)
       in_dir(target, {
         bin_tlmgr = file.path('bin', 'win32', 'tlmgr')
+        tlmgr = function(...) system2(bin_tlmgr, ...)
         if (repository != 'ctan') {
-          system2(bin_tlmgr, c('option', 'repository', shQuote(repository)))
-          if (system2(bin_tlmgr, c('update', '--list')) != 0) {
+          tlmgr(c('option', 'repository', shQuote(repository)))
+          if (tlmgr(c('update', '--list')) != 0) {
             warning('The repository ', repository, ' does not seem to be accessible. Reverting to the default CTAN mirror.')
-            system2(bin_tlmgr, c('option', 'repository', 'ctan'))
+            tlmgr(c('option', 'repository', 'ctan'))
           }
         }
-        system2(bin_tlmgr, c('install', 'latex-bin', 'xetex', pkgs_custom))
-        system2(bin_tlmgr, c('path', 'add'))
+        tlmgr(c('install', 'latex-bin', 'xetex', pkgs_custom))
+        tlmgr(c('path', 'add'))
         add_texmf(bin)
       })
       message('TinyTeX installed to ', target)
