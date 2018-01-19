@@ -79,7 +79,7 @@ install_tinytex = function(force = FALSE, dir, repository = 'ctan') {
       )
       system2('sh', c(
         'install-unx.sh',
-        if (repository != 'ctan') c('-', '--no-admin', '--path', shQuote(repository))
+        if (repository != 'ctan') c('--no-admin', '--path', shQuote(repository))
       ))
       target = normalizePath(
         if (Sys.info()[['sysname']] == 'Darwin') '~/Library/TinyTeX' else '~/.TinyTeX'
