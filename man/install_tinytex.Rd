@@ -5,7 +5,7 @@
 \alias{uninstall_tinytex}
 \title{Install/Uninstall TinyTeX}
 \usage{
-install_tinytex(force = FALSE, dir)
+install_tinytex(force = FALSE, dir, repository = "ctan")
 
 uninstall_tinytex(force = FALSE, dir = texlive_root())
 }
@@ -14,6 +14,11 @@ uninstall_tinytex(force = FALSE, dir = texlive_root())
 
 \item{dir}{The directory to install or uninstall TinyTeX (should not exist
 unless \code{force = TRUE}).}
+
+\item{repository}{The CTAN repository to be used. By default, a fast mirror
+is automatically chosen. You can manually set one if the automatic mirror
+is not really fast enough, e.g., if you are in China, you may consider
+\code{'http://mirrors.tuna.tsinghua.edu.cn/CTAN/systems/texlive/tlnet'}.}
 }
 \description{
 The function \code{install_tinytex()} downloads the installation script from
