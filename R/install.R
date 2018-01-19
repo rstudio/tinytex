@@ -7,10 +7,14 @@
 #' @param force Whether to force to install (override) or uninstall TinyTeX.
 #' @param dir The directory to install or uninstall TinyTeX (should not exist
 #'   unless \code{force = TRUE}).
+#' @param repository The CTAN repository to be used. By default, a fast mirror
+#'   is automatically chosen. You can manually set one if the automatic mirror
+#'   is not really fast enough, e.g., if you are in China, you may consider
+#'   \code{'http://mirrors.tuna.tsinghua.edu.cn/CTAN/systems/texlive/tlnet'}.
 #' @references See the TinyTeX documentation (\url{https://yihui.name/tinytex/})
 #'   for the default installation directories on different platforms.
 #' @export
-install_tinytex = function(force = FALSE, dir) {
+install_tinytex = function(force = FALSE, dir, repository = 'ctan') {
   if (!is.logical(force)) stop('The argument "force" must take a logical value.')
   check_dir = function(dir) {
     if (dir_exists(dir) && !force) stop(
@@ -73,7 +77,10 @@ install_tinytex = function(force = FALSE, dir) {
         'https://github.com/yihui/tinytex/raw/master/tools/install-unx.sh',
         'install-unx.sh'
       )
-      system2('sh', 'install-unx.sh')
+      system2('sh', c(
+        'install-unx.sh',
+        if (repository != 'ctan') c('-', '--no-admin', '--path', shQuote(repository))
+      ))
       target = normalizePath(
         if (Sys.info()[['sysname']] == 'Darwin') '~/Library/TinyTeX' else '~/.TinyTeX'
       )
@@ -129,6 +136,7 @@ install_tinytex = function(force = FALSE, dir) {
       unlink('install-tl-*', recursive = TRUE)
       in_dir(target, {
         bin_tlmgr = file.path('bin', 'win32', 'tlmgr')
+        if (repository != 'ctan') system2(bin_tlmgr, c('option', 'repository', shQuote(repository)))
         system2(bin_tlmgr, c('install', 'latex-bin', 'xetex', pkgs_custom))
         system2(bin_tlmgr, c('path', 'add'))
         add_texmf(bin)
