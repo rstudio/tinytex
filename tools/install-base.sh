@@ -1,11 +1,15 @@
 #!/bin/sh
 
+rm -f install-tl-unx.tar.gz texlive.profile
 echo "Downloading install-tl-unx.tar.gz to ${PWD} ..."
 TLURL="http://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz"
+PRURL "https://github.com/yihui/tinytex/raw/master/tools/texlive.profile"
 if [ $(uname) = 'Darwin' ]; then
   curl -LO $TLURL
+  curl -LO $PRURL
 else
   wget $TLURL
+  wget $PRURL
   # ask `tlmgr path add` to add binaries to ~/bin instead of the default
   # /usr/local/bin unless this script is invoked with the argument '--admin'
   # (e.g., users want to make LaTeX binaries available system-wide)
@@ -20,7 +24,7 @@ rm install-tl-unx.tar.gz
 mkdir texlive
 cd texlive
 TEXLIVE_INSTALL_ENV_NOCHECK=true TEXLIVE_INSTALL_NO_WELCOME=true ../install-tl-*/install-tl -profile=../texlive.profile
-rm -r ../install-tl-* install-tl.log
+rm -r ../install-tl-* ../texlive.profile install-tl.log
 
 cd bin/*
 ./tlmgr install latex-bin luatex xetex
