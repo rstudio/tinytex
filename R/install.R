@@ -146,7 +146,7 @@ install_tinytex = function(force = FALSE, dir, repository = 'ctan') {
         }
         tlmgr(c('install', 'latex-bin', 'xetex', pkgs_custom))
         tlmgr(c('path', 'add'))
-        add_texmf(bin)
+        add_texmf(bin_tlmgr)
       })
       message('TinyTeX installed to ', target)
     },
