@@ -27,8 +27,8 @@ TEXLIVE_INSTALL_ENV_NOCHECK=true TEXLIVE_INSTALL_NO_WELCOME=true ../install-tl-*
 rm -r ../install-tl-* ../texlive.profile install-tl.log
 
 cd bin/*
-if [ $3 != '' ]; then
-  ./tlmgr option repository $3
+if [ "$3" != '' ]; then
+  ./tlmgr option repository "$3"
   # test if the repository is accessible; if not, set the default CTAN repo
   ./tlmgr update --list || ./tlmgr option repository ctan
 fi
