@@ -60,8 +60,10 @@ tweak_path = function() {
 
 tlmgr_available = function(tinytex = FALSE) {
   p = Sys.which('tlmgr'); a = p != ''
-  if (!a || !tinytex || !is_linux()) return(a)
-  # check if tlmgr is from ~/bin/tlmgr
+  if (!a) return(FALSE)  # if tlmgr not found on PATH
+  # if tlmgr is found, and (OS is not Linux, or no need to check TinyTeX)
+  if (!is_linux() || !tinytex) return(TRUE)
+  # check if tlmgr is from ~/bin/tlmgr (created by TinyTeX)
   p == normalizePath('~/bin/tlmgr', mustWork = FALSE)
 }
 
