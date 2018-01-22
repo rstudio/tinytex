@@ -142,7 +142,7 @@ install_tinytex = function(force = FALSE, dir, repository = 'ctan') {
         tlmgr = function(...) system2(bin_tlmgr, ...)
         if (repository != 'ctan') {
           tlmgr(c('option', 'repository', shQuote(repository)))
-          if (https) tlmgr('--repository', 'http://www.preining.info/tlgpg/', 'install', 'tlgpg')
+          if (https) tlmgr(c('--repository', 'http://www.preining.info/tlgpg/', 'install', 'tlgpg'))
           if (tlmgr(c('update', '--list')) != 0) {
             warning('The repository ', repository, ' does not seem to be accessible. Reverting to the default CTAN mirror.')
             tlmgr(c('option', 'repository', 'ctan'))
