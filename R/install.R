@@ -69,20 +69,23 @@ install_tinytex = function(force = FALSE, dir, repository = 'ctan') {
   add_texmf = function(bin) {
     system2(bin, c('conf', 'auxtrees', 'add', r_texmf_path()))
   }
+  https = grepl('^https://', repository)
 
   switch(
     os,
     'unix' = {
+      macos = Sys.info()[['sysname']] == 'Darwin'
       download.file(
         'https://github.com/yihui/tinytex/raw/master/tools/install-unx.sh',
         'install-unx.sh'
       )
       system2('sh', c(
-        'install-unx.sh',
-        if (repository != 'ctan') c('--no-admin', '--path', shQuote(repository))
+        'install-unx.sh', if (repository != 'ctan') c(
+          '--no-admin', '--path', shQuote(repository), if (macos && https) 'tlgpg'
+        )
       ))
       target = normalizePath(
-        if (Sys.info()[['sysname']] == 'Darwin') '~/Library/TinyTeX' else '~/.TinyTeX'
+        if (macos) '~/Library/TinyTeX' else '~/.TinyTeX'
       )
       if (!dir_exists(target)) stop('Failed to install TinyTeX.')
       if (!user_dir %in% c('', target)) {
@@ -139,6 +142,7 @@ install_tinytex = function(force = FALSE, dir, repository = 'ctan') {
         tlmgr = function(...) system2(bin_tlmgr, ...)
         if (repository != 'ctan') {
           tlmgr(c('option', 'repository', shQuote(repository)))
+          if (https) tlmgr('--repository', 'http://www.preining.info/tlgpg/', 'install', 'tlgpg')
           if (tlmgr(c('update', '--list')) != 0) {
             warning('The repository ', repository, ' does not seem to be accessible. Reverting to the default CTAN mirror.')
             tlmgr(c('option', 'repository', 'ctan'))

@@ -29,6 +29,9 @@ rm -r ../install-tl-* ../texlive.profile install-tl.log
 cd bin/*
 if [ "$3" != '' ]; then
   ./tlmgr option repository "$3"
+  if [ "$4" != '' ]; then
+    ./tlmgr --repository http://www.preining.info/tlgpg/ install tlgpg
+  fi
   # test if the repository is accessible; if not, set the default CTAN repo
   ./tlmgr update --list || ./tlmgr option repository ctan
 fi
