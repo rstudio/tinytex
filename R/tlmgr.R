@@ -49,9 +49,13 @@ tlmgr = function(args = character(), usermode = FALSE, ..., .quiet = FALSE) {
 # installed to ~/bin by default
 tweak_path = function() {
   if (!is_linux()) return()
-  if (tlmgr_available(TRUE)) return()
+  if (tlmgr_available()) return()
+  # if tlmgr is not found, and OS is not Linux, just give up
+  if (!is_linux() ) return()
+  # check if ~/bin/tlmgr exists (created by TinyTeX by default)
+  if (!file_test('-x', '~/bin/tlmgr')) return()
   old = Sys.getenv('PATH')
-  bin = normalizePath('~/bin', mustWork = FALSE)
+  bin = normalizePath('~/bin')
   if (bin %in% unlist(strsplit(old, s <- .Platform$path.sep, fixed = TRUE))) return()
   Sys.setenv(PATH = paste(bin, old, sep = s))
   do.call(
@@ -60,14 +64,7 @@ tweak_path = function() {
   )
 }
 
-tlmgr_available = function(tinytex = FALSE) {
-  p = Sys.which('tlmgr'); a = p != ''
-  if (!a) return(FALSE)  # if tlmgr not found on PATH
-  # if tlmgr is found, and (OS is not Linux, or no need to check TinyTeX)
-  if (!is_linux() || !tinytex) return(TRUE)
-  # check if tlmgr is from ~/bin/tlmgr (created by TinyTeX)
-  p == normalizePath('~/bin/tlmgr', mustWork = FALSE)
-}
+tlmgr_available = function() Sys.which('tlmgr') != ''
 
 #' @param what A search keyword as a (Perl) regular expression.
 #' @param file Whether to treat \code{what} as a filename (pattern).
