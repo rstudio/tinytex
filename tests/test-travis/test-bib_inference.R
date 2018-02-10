@@ -1,9 +1,15 @@
 library(testit)
 
+if (Sys.which("pdflatex") == "") {
+  tinytex::install_tinytex()
+}
+
 assert("Bibtex inference", {
   current_wd = getwd()
   on.exit(setwd(current_wd), add = TRUE)
   setwd("bib-inference")
+
+
 	first_res = is.null(pdflatex("backend-bibtex.tex")) &&
 	if (nzchar(Sys.which('pdftotext'))) {
 	  system('pdftotext -layout backend-bibtex.pdf')
