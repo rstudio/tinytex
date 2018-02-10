@@ -15,4 +15,3 @@ before_install:
 
 after_success:
   - "(curl https://xran.yihui.name/r-xran | bash)"
-  - Rscript -e 'cat(Sys.which("pdftotext"))'
