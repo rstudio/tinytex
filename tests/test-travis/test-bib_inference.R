@@ -13,6 +13,7 @@ assert("Bibtex inference", {
 	  identical(backend_bibtex_text,
 	            backend_bibtex_expected)
 	} else {
+	  setwd(current_wd)
 	  TRUE  # skip test
 	}
 })
@@ -30,6 +31,7 @@ assert("Biber inference", {
       identical(backend_bibtex_text,
                 backend_bibtex_expected)
     } else {
+      setwd(current_wd)
       TRUE  # skip test
     }
 })
