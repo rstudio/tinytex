@@ -21,8 +21,15 @@
 #' @param file A LaTeX file path.
 #' @param engine A LaTeX engine (can be set in the global option
 #'   \code{tinytex.engine}, e.g., \code{options(tinytex.engine = 'xelatex')}).
-#' @param bib_engine A bibliography engine (can be set in the global option
+#' @param bib_engine A bibliography engine, one of \code{'bibtex'} and
+#'   \code{'biber'} (can be set in the global option
 #'   \code{tinytex.bib_engine}).
+#'   If missing, the engine is inferred from the contents of \code{file}: if
+#'   the file contains \verb{\addbibresource} then the engine is assumed to
+#'   be \code{biber} unless \verb{backend=biber} occurs in the optional argument
+#'   to \code{biblatex}, provided the package occurs on one line. Otherwise,
+#'   the engine is assumed to be \code{bibtex} if \verb{\bibliography}
+#'   is present in \code{file}.
 #' @param engine_args Command-line arguments to be passed to \code{engine} (can
 #'   be set in the global option \code{tinytex.engine_args}, e.g.,
 #'   \code{options(tinytex.engine_args = '-shell-escape'}).
@@ -57,7 +64,26 @@ latexmk = function(
     }
   }
   if (missing(max_times)) max_times = getOption('tinytex.compile.max_times', max_times)
-  if (missing(bib_engine)) bib_engine = getOption('tinytex.bib_engine', bib_engine)
+  if (missing(bib_engine)) {
+    if (is.null(getOption('tinytex.bib_engine'))) {
+      file_lines = sub('(?<!(\\\\))[%].*$', '%', readLines(file), perl = TRUE)
+      if (any(grepl('\\addbibresource{', file_lines, fixed = TRUE))) {
+        if (any(grepl('\\\\usepackage\\[[^\\]]*backend\\s*[=]\\s*bibtex.*\\{biblatex\\}',
+                      file_lines,
+                      perl = TRUE))) {
+          bib_engine = 'bibtex'
+        } else {
+          bib_engine = 'biber'
+        }
+      } else if (any(grepl('\\bibliography{', file_lines, fixed = TRUE))) {
+        bib_engine = 'bibtex'
+      } else {
+        bib_engine = NULL
+      }
+    } else {
+      bib_engine = getOption('tinytex.bib_engine')
+    }
+  }
   if (missing(engine_args)) engine_args = getOption('tinytex.engine_args', engine_args)
   owd = setwd(dirname(file))
   on.exit(setwd(owd), add = TRUE)
