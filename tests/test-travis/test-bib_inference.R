@@ -1,6 +1,6 @@
 library(testit)
 
-assert("Bib inference", {
+assert("Bibtex inference", {
   current_wd = getwd()
   on.exit(setwd(current_wd), add = TRUE)
   setwd("bib-inference")
@@ -15,4 +15,21 @@ assert("Bib inference", {
 	} else {
 	  TRUE  # skip test
 	}
+})
+
+assert("Biber inference", {
+  current_wd = getwd()
+  on.exit(setwd(current_wd), add = TRUE)
+  setwd("bib-inference")
+  first_res = is.null(pdflatex("the-biber.tex")) &&
+    if (nzchar(Sys.which('pdftotext'))) {
+      system('pdftotext -layout the-biber.pdf')
+      backend_bibtex_text = readLines('the-biber.txt', n = 8L, warn = FALSE)
+      backend_bibtex_expected = readLines('backend-bibtex-expected.txt', n = 8L, warn = FALSE)
+      setwd(current_wd)
+      identical(backend_bibtex_text,
+                backend_bibtex_expected)
+    } else {
+      TRUE  # skip test
+    }
 })
