@@ -28,9 +28,9 @@ lualatex(...)
 \code{tinytex.bib_engine}).
 If missing, the engine is inferred from the contents of \code{file}: if
 the file contains \verb{\addbibresource} then the engine is assumed to
-be \code{biber} unless \verb{backend=biber} occurs in the optional argument
+be \code{'biber'} unless \verb{backend=biber} occurs in the optional argument
 to \code{biblatex}, provided the package occurs on one line. Otherwise,
-the engine is assumed to be \code{bibtex} if \verb{\bibliography}
+the engine is assumed to be \code{'bibtex'} if \verb{\bibliography}
 is present in \code{file}.}
 
 \item{engine_args}{Command-line arguments to be passed to \code{engine} (can
