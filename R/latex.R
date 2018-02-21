@@ -143,7 +143,7 @@ latexmk_emu = function(
     }
     res = system2_quiet(
       engine, c('-halt-on-error', '-interaction=batchmode', engine_args, shQuote(file)),
-      error = on_error(), fail_rerun = FALSE
+      error = on_error(), fail_rerun = getOption('tinytex.verbose', FALSE)
     )
     # PNAS you are the worst! Why don't you singal an error in case of missing packages?
     if (res == 0 && !file.exists(filep)) on_error()
