@@ -9,7 +9,7 @@
 \usage{
 latexmk(file, engine = c("pdflatex", "xelatex", "lualatex"), bib_engine = c("bibtex", 
     "biber"), engine_args = NULL, emulation = TRUE, max_times = 10, 
-    install_packages = emulation && tlmgr_available())
+    install_packages = emulation && tlmgr_available(), clean = TRUE)
 
 pdflatex(...)
 
@@ -40,6 +40,8 @@ using emulation. You can set the global option
 \item{install_packages}{Whether to automatically install missing LaTeX
 packages found by \code{\link{parse_packages}()} from the LaTeX log. This
 argument is only for the emulation mode and TeX Live.}
+
+\item{clean}{Wether to remove non essential files after compilation}
 
 \item{...}{Arguments to be passed to \code{latexmk()} (other than
 \code{engine} and \code{emulation}).}
