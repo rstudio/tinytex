@@ -41,7 +41,9 @@ using emulation. You can set the global option
 packages found by \code{\link{parse_packages}()} from the LaTeX log. This
 argument is only for the emulation mode and TeX Live.}
 
-\item{clean}{Wether to remove non essential files after compilation}
+\item{clean}{Whether to clean up auxiliary files after compilation (can be
+set in the global option \code{tinytex.clean}, which defaults to
+\code{TRUE}).}
 
 \item{...}{Arguments to be passed to \code{latexmk()} (other than
 \code{engine} and \code{emulation}).}

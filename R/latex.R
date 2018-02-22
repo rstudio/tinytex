@@ -18,7 +18,6 @@
 #' will fall back to \code{emulation = TRUE}. You can set the global option
 #' \code{options(tinytex.latexmk.emulation = FALSE)} to always avoid emulation
 #' (i.e., always use the executable \command{latexmk}).
-#'
 #' @param file A LaTeX file path.
 #' @param engine A LaTeX engine (can be set in the global option
 #'   \code{tinytex.engine}, e.g., \code{options(tinytex.engine = 'xelatex')}).
@@ -35,7 +34,9 @@
 #' @param install_packages Whether to automatically install missing LaTeX
 #'   packages found by \code{\link{parse_packages}()} from the LaTeX log. This
 #'   argument is only for the emulation mode and TeX Live.
-#' @param clean Wether to remove non essential files after compilation
+#' @param clean Whether to clean up auxiliary files after compilation (can be
+#'   set in the global option \code{tinytex.clean}, which defaults to
+#'   \code{TRUE}).
 #' @export
 latexmk = function(
   file, engine = c('pdflatex', 'xelatex', 'lualatex'),
@@ -61,6 +62,7 @@ latexmk = function(
   if (missing(max_times)) max_times = getOption('tinytex.compile.max_times', max_times)
   if (missing(bib_engine)) bib_engine = getOption('tinytex.bib_engine', bib_engine)
   if (missing(engine_args)) engine_args = getOption('tinytex.engine_args', engine_args)
+  if (missing(clean)) clean = getOption('tinytex.clean', TRUE)
   owd = setwd(dirname(file))
   on.exit(setwd(owd), add = TRUE)
   file = basename(file)
