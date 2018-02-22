@@ -18,6 +18,7 @@
 #' will fall back to \code{emulation = TRUE}. You can set the global option
 #' \code{options(tinytex.latexmk.emulation = FALSE)} to always avoid emulation
 #' (i.e., always use the executable \command{latexmk}).
+#'
 #' @param file A LaTeX file path.
 #' @param engine A LaTeX engine (can be set in the global option
 #'   \code{tinytex.engine}, e.g., \code{options(tinytex.engine = 'xelatex')}).
@@ -34,11 +35,12 @@
 #' @param install_packages Whether to automatically install missing LaTeX
 #'   packages found by \code{\link{parse_packages}()} from the LaTeX log. This
 #'   argument is only for the emulation mode and TeX Live.
+#' @param clean Wether to remove non essential files after compilation
 #' @export
 latexmk = function(
   file, engine = c('pdflatex', 'xelatex', 'lualatex'),
   bib_engine = c('bibtex', 'biber'), engine_args = NULL, emulation = TRUE,
-  max_times = 10, install_packages = emulation && tlmgr_available()
+  max_times = 10, install_packages = emulation && tlmgr_available(), clean = TRUE
 ) {
   if (!grepl('[.]tex$', file))
     stop("The input file '", file, "' does not have the .tex extension")
@@ -63,7 +65,7 @@ latexmk = function(
   on.exit(setwd(owd), add = TRUE)
   file = basename(file)
   if (emulation) return(
-    latexmk_emu(file, engine, bib_engine, engine_args, max_times, install_packages)
+    latexmk_emu(file, engine, bib_engine, engine_args, max_times, install_packages, clean)
   )
   system2_quiet('latexmk', c(
     '-pdf -latexoption=-halt-on-error -interaction=batchmode',
@@ -75,7 +77,7 @@ latexmk = function(
     check_latexmk_version()
     show_latex_error(file)
   })
-  system2('latexmk', '-c', stdout = FALSE)  # clean up nonessential files
+  if(clean) system2('latexmk', '-c', stdout = FALSE)  # clean up nonessential files
 }
 
 #' @param ... Arguments to be passed to \code{latexmk()} (other than
@@ -96,7 +98,7 @@ lualatex = function(...) latexmk(engine = 'lualatex', emulation = TRUE, ...)
 # LaTeX document is extremely complicated)
 latexmk_emu = function(
   file, engine, bib_engine = c('bibtex', 'biber'), engine_args = NULL, times = 10,
-  install_packages = FALSE
+  install_packages = FALSE, clean
 ) {
   aux = c(
     'log', 'aux', 'bbl', 'blg', 'fls', 'out', 'lof', 'lot', 'idx', 'toc',
@@ -113,7 +115,7 @@ latexmk_emu = function(
     files2 = exist_files(aux_files)
     files3 = setdiff(files2, files1)
     if (keep_log) files3 = setdiff(files3, logfile)
-    unlink(files3)
+    if (clean) unlink(files3)
   }, add = TRUE)
 
   pkgs_last = character()
