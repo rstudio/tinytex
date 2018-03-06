@@ -103,10 +103,10 @@ latexmk_emu = function(
   install_packages = FALSE, clean
 ) {
   aux = c(
-    'log', 'aux', 'bbl', 'blg', 'fls', 'out', 'lof', 'lot', 'idx', 'toc',
-    'nav', 'snm', 'vrb', 'ilg', 'ind', 'xwm', 'bcf', 'brf', 'run.xml'
+    'log', 'idx', 'aux', 'bcf', 'blg', 'bbl', 'fls', 'out', 'lof', 'lot', 'toc',
+    'nav', 'snm', 'vrb', 'ilg', 'ind', 'xwm', 'brf', 'run.xml'
   )
-  base = gsub('[.]tex$', '', file)
+  base = gsub('[.]tex$', '', basename(file))
   aux_files = paste(base, aux, sep = '.')
   logfile = aux_files[1]; unlink(logfile)  # clean up the log before compilation
 
@@ -155,8 +155,7 @@ latexmk_emu = function(
   }
   run_engine()
   # generate index
-  idx = sub('[.]tex$', '.idx', file)
-  if (file.exists(idx)) {
+  if (file.exists(idx <- aux_files[2])) {
     system2_quiet('makeindex', shQuote(idx), error = {
       stop("Failed to build the index via makeindex", call. = FALSE)
     })
@@ -165,11 +164,10 @@ latexmk_emu = function(
   bib_engine = match.arg(bib_engine)
   if (install_packages && bib_engine == 'biber' && Sys.which('biber') == '')
     tlmgr_install('biber')
-  aux_ext = if ((biber <- bib_engine == 'biber')) '.bcf' else '.aux'
-  aux = sub('[.]tex$', aux_ext, file)
+  aux = aux_files[if ((biber <- bib_engine != 'biber')) 3 else 4]
   if (file.exists(aux)) {
     if (biber || require_bibtex(aux)) {
-      blg = aux_files[4]  # bibliography log file
+      blg = aux_files[5]  # bibliography log file
       build_bib = function() system2_quiet(bib_engine, shQuote(aux), error = {
         stop("Failed to build the bibliography via ", bib_engine, call. = FALSE)
       })
