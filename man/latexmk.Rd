@@ -9,7 +9,8 @@
 \usage{
 latexmk(file, engine = c("pdflatex", "xelatex", "lualatex"), bib_engine = c("bibtex", 
     "biber"), engine_args = NULL, emulation = TRUE, max_times = 10, 
-    install_packages = emulation && tlmgr_available(), clean = TRUE)
+    install_packages = emulation && tlmgr_available(), pdf_file = gsub("tex$", 
+        "pdf", file), clean = TRUE)
 
 pdflatex(...)
 
@@ -41,12 +42,19 @@ using emulation. You can set the global option
 packages found by \code{\link{parse_packages}()} from the LaTeX log. This
 argument is only for the emulation mode and TeX Live.}
 
+\item{pdf_file}{Path to the PDF output file. By default, it is under the same
+directory as the input \code{file} and also has the same base name.}
+
 \item{clean}{Whether to clean up auxiliary files after compilation (can be
 set in the global option \code{tinytex.clean}, which defaults to
 \code{TRUE}).}
 
 \item{...}{Arguments to be passed to \code{latexmk()} (other than
 \code{engine} and \code{emulation}).}
+}
+\value{
+A character string of the path of the PDF output file (i.e., the
+  value of the \code{pdf_file} argument).
 }
 \description{
 The function \code{latexmk()} emulates the system command \command{latexmk}

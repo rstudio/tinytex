@@ -34,14 +34,19 @@
 #' @param install_packages Whether to automatically install missing LaTeX
 #'   packages found by \code{\link{parse_packages}()} from the LaTeX log. This
 #'   argument is only for the emulation mode and TeX Live.
+#' @param pdf_file Path to the PDF output file. By default, it is under the same
+#'   directory as the input \code{file} and also has the same base name.
 #' @param clean Whether to clean up auxiliary files after compilation (can be
 #'   set in the global option \code{tinytex.clean}, which defaults to
 #'   \code{TRUE}).
 #' @export
+#' @return A character string of the path of the PDF output file (i.e., the
+#'   value of the \code{pdf_file} argument).
 latexmk = function(
   file, engine = c('pdflatex', 'xelatex', 'lualatex'),
   bib_engine = c('bibtex', 'biber'), engine_args = NULL, emulation = TRUE,
-  max_times = 10, install_packages = emulation && tlmgr_available(), clean = TRUE
+  max_times = 10, install_packages = emulation && tlmgr_available(),
+  pdf_file = gsub('tex$', 'pdf', file), clean = TRUE
 ) {
   if (!grepl('[.]tex$', file))
     stop("The input file '", file, "' does not have the .tex extension")
@@ -63,12 +68,16 @@ latexmk = function(
   if (missing(bib_engine)) bib_engine = getOption('tinytex.bib_engine', bib_engine)
   if (missing(engine_args)) engine_args = getOption('tinytex.engine_args', engine_args)
   if (missing(clean)) clean = getOption('tinytex.clean', TRUE)
-  owd = setwd(dirname(file))
-  on.exit(setwd(owd), add = TRUE)
-  file = basename(file)
-  if (emulation) return(
+  pdf = gsub('[.]tex$', '.pdf', basename(file))
+  check_pdf = function() {
+    if (!file.exists(pdf)) show_latex_error(file)
+    file_rename(pdf, pdf_file)
+    pdf_file
+  }
+  if (emulation) {
     latexmk_emu(file, engine, bib_engine, engine_args, max_times, install_packages, clean)
-  )
+    return(check_pdf())
+  }
   system2_quiet('latexmk', c(
     '-pdf -latexoption=-halt-on-error -interaction=batchmode',
     paste0('-pdflatex=', engine), engine_args, shQuote(file)
@@ -77,9 +86,9 @@ latexmk = function(
       'latexmk(install_packages = TRUE) does not work when emulation = FALSE'
     )
     check_latexmk_version()
-    show_latex_error(file)
   })
   if (clean) system2('latexmk', '-c', stdout = FALSE)  # clean up nonessential files
+  check_pdf()
 }
 
 #' @param ... Arguments to be passed to \code{latexmk()} (other than
@@ -121,13 +130,16 @@ latexmk_emu = function(
   }, add = TRUE)
 
   pkgs_last = character()
-  filep = normalizePath(paste0(base, '.pdf'), mustWork = FALSE)
+  filep = paste0(base, '.pdf')
   # backup the PDF output if it exists, and move it back if the compilation failed
   if (file.exists(filep)) {
-    filep2 = normalizePath(tempfile('tinytex_', '.', '.pdf'), mustWork = FALSE)
+    filep2 = tempfile('tinytex_', '.', '.pdf')
     if (file.rename(filep, filep2)) on.exit(
       if (file.exists(filep)) file.remove(filep2) else file.rename(filep2, filep),
       add = TRUE
+    ) else warning(
+      'It seems I do not have write permission to the directory "', getwd(), '"',
+      call. = FALSE
     )
   }
   run_engine = function() {
@@ -231,7 +243,7 @@ system2_quiet = function(..., error = NULL, fail_rerun = TRUE) {
 }
 
 # parse the LaTeX log and show error messages
-show_latex_error = function(file, logfile = gsub('[.]tex$', '.log', file)) {
+show_latex_error = function(file, logfile = gsub('[.]tex$', '.log', basename(file))) {
   e = c('Failed to compile ', file, '.')
   if (!file.exists(logfile)) stop(e, call. = FALSE)
   x = readLines(logfile, warn = FALSE)
@@ -269,6 +281,14 @@ check_latexmk_version = function() {
 # return file paths that exist
 exist_files = function(files) {
   files[utils::file_test('-f', files)]
+}
+
+# use file.copy() if file.rename() fails
+file_rename = function(from, to) {
+  if (from == to) return(TRUE)
+  if (!suppressWarnings(file.rename(from, to))) {
+    if (file.copy(from, to, overwrite = TRUE)) file.remove(from)
+  }
 }
 
 #' Find missing LaTeX packages from a LaTeX log file
