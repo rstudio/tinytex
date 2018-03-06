@@ -79,7 +79,7 @@ latexmk = function(
     check_latexmk_version()
     show_latex_error(file)
   })
-  if(clean) system2('latexmk', '-c', stdout = FALSE)  # clean up nonessential files
+  if (clean) system2('latexmk', '-c', stdout = FALSE)  # clean up nonessential files
 }
 
 #' @param ... Arguments to be passed to \code{latexmk()} (other than
