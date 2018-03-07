@@ -176,7 +176,7 @@ latexmk_emu = function(
   bib_engine = match.arg(bib_engine)
   if (install_packages && bib_engine == 'biber' && Sys.which('biber') == '')
     tlmgr_install('biber')
-  aux = aux_files[if ((biber <- bib_engine != 'biber')) 3 else 4]
+  aux = aux_files[if ((biber <- bib_engine == 'biber')) 4 else 3]
   if (file.exists(aux)) {
     if (biber || require_bibtex(aux)) {
       blg = aux_files[5]  # bibliography log file
