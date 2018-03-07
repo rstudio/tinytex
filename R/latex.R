@@ -111,6 +111,7 @@ latexmk_emu = function(
   file, engine, bib_engine = c('bibtex', 'biber'), engine_args = NULL, times = 10,
   install_packages = FALSE, clean
 ) {
+  # note that the order of the extensions below matters; don't rearrange them
   aux = c(
     'log', 'idx', 'aux', 'bcf', 'blg', 'bbl', 'fls', 'out', 'lof', 'lot', 'toc',
     'nav', 'snm', 'vrb', 'ilg', 'ind', 'xwm', 'brf', 'run.xml'
