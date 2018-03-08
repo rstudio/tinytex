@@ -75,6 +75,10 @@ install_tinytex = function(force = FALSE, dir, repository = 'ctan') {
     os,
     'unix' = {
       macos = Sys.info()[['sysname']] == 'Darwin'
+      downloader = if (macos) 'curl' else 'wget'
+      if (Sys.which(downloader) == '') stop(sprintf(
+        "'%s' is not found but required to install TinyTeX", downloader
+      ), call. = FALSE)
       if (!macos && !dir_exists('~/bin')) on.exit(message(
         'You may have to restart your system after installing TinyTeX to make sure ',
         '~/bin appears in your PATH variable (https://github.com/yihui/tinytex/issues/16).'
