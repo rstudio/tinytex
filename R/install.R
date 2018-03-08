@@ -87,11 +87,12 @@ install_tinytex = function(force = FALSE, dir, repository = 'ctan') {
         'https://github.com/yihui/tinytex/raw/master/tools/install-unx.sh',
         'install-unx.sh'
       )
-      system2('sh', c(
+      res = system2('sh', c(
         'install-unx.sh', if (repository != 'ctan') c(
           '--no-admin', '--path', shQuote(repository), if (macos && https) 'tlgpg'
         )
       ))
+      if (res != 0) stop('Failed to install TinyTeX', call. = FALSE)
       target = normalizePath(
         if (macos) '~/Library/TinyTeX' else '~/.TinyTeX'
       )
