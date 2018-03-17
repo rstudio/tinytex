@@ -210,7 +210,7 @@ latexmk_emu = function(
   }
   for (i in seq_len(times)) {
     if (file.exists(logfile)) {
-      if (!any(grepl('(Rerun to get|Please \\(re\\)run) ', readLines(logfile)))) break
+      if (!any(grepl('(Rerun to get|Please \\(re\\)run) ', readLines(logfile), useBytes = TRUE))) break
     } else warning('The LaTeX log file "', logfile, '" is not found')
     run_engine()
   }
