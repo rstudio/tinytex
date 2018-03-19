@@ -234,13 +234,29 @@ tweak_aux = function(aux, x = readLines(aux)) {
 }
 
 system2_quiet = function(..., error = NULL, fail_rerun = TRUE) {
+  # system2(stdout = FALSE) fails on Windows with MiKTeX's pdflatex in the R
+  # console in RStudio: https://github.com/rstudio/rstudio/issues/2446 so I have
+  # to redirect stdout and stderr to files instead
+  system2_file = function() {
+    f1 = tempfile('stdout'); f2 = tempfile('stderr')
+    on.exit(unlink(c(f1, f2)), add = TRUE)
+    system2(..., stdout = f1, stderr = f2)
+  }
   # run the command quietly if possible
-  res = system2(..., stdout = FALSE, stderr = FALSE)
+  res = if (use_file_stdout()) system2_file() else {
+    system2(..., stdout = FALSE, stderr = FALSE)
+  }
   # if failed, use the normal mode
   if (fail_rerun && res != 0) res = system2(...)
   # if still fails, run the error callback
   if (res != 0) error  # lazy evaluation
   invisible(res)
+}
+
+use_file_stdout = function() {
+  getOption('tinytex.stdout.file', {
+    os == 'windows' && interactive() && !is.na(Sys.getenv('RSTUDIO', NA))
+  })
 }
 
 # parse the LaTeX log and show error messages
