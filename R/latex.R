@@ -132,11 +132,18 @@ latexmk_emu = function(
 
   pkgs_last = character()
   filep = paste0(base, '.pdf')
-  # backup the PDF output if it exists, and move it back if the compilation failed
+  # If PDF output exists, then temporarily move it out of the way.
+  # Upon successful compilation, the existing PDF will be copied over 
+  # before moving back.
   if (file.exists(filep)) {
-    filep2 = tempfile('tinytex_', '.', '.pdf')
-    if (file.rename(filep, filep2)) on.exit(
-      if (file.exists(filep)) file.remove(filep2) else file.rename(filep2, filep),
+    filep_existing = tempfile('tinytex_', '.', '.pdf')
+    if (file.rename(filep, filep_existing)) on.exit({      
+        if (file.exists(filep)) {
+          file.copy(filep, filep_existing, overwrite = TRUE)
+          file.remove(filep)
+        }
+        file.rename(filep_existing, filep)
+      }, 
       add = TRUE
     ) else warning(
       'It seems I do not have write permission to the directory "', getwd(), '"',
