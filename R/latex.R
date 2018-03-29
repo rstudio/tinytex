@@ -69,8 +69,18 @@ latexmk = function(
   if (missing(engine_args)) engine_args = getOption('tinytex.engine_args', engine_args)
   if (missing(clean)) clean = getOption('tinytex.clean', TRUE)
   pdf = gsub('[.]tex$', '.pdf', basename(file))
+  output_dir = getOption('tinytex.output_dir')
+  if (!is.null(output_dir)) {
+    output_dir_arg = shQuote(paste0(if (emulation) '-', '-output-directory=', output_dir))
+    if (length(grep(output_dir_arg, engine_args, fixed = TRUE)) == 0) stop(
+      "When you set the global option 'tinytex.output_dir', the argument 'engine_args' ",
+      "must contain this value: ", capture.output(dput(output_dir_arg))
+    )
+    pdf = file.path(output_dir, pdf)
+    if (missing(pdf_file)) pdf_file = file.path(output_dir, basename(pdf_file))
+  }
   check_pdf = function() {
-    if (!file.exists(pdf)) show_latex_error(file)
+    if (!file.exists(pdf)) show_latex_error(file, sub('.pdf$', '.log', pdf))
     file_rename(pdf, pdf_file)
     pdf_file
   }
@@ -87,7 +97,7 @@ latexmk = function(
     )
     check_latexmk_version()
   })
-  if (clean) system2('latexmk', '-c', stdout = FALSE)  # clean up nonessential files
+  if (clean) system2('latexmk', c('-c', engine_args), stdout = FALSE)
   check_pdf()
 }
 
@@ -118,6 +128,8 @@ latexmk_emu = function(
   )
   base = gsub('[.]tex$', '', basename(file))
   aux_files = paste(base, aux, sep = '.')
+  if (!is.null(output_dir <- getOption('tinytex.output_dir')))
+    aux_files = file.path(output_dir, aux_files)
   logfile = aux_files[1]; unlink(logfile)  # clean up the log before compilation
 
   # clean up aux files from LaTeX compilation
@@ -131,7 +143,7 @@ latexmk_emu = function(
   }, add = TRUE)
 
   pkgs_last = character()
-  filep = paste0(base, '.pdf')
+  filep = sub('.log$', '.pdf', logfile)
   run_engine = function() {
     on_error  = function() {
       if (install_packages && file.exists(logfile)) {
