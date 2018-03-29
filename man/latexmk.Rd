@@ -10,7 +10,7 @@
 latexmk(file, engine = c("pdflatex", "xelatex", "lualatex"), bib_engine = c("bibtex", 
     "biber"), engine_args = NULL, emulation = TRUE, max_times = 10, 
     install_packages = emulation && tlmgr_available(), pdf_file = gsub("tex$", 
-        "pdf", file), clean = TRUE)
+        "pdf", file), output_dir = dirname(file), clean = TRUE)
 
 pdflatex(...)
 
@@ -44,6 +44,8 @@ argument is only for the emulation mode and TeX Live.}
 
 \item{pdf_file}{Path to the PDF output file. By default, it is under the same
 directory as the input \code{file} and also has the same base name.}
+
+\item{output_dir}{The output directory of the PDF file.}
 
 \item{clean}{Whether to clean up auxiliary files after compilation (can be
 set in the global option \code{tinytex.clean}, which defaults to
