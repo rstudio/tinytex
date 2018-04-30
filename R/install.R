@@ -237,3 +237,9 @@ dir_copy = function(from, to) {
   all(file.copy(list.files(from, full.names = TRUE), to, recursive = TRUE)) &&
     unlink(from, recursive = TRUE) == 0
 }
+
+# LaTeX packages that I use
+install_yihui_pkgs = function() {
+  pkgs = readLines('https://github.com/yihui/tinytex/raw/master/tools/pkgs-yihui.txt')
+  tlmgr_install(pkgs)
+}
