@@ -11,10 +11,14 @@
 #'   is automatically chosen. You can manually set one if the automatic mirror
 #'   is not really fast enough, e.g., if you are in China, you may consider
 #'   \code{'http://mirrors.tuna.tsinghua.edu.cn/CTAN/systems/texlive/tlnet'}.
+#' @param extra_packages A character vector of extra LaTeX packages to be
+#'   installed.
 #' @references See the TinyTeX documentation (\url{https://yihui.name/tinytex/})
 #'   for the default installation directories on different platforms.
 #' @export
-install_tinytex = function(force = FALSE, dir, repository = 'ctan') {
+install_tinytex = function(
+  force = FALSE, dir = 'auto', repository = 'ctan', extra_packages = NULL
+) {
   if (!is.logical(force)) stop('The argument "force" must take a logical value.')
   check_dir = function(dir) {
     if (dir_exists(dir) && !force) stop(
@@ -104,6 +108,7 @@ install_tinytex = function(force = FALSE, dir, repository = 'ctan') {
       }
       bin = file.path(list.files(file.path(target, 'bin'), full.names = TRUE), 'tlmgr')
       system2(bin, c('path', 'add'))
+      if (length(extra_packages)) system2(bin, c('install', extra_packages))
       add_texmf(bin)
       message('TinyTeX installed to ', target)
     },
@@ -157,7 +162,7 @@ install_tinytex = function(force = FALSE, dir, repository = 'ctan') {
             tlmgr(c('option', 'repository', 'ctan'))
           }
         }
-        tlmgr(c('install', 'latex-bin', 'xetex', pkgs_custom))
+        tlmgr(c('install', 'latex-bin', 'xetex', pkgs_custom, extra_packages))
         tlmgr(c('path', 'add'))
         add_texmf(bin_tlmgr)
       })
@@ -179,6 +184,18 @@ uninstall_tinytex = function(force = FALSE, dir = texlive_root()) {
   r_texmf('remove')
   tlmgr_path('remove')
   unlink(dir, recursive = TRUE)
+}
+
+#' @param packages Whether to reinstall all currently installed packages.
+#' @param ... Arguments to be passed to \code{install_tinytex()} (note that the
+#'   \code{extra_packages} argument will be set to \code{tl_pkgs()} if
+#'   \code{packages = TRUE}).
+#' @rdname install_tinytex
+#' @export
+reinstall_tinytex = function(packages = TRUE, ...) {
+  pkgs = if (packages) tl_pkgs()
+  uninstall_tinytex()
+  install_tinytex(extra_packages = pkgs, ...)
 }
 
 win_app_dir = function(...) {
