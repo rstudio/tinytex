@@ -186,3 +186,16 @@ tl_sizes = function(show_total = TRUE) {
 
 # human-readable size from bytes
 auto_size = function(bytes) format(structure(bytes, class = 'object_size'), 'auto')
+
+#' List the names of installed TeX Live packages
+#'
+#' Calls \command{tlmgr info --list --only-installed --data name} to obtain the
+#' names of all installed TeX Live packages. Platform-specific strings in
+#' package names are removed, e.g., \code{"tex"} is returned for the package
+#' \pkg{tex.x86_64-darwin}.
+#' @export
+#' @return A character vector of package names.
+tl_pkgs = function() {
+  info = tlmgr(c('info', '--list', '--only-installed', '--data', 'name'), stdout = TRUE)
+  gsub('[.].*', '', info)
+}
