@@ -10,7 +10,7 @@ install_tinytex(force = FALSE, dir = "auto", repository = "ctan", extra_packages
 
 uninstall_tinytex(force = FALSE, dir = texlive_root())
 
-reinstall_tinytex(packages = TRUE, ...)
+reinstall_tinytex(packages = TRUE, dir = texlive_root(), ...)
 }
 \arguments{
 \item{force}{Whether to force to install (override) or uninstall TinyTeX.}
@@ -28,8 +28,8 @@ installed.}
 
 \item{packages}{Whether to reinstall all currently installed packages.}
 
-\item{...}{Arguments to be passed to \code{install_tinytex()} (note that the
-\code{extra_packages} argument will be set to \code{tl_pkgs()} if
+\item{...}{Other arguments to be passed to \code{install_tinytex()} (note
+that the \code{extra_packages} argument will be set to \code{tl_pkgs()} if
 \code{packages = TRUE}).}
 }
 \description{

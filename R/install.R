@@ -187,15 +187,15 @@ uninstall_tinytex = function(force = FALSE, dir = texlive_root()) {
 }
 
 #' @param packages Whether to reinstall all currently installed packages.
-#' @param ... Arguments to be passed to \code{install_tinytex()} (note that the
-#'   \code{extra_packages} argument will be set to \code{tl_pkgs()} if
+#' @param ... Other arguments to be passed to \code{install_tinytex()} (note
+#'   that the \code{extra_packages} argument will be set to \code{tl_pkgs()} if
 #'   \code{packages = TRUE}).
 #' @rdname install_tinytex
 #' @export
-reinstall_tinytex = function(packages = TRUE, ...) {
+reinstall_tinytex = function(packages = TRUE, dir = texlive_root(), ...) {
   pkgs = if (packages) tl_pkgs()
   uninstall_tinytex()
-  install_tinytex(extra_packages = pkgs, ...)
+  install_tinytex(extra_packages = pkgs, dir = dir, ...)
 }
 
 win_app_dir = function(...) {
