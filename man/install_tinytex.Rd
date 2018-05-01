@@ -3,11 +3,14 @@
 \name{install_tinytex}
 \alias{install_tinytex}
 \alias{uninstall_tinytex}
+\alias{reinstall_tinytex}
 \title{Install/Uninstall TinyTeX}
 \usage{
-install_tinytex(force = FALSE, dir, repository = "ctan")
+install_tinytex(force = FALSE, dir = "auto", repository = "ctan", extra_packages = NULL)
 
 uninstall_tinytex(force = FALSE, dir = texlive_root())
+
+reinstall_tinytex(packages = TRUE, ...)
 }
 \arguments{
 \item{force}{Whether to force to install (override) or uninstall TinyTeX.}
@@ -19,6 +22,15 @@ unless \code{force = TRUE}).}
 is automatically chosen. You can manually set one if the automatic mirror
 is not really fast enough, e.g., if you are in China, you may consider
 \code{'http://mirrors.tuna.tsinghua.edu.cn/CTAN/systems/texlive/tlnet'}.}
+
+\item{extra_packages}{A character vector of extra LaTeX packages to be
+installed.}
+
+\item{packages}{Whether to reinstall all currently installed packages.}
+
+\item{...}{Arguments to be passed to \code{install_tinytex()} (note that the
+\code{extra_packages} argument will be set to \code{tl_pkgs()} if
+\code{packages = TRUE}).}
 }
 \description{
 The function \code{install_tinytex()} downloads the installation script from
