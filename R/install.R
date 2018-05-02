@@ -96,7 +96,13 @@ install_tinytex = function(
           '--no-admin', '--path', shQuote(repository), if (macos && https) 'tlgpg'
         )
       ))
-      if (res != 0) stop('Failed to install TinyTeX', call. = FALSE)
+      if (res != 0) {
+        if (macos && file.access('/usr/local/bin', 2) != 0) message(
+          'The directory /usr/local/bin is not writable; ',
+          'see https://github.com/yihui/tinytex/issues/24 for more info.'
+        )
+        stop('Failed to install TinyTeX', call. = FALSE)
+      }
       target = normalizePath(
         if (macos) '~/Library/TinyTeX' else '~/.TinyTeX'
       )
