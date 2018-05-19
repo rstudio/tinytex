@@ -8,16 +8,16 @@ rem in case there is a leftover install-tl-* dir, delete it
 for /d %%G in ("install-tl-*") do rd /s /q "%%~G"
 
 rem download install-tl.zip and unzip it
-powershell -Command "Invoke-WebRequest http://mirror.ctan.org/systems/texlive/tlnet/install-tl.zip -OutFile install-tl.zip"
+powershell -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest http://mirror.ctan.org/systems/texlive/tlnet/install-tl.zip -OutFile install-tl.zip"
 powershell -Command "& { Add-Type -A 'System.IO.Compression.FileSystem'; [IO.Compression.ZipFile]::ExtractToDirectory('install-tl.zip', '.'); }"
 del install-tl.zip
 
 rem download texlive.profile and modify it (set texdir to ./TinyTeX)
-powershell -Command "Invoke-WebRequest https://github.com/yihui/tinytex/raw/master/tools/texlive.profile -OutFile texlive.profile"
+powershell -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest https://github.com/yihui/tinytex/raw/master/tools/texlive.profile -OutFile texlive.profile"
 powershell -Command "(gc texlive.profile) -replace './', './TinyTex/' | Out-File -encoding ASCII texlive.profile"
 
 rem download the custom package list
-powershell -Command "Invoke-WebRequest https://github.com/yihui/tinytex/raw/master/tools/pkgs-custom.txt -OutFile pkgs-custom.txt"
+powershell -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest https://github.com/yihui/tinytex/raw/master/tools/pkgs-custom.txt -OutFile pkgs-custom.txt"
 
 rem an automated installation of TeXLive (infrastructure only)
 cd install-tl-*
