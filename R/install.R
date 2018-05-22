@@ -145,6 +145,7 @@ install_tinytex = function(
           'These messages can be ignored. When installation is complete, ',
           'please restart ', if (Sys.getenv('RSTUDIO') != '') 'RStudio' else 'R', '.'
         ))
+        patch_TLUtils.pm()  # TODO: remove this temporary hack after the TL installer is fixed
         bat = readLines('install-tl-windows.bat')
         # never PAUSE (no way to interact with the Windows shell from R)
         writeLines(
@@ -176,6 +177,21 @@ install_tinytex = function(
     },
     stop('This platform is not supported.')
   )
+}
+
+patch_TLUtils.pm = function() {
+  if (!file.exists(f <- 'tlpkg/TeXLive/TLUtils.pm')) return()
+  x = readLines(f)
+  if (!all(x[2368 + 0:1] == c(
+    '    $s += setup_unix_one(\'lz4\',  "$bindir/lz4/lz4.$platform", "--version");',
+    '    $ok = ($s == 4);  # failure return unless all are present.'
+  ))) return()
+  x[2368 + 0:2] = c(
+    '    $ok = ($s == 3);  # failure return unless all are present.',
+    '    # also try to set up lz4, but don\'t fail/warn',
+    '    setup_unix_one(\'lz4\',  "$bindir/lz4/lz4.$platform", "--version", 1);'
+  )
+  writeLines(x, f)
 }
 
 #' @rdname install_tinytex
