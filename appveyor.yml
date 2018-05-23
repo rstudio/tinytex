@@ -1,0 +1,10 @@
+init:
+  ps: Invoke-WebRequest https://github.com/yihui/tinytex/raw/master/tools/install-windows.bat -OutFile install-windows.bat
+
+build_script:
+  - install-windows.bat
+
+test_script:
+  - tlmgr --version
+  - pdflatex --version
+  - xelatex --version

@@ -2,3 +2,4 @@
 ^\.Rproj\.user$
 ^tools$
 ^\.travis\.yml$
+^appveyor\.yml$
