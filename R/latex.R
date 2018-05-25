@@ -379,12 +379,14 @@ detect_files = function(text) {
   # !pdfTeX error: pdflatex (file 8r.enc): cannot open encoding file for reading
   # ! CTeX fontset `fandol' is unavailable in current mode
   # Package widetext error: Install the flushend package which is a part of sttools
+  # Package biblatex Info: ... file 'trad-abbrv.bbx' not found
   r = c(
     ".*! Font [^=]+=([^ ]+).+ not loadable.*",
     '.*! The font "([^"]+)" cannot be found.*',
     '.*!.+ error:.+\\(file ([^)]+)\\): .*',
     '.*Package widetext error: Install the ([^ ]+) package.*',
     ".*! LaTeX Error: File `([^']+)' not found.*",
+    ".* file '([^']+)' not found.*",
     '.*the language definition file ([^ ]+) .*',
     '.* \\(file ([^)]+)\\): cannot open .*',
     ".*! CTeX fontset `([^']+)' is unavailable.*",
