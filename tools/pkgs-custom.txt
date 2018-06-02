@@ -17,6 +17,7 @@ gsftopk
 hyperref
 ifluatex
 ifxetex
+latexmk
 lm
 luaotfload
 makeindex
