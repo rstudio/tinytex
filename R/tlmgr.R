@@ -47,6 +47,8 @@ tlmgr = function(args = character(), usermode = FALSE, ..., .quiet = FALSE) {
 # add ~/bin to PATH if necessary on Linux, because sometimes PATH may not be
 # inherited (https://github.com/rstudio/rstudio/issues/1878), and TinyTeX is
 # installed to ~/bin by default
+
+#' @importFrom xfun is_linux
 tweak_path = function() {
   if (!is_linux()) return()
   if (tlmgr_available()) return()
