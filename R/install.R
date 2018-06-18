@@ -15,6 +15,7 @@
 #'   installed.
 #' @references See the TinyTeX documentation (\url{https://yihui.name/tinytex/})
 #'   for the default installation directories on different platforms.
+#' @importFrom xfun download_file
 #' @export
 install_tinytex = function(
   force = FALSE, dir = 'auto', repository = 'ctan', extra_packages = NULL
@@ -87,10 +88,7 @@ install_tinytex = function(
         'You may have to restart your system after installing TinyTeX to make sure ',
         '~/bin appears in your PATH variable (https://github.com/yihui/tinytex/issues/16).'
       ), add = TRUE)
-      download.file(
-        'https://github.com/yihui/tinytex/raw/master/tools/install-unx.sh',
-        'install-unx.sh'
-      )
+      download_file('https://github.com/yihui/tinytex/raw/master/tools/install-unx.sh')
       res = system2('sh', c(
         'install-unx.sh', if (repository != 'ctan') c(
           '--no-admin', '--path', shQuote(repository), if (macos && https) 'tlgpg'
@@ -121,19 +119,12 @@ install_tinytex = function(
     'windows' = {
       target = if (user_dir == '') win_app_dir('TinyTeX') else user_dir
       unlink('install-tl-*', recursive = TRUE)
-      download.file(
-        'http://mirror.ctan.org/systems/texlive/tlnet/install-tl.zip',
-        'install-tl.zip', mode = 'wb'
+      download_file(
+        'http://mirror.ctan.org/systems/texlive/tlnet/install-tl.zip', mode = 'wb'
       )
-      download.file(
-        'https://github.com/yihui/tinytex/raw/master/tools/pkgs-custom.txt',
-        'pkgs-custom.txt'
-      )
+      download_file('https://github.com/yihui/tinytex/raw/master/tools/pkgs-custom.txt')
       pkgs_custom = readLines('pkgs-custom.txt')
-      download.file(
-        'https://github.com/yihui/tinytex/raw/master/tools/texlive.profile',
-        'texlive.profile'
-      )
+      download_file('https://github.com/yihui/tinytex/raw/master/tools/texlive.profile')
       x = readLines('texlive.profile')
       writeLines(gsub('./', './TinyTeX/', x, fixed = TRUE), 'texlive.profile')
       unzip('install-tl.zip')
