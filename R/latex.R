@@ -415,6 +415,11 @@ texhash = function() {
   system2('texhash')
 }
 
+updmap = function(usermode = FALSE) {
+  tweak_path()
+  system2(if (usermode) 'updmap-user' else 'updmap-sys')
+}
+
 fmtutil = function(usermode = FALSE) {
   tweak_path()
   system2(if (usermode) 'fmtutil-user' else 'fmtutil-sys', '--all')
