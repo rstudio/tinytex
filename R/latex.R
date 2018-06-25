@@ -380,11 +380,13 @@ detect_files = function(text) {
   # ! CTeX fontset `fandol' is unavailable in current mode
   # Package widetext error: Install the flushend package which is a part of sttools
   # Package biblatex Info: ... file 'trad-abbrv.bbx' not found
+  # ! Package pdftex.def Error: File `logo-mdpi-eps-converted-to.pdf' not found
   r = c(
     ".*! Font [^=]+=([^ ]+).+ not loadable.*",
     '.*! The font "([^"]+)" cannot be found.*',
     '.*!.+ error:.+\\(file ([^)]+)\\): .*',
     '.*Package widetext error: Install the ([^ ]+) package.*',
+    ".* File `(.+eps-converted-to.pdf)' not found",
     ".*! LaTeX Error: File `([^']+)' not found.*",
     ".* file '([^']+)' not found.*",
     '.*the language definition file ([^ ]+) .*',
@@ -396,7 +398,8 @@ detect_files = function(text) {
   if (length(x) > 0) unique(unlist(lapply(r, function(p) {
     z = grep(p, x, value = TRUE)
     v = gsub(p, '\\1', z)
-    if (length(v) == 0 || !(p %in% r[1:4])) return(v)
+    if (length(v) == 0) return(v)
+    if (!(p %in% r[1:4])) return(if (p == r[5]) 'epstopdf' else v)
     if (p == r[4]) return(paste0(v, '.sty'))
     i = !grepl('[.]', v)
     v[i] = paste0(v[i], '[.](tfm|afm|mf|otf)')
