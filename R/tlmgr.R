@@ -97,7 +97,7 @@ tlmgr_install = function(pkgs = character(), usermode = FALSE, path = !usermode 
   res = 0L
   if (length(pkgs)) {
     res = tlmgr(c('install', pkgs), usermode)
-    if (res != 0) {
+    if (res != 0 || tl_list(pkgs, stdout = FALSE, stderr = FALSE) != 0) {
       tlmgr_update(all = FALSE, usermode = usermode)
       res = tlmgr(c('install', pkgs), usermode)
     }
@@ -177,7 +177,7 @@ r_texmf_path = function() shQuote(file.path(R.home('share'), 'texmf'))
 #'   \code{size} is the sizes in bytes, and \code{size_h} is the human-readable
 #'   version of sizes.
 tl_sizes = function(show_total = TRUE) {
-  info = tlmgr(c('info', '--list', '--only-installed', '--data', 'name,size'), stdout = TRUE)
+  info = tl_list(NULL, 'name,size', stdout = TRUE)
   info = read.table(sep = ',', text = info, stringsAsFactors = FALSE, col.names = c('package', 'size'))
   info = info[order(info[, 'size'], decreasing = TRUE), , drop = FALSE]
   info$size_h = sapply(info[, 'size'], auto_size)
@@ -197,7 +197,8 @@ auto_size = function(bytes) format(structure(bytes, class = 'object_size'), 'aut
 #' \pkg{tex.x86_64-darwin}.
 #' @export
 #' @return A character vector of package names.
-tl_pkgs = function() {
-  info = tlmgr(c('info', '--list', '--only-installed', '--data', 'name'), stdout = TRUE)
-  gsub('[.].*', '', info)
+tl_pkgs = function() gsub('[.].*', '', tl_list(stdout = TRUE))
+
+tl_list = function(pkgs = NULL, field = 'name', ...) {
+  tlmgr(c('info', '--list', '--only-installed', '--data', field, pkgs), ...)
 }
