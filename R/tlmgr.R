@@ -97,7 +97,7 @@ tlmgr_install = function(pkgs = character(), usermode = FALSE, path = !usermode 
   res = 0L
   if (length(pkgs)) {
     res = tlmgr(c('install', pkgs), usermode)
-    if (res != 0 || tl_list(pkgs, stdout = FALSE, stderr = FALSE) != 0) {
+    if (res != 0 || tl_list(pkgs, stdout = FALSE, stderr = FALSE, .quiet = TRUE) != 0) {
       tlmgr_update(all = FALSE, usermode = usermode)
       res = tlmgr(c('install', pkgs), usermode)
     }
