@@ -101,6 +101,9 @@ tlmgr_install = function(pkgs = character(), usermode = FALSE, path = !usermode 
       tlmgr_update(all = FALSE, usermode = usermode)
       res = tlmgr(c('install', pkgs), usermode)
     }
+    if ('epstopdf' %in% pkgs && is_unix() && Sys.which('gs') == '') warning(
+      'You may need to install GhostScript.'
+    )
     if (path) tlmgr_path('add')
   }
   invisible(res)
