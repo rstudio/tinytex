@@ -48,7 +48,7 @@ tlmgr = function(args = character(), usermode = FALSE, ..., .quiet = FALSE) {
 # inherited (https://github.com/rstudio/rstudio/issues/1878), and TinyTeX is
 # installed to ~/bin by default
 
-#' @importFrom xfun is_linux
+#' @importFrom xfun is_linux is_unix is_macos
 tweak_path = function() {
   if (!is_linux()) return()
   if (tlmgr_available()) return()
@@ -101,9 +101,13 @@ tlmgr_install = function(pkgs = character(), usermode = FALSE, path = !usermode 
       tlmgr_update(all = FALSE, usermode = usermode)
       res = tlmgr(c('install', pkgs), usermode)
     }
-    if ('epstopdf' %in% pkgs && is_unix() && Sys.which('gs') == '') warning(
-      'You may need to install GhostScript.'
-    )
+    if ('epstopdf' %in% pkgs && is_unix() && Sys.which('gs') == '') {
+      if (is_macos() && Sys.which('brew')) {
+        message('Trying to install GhostScript via Homebrew for the epstopdf package.')
+        system('brew install ghostscript')
+      }
+      if (Sys.which('gs') == '') warning('GhostScript is required for the epstopdf package.')
+    }
     if (path) tlmgr_path('add')
   }
   invisible(res)
