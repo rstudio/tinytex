@@ -10,6 +10,6 @@ The installation and maintenance of LaTeX have bothered me for several years. Ye
 
 2. The documentation for installation and maintenance is often way too long for beginners. For example, I doubt if anyone has the courage or patience to read [the `tlmgr` manual](https://www.tug.org/texlive/doc/tlmgr.html) (yes, it is very useful).
 
-I believe these problems can be solved by TinyTeX, a custom LaTeX distribution based on TeX Live that is small in size (about 150Mb) but still functions well in most cases. Even if you run into the problem of missing LaTeX packages, it should be super clear to you what you need to do. The manual should be at most two pages long.
+I believe these problems can be solved by TinyTeX, a custom LaTeX distribution based on TeX Live that is small in size (about 150Mb) but still functions well in most cases. Even if you run into the problem of missing LaTeX packages, it should be super clear to you what you need to do. The manual should be at most two pages long. In fact, if you are an R Markdown user, there is nothing you need to do, because missing packages will just be installed automatically. You may not even know the existence of LaTeX at all since it should rarely bother you.
 
 This repo contains the installation scripts of TinyTeX (under the `tools` directory) and the R companion package **tinytex**. Please see the full documentation at <https://yihui.name/tinytex/>. Obviously I hope it is not too long.
