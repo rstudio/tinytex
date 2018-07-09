@@ -170,8 +170,9 @@ latexmk_emu = function(
   run_engine()
   # generate index
   if (file.exists(idx <- aux_files[2])) {
-    system2_quiet('makeindex', shQuote(idx), error = {
-      stop("Failed to build the index via makeindex", call. = FALSE)
+    idx_engine = getOption('tinytex.makeidx', 'makeidx')
+    system2_quiet(idx_engine, shQuote(idx), error = {
+      stop("Failed to build the index via ", idx_engine, call. = FALSE)
     })
   }
   # generate bibliography
