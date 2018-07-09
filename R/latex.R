@@ -171,7 +171,7 @@ latexmk_emu = function(
   # generate index
   if (file.exists(idx <- aux_files[2])) {
     idx_engine = getOption('tinytex.makeindex', 'makeindex')
-    system2_quiet(idx_engine, shQuote(idx), error = {
+    system2_quiet(idx_engine, c(getOption('tinytex.makeindex.args'), shQuote(idx)), error = {
       stop("Failed to build the index via ", idx_engine, call. = FALSE)
     })
   }
