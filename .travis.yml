@@ -11,6 +11,7 @@ repos:
 
 before_install:
   - "curl https://xran.yihui.name/.gitconfig -o ~/.gitconfig"
+  - Rscript -e 'xfun::pkg_load2("covr")'
 
 after_success:
   - Rscript -e 'covr::codecov()'
