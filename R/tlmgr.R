@@ -102,7 +102,7 @@ tlmgr_install = function(pkgs = character(), usermode = FALSE, path = !usermode 
       res = tlmgr(c('install', pkgs), usermode)
     }
     if ('epstopdf' %in% pkgs && is_unix() && Sys.which('gs') == '') {
-      if (is_macos() && Sys.which('brew')) {
+      if (is_macos() && Sys.which('brew') != '') {
         message('Trying to install GhostScript via Homebrew for the epstopdf package.')
         system('brew install ghostscript')
       }
