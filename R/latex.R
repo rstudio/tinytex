@@ -387,7 +387,7 @@ detect_files = function(text) {
     '.*! The font "([^"]+)" cannot be found.*',
     '.*!.+ error:.+\\(file ([^)]+)\\): .*',
     '.*Package widetext error: Install the ([^ ]+) package.*',
-    ".* File `(.+eps-converted-to.pdf)' not found",
+    ".* File `(.+eps-converted-to.pdf)'.*",
     ".*! LaTeX Error: File `([^']+)' not found.*",
     ".* file '([^']+)' not found.*",
     '.*the language definition file ([^ ]+) .*',
