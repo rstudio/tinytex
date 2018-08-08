@@ -169,10 +169,19 @@ tlmgr_conf = function(more_args = character()) {
 #' # all files under R's texmf tree
 #' list.files(file.path(R.home('share'), 'texmf'), recursive = TRUE, full.names = TRUE)
 r_texmf = function(action = c('add', 'remove')) {
-  tlmgr_conf(c('auxtrees', match.arg(action), r_texmf_path()))
+  tlmgr_conf(c('auxtrees', match.arg(action), shQuote(r_texmf_path())))
 }
 
-r_texmf_path = function() shQuote(file.path(R.home('share'), 'texmf'))
+r_texmf_path = function() {
+  d = file.path(R.home('share'), 'texmf')
+  if (dir_exists(d)) return(d)
+  # retry another directory: https://github.com/yihui/tinytex/issues/60
+  if ('Rd.sty' %in% basename(list.files(d2 <- '/usr/share/texmf', recursive = TRUE))) {
+    return(d2)
+  }
+  warning("Cannot find R's texmf tree; returning '", d, "'")
+  d
+}
 
 #' Sizes of LaTeX packages in TeX Live
 #'
