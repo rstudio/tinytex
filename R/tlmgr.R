@@ -46,20 +46,26 @@ tlmgr = function(args = character(), usermode = FALSE, ..., .quiet = FALSE) {
 
 # add ~/bin to PATH if necessary on Linux, because sometimes PATH may not be
 # inherited (https://github.com/rstudio/rstudio/issues/1878), and TinyTeX is
-# installed to ~/bin by default
+# installed to ~/bin by default; on Windows, prioritize win_app_dir('TinyTeX')
+# if it exists (so TinyTeX can be used even when MiKTeX is installed)
 
-#' @importFrom xfun is_linux is_unix is_macos
+#' @importFrom xfun is_linux is_unix is_macos is_windows
 tweak_path = function() {
-  if (!is_linux()) return()
-  if (tlmgr_available()) return()
-  # if tlmgr is not found, and OS is not Linux, just give up
-  if (!is_linux() ) return()
+  if (is_macos()) return()  # assume symlinks were created under /usr/local/bin
   # check if ~/bin/tlmgr exists (created by TinyTeX by default)
-  if (!file_test('-x', '~/bin/tlmgr')) return()
+  f = if (is_linux()) '~/bin/tlmgr' else if (is_windows()) {
+    win_app_dir('TinyTeX', 'bin', 'win32', 'tlmgr.bat', error = FALSE)
+  } else return()
+  if (!file_test('-x', f)) return()
+  bin = normalizePath(dirname(f))
+  # if the pdftex from TinyTeX is already on PATH, no need to adjust the PATH
+  if ((p <- Sys.which('pdftex')) != '') {
+    p2 = xfun::with_ext(file.path(bin, 'pdftex'), xfun::file_ext(p))
+    if (xfun::same_path(p, p2)) return()
+  }
   old = Sys.getenv('PATH')
-  bin = normalizePath('~/bin')
-  if (bin %in% unlist(strsplit(old, s <- .Platform$path.sep, fixed = TRUE))) return()
-  Sys.setenv(PATH = paste(bin, old, sep = s))
+  one = unlist(strsplit(old, s <- .Platform$path.sep, fixed = TRUE))
+  Sys.setenv(PATH = paste(c(bin, setdiff(one, bin)), collapse = s))
   do.call(
     on.exit, list(substitute(Sys.setenv(PATH = x), list(x = old)), add = TRUE),
     envir = parent.frame()

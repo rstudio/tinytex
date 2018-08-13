@@ -195,9 +195,12 @@ reinstall_tinytex = function(packages = TRUE, dir = texlive_root(), ...) {
   install_tinytex(extra_packages = pkgs, dir = dir, ...)
 }
 
-win_app_dir = function(...) {
+win_app_dir = function(..., error = TRUE) {
   d = Sys.getenv('APPDATA')
-  if (d == '') stop('Environment variable "APPDATA" not set.')
+  if (d == '') {
+    if (error) stop('Environment variable "APPDATA" not set.')
+    return(d)
+  }
   file.path(d, ...)
 }
 
