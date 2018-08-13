@@ -62,7 +62,8 @@ install_tinytex = function(
     setwd(owd)
     p = Sys.which('tlmgr')
     if (os == 'windows') message(
-      'Restart your R session and check if tinytex:::is_tinytex() is TRUE.'
+      'Please restart your R session and IDE (if you are using one, such as RStudio or Emacs) ',
+      'and check if tinytex:::is_tinytex() is TRUE.'
     ) else if (!is_tinytex()) warning(
       'TinyTeX was not successfully installed or configured.',
       if (p != '') c(' tlmgr was found at ', p) else {
@@ -131,10 +132,9 @@ install_tinytex = function(
       in_dir(list.files('.', '^install-tl-.*'), {
         message('Starting to install TinyTeX to ', target, '. It will take a few minutes.')
         (if (interactive()) function(msg) utils::winDialog('ok', msg) else message)(paste0(
-          'Next you may see two error dialog boxs about the missing luatex.dll, ',
+          'Next you may see two error dialog boxes about the missing luatex.dll, ',
           'and an error message like "Use of uninitialized value in bitwise or (|)..." in the end. ',
-          'These messages can be ignored. When installation is complete, ',
-          'please restart ', if (Sys.getenv('RSTUDIO') != '') 'RStudio' else 'R', '.'
+          'These messages can be ignored.',
         ))
         bat = readLines('install-tl-windows.bat')
         # never PAUSE (no way to interact with the Windows shell from R)
