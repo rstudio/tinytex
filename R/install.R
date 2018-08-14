@@ -260,3 +260,17 @@ install_yihui_pkgs = function() {
   pkgs = readLines('https://github.com/yihui/tinytex/raw/master/tools/pkgs-yihui.txt')
   tlmgr_install(pkgs)
 }
+
+# install a prebuilt version of TinyTeX
+install_prebuilt = function() {
+  if (is_windows()) {
+    installer = 'TinyTeX.zip'
+    xfun::download_file('https://ci.appveyor.com/api/projects/yihui/tinytex/artifacts/TinyTeX.zip', installer)
+    unzip(installer, exdir =  win_app_dir())
+    tlmgr_path(); texhash(); fmtutil(); updmap()
+  } else if (is_linux()) {
+    system('wget -qO- https://github.com/yihui/tinytex/raw/master/tools/download-travis-linux.sh | sh')
+  } else {
+    stop('TinyTeX was not prebuilt for this platform.')
+  }
+}
