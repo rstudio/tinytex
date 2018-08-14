@@ -266,11 +266,16 @@ install_prebuilt = function() {
   if (is_windows()) {
     installer = 'TinyTeX.zip'
     xfun::download_file('https://ci.appveyor.com/api/projects/yihui/tinytex/artifacts/TinyTeX.zip', installer)
-    unzip(installer, exdir =  win_app_dir())
-    tlmgr_path(); texhash(); fmtutil(); updmap(); fc_cache()
+    install_windows_zip(installer)
   } else if (is_linux()) {
     system('wget -qO- https://github.com/yihui/tinytex/raw/master/tools/download-travis-linux.sh | sh')
   } else {
     stop('TinyTeX was not prebuilt for this platform.')
   }
+}
+
+# if you have already downloaded the zip archive, use this function to install it
+install_windows_zip = function(path = 'TinyTeX.zip') {
+  unzip(path, exdir =  win_app_dir())
+  tlmgr_path(); texhash(); fmtutil(); updmap(); fc_cache()
 }
