@@ -437,6 +437,11 @@ fmtutil = function(usermode = FALSE) {
   system2(if (usermode) 'fmtutil-user' else 'fmtutil-sys', '--all')
 }
 
+fc_cache = function(args = c('-v', '-r')) {
+  tweak_path()
+  system2('fc-cache', args)
+}
+
 # look up files in the Kpathsea library, e.g., kpsewhich('Sweave.sty')
 kpsewhich = function(filename, options = character()) {
   tweak_path()
