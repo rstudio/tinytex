@@ -76,4 +76,12 @@ If \code{emulation = FALSE}, you need to make sure the executable
 will fall back to \code{emulation = TRUE}. You can set the global option
 \code{options(tinytex.latexmk.emulation = FALSE)} to always avoid emulation
 (i.e., always use the executable \command{latexmk}).
+
+The default command to generate the index (if necessary) is
+\command{makeindex}. To change it to a different command (e.g.,
+\command{zhmakeindex}), you may set the global option
+\code{tinytex.makeindex}. To pass additional command-line arguments to the
+command, you may set the global option \code{tinytex.makeindex.args} (e.g.,
+\code{options(tinytex.makeindex = 'zhmakeindex', tinytex.makeindex.args =
+c('-z', 'pinyin'))}).
 }
