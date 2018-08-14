@@ -8,3 +8,8 @@ test_script:
   - tlmgr --version
   - pdflatex --version
   - xelatex --version
+  - 7z a TinyTeX.zip %APPDATA%\\TinyTeX
+
+artifacts:
+  - path: TinyTeX.zip
+    name: TinyTeX
