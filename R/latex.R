@@ -58,6 +58,7 @@ latexmk = function(
 ) {
   if (!grepl('[.]tex$', file))
     stop("The input file '", file, "' does not have the .tex extension")
+  file = path.expand(file)
   if (missing(engine)) engine = getOption('tinytex.engine', engine)
   engine = gsub('^(pdf|xe|lua)(tex)$', '\\1la\\2', engine)  # normalize *tex to *latex
   engine = match.arg(engine)
