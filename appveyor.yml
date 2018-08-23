@@ -8,13 +8,12 @@ init:
         Import-Module '..\appveyor-tool.ps1'
 
 install:
-  ps: Bootstrap
+  ps: InstallR
 
 cache:
   - C:\RLibrary
 
 build_script:
-  - set TAR=
   - echo | tools\install-windows.bat
 
 test_script:
@@ -22,8 +21,6 @@ test_script:
   - pdflatex --version
   - xelatex --version
   - 7z a TinyTeX.zip %APPDATA%\\TinyTeX
-  - travis-tool.sh install_deps
-  - travis-tool.sh run_tests
   - R CMD INSTALL .
   - Rscript -e "tinytex::install_tinytex()"
 
