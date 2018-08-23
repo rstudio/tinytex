@@ -1,5 +1,6 @@
 environment:
   PATH: "%APPDATA%\\TinyTeX\\bin\\win32;%PATH%"
+  USE_RTOOLS: true
 
 init:
   ps: |
