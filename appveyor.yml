@@ -8,7 +8,7 @@ init:
         Import-Module '..\appveyor-tool.ps1'
 
 install:
-  ps: InstallR
+  ps: Bootstrap
 
 cache:
   - C:\RLibrary
@@ -22,6 +22,8 @@ test_script:
   - pdflatex --version
   - xelatex --version
   - 7z a TinyTeX.zip %APPDATA%\\TinyTeX
+  - travis-tools.sh install_deps
+  - travis-tools.sh run_tests
   - R CMD INSTALL .
   - Rscript -e "tinytex::install_tinytex()"
 
