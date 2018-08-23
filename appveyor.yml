@@ -1,7 +1,20 @@
 environment:
   PATH: "%APPDATA%\\TinyTeX\\bin\\win32;%PATH%"
 
+init:
+  ps: |
+        $ErrorActionPreference = "Stop"
+        Invoke-WebRequest http://raw.github.com/krlmlr/r-appveyor/master/scripts/appveyor-tool.ps1 -OutFile "..\appveyor-tool.ps1"
+        Import-Module '..\appveyor-tool.ps1'
+
+install:
+  ps: Bootstrap
+
+cache:
+  - C:\RLibrary
+
 build_script:
+  - set TAR=
   - echo | tools\install-windows.bat
 
 test_script:
@@ -9,6 +22,10 @@ test_script:
   - pdflatex --version
   - xelatex --version
   - 7z a TinyTeX.zip %APPDATA%\\TinyTeX
+  - travis-tool.sh install_deps
+  - travis-tool.sh run_tests
+  - R CMD INSTALL .
+  - Rscript -e "tinytex::install_tinytex()"
 
 artifacts:
   - path: TinyTeX.zip
