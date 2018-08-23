@@ -134,7 +134,7 @@ install_tinytex = function(
         (if (interactive()) function(msg) utils::winDialog('ok', msg) else message)(paste0(
           'Next you may see two error dialog boxes about the missing luatex.dll, ',
           'and an error message like "Use of uninitialized value in bitwise or (|)..." in the end. ',
-          'These messages can be ignored.',
+          'These messages can be ignored.'
         ))
         bat = readLines('install-tl-windows.bat')
         # never PAUSE (no way to interact with the Windows shell from R)
