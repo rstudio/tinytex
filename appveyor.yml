@@ -7,10 +7,14 @@ init:
         Invoke-WebRequest http://raw.github.com/krlmlr/r-appveyor/master/scripts/appveyor-tool.ps1 -OutFile "..\appveyor-tool.ps1"
         Import-Module '..\appveyor-tool.ps1'
 
+install:
+  ps: InstallR
+
 cache:
   - C:\RLibrary
 
 build_script:
+  - set PATH=%PATH:C:\MinGW\msys\1.0\bin;=%
   - echo | tools\install-windows.bat
 
 test_script:
@@ -18,6 +22,8 @@ test_script:
   - pdflatex --version
   - xelatex --version
   - 7z a TinyTeX.zip %APPDATA%\\TinyTeX
+  - R CMD INSTALL .
+  - Rscript -e "tinytex::install_tinytex()"
 
 artifacts:
   - path: TinyTeX.zip
