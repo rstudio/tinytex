@@ -22,8 +22,8 @@ test_script:
   - pdflatex --version
   - xelatex --version
   - 7z a TinyTeX.zip %APPDATA%\\TinyTeX
-  - travis-tools.sh install_deps
-  - travis-tools.sh run_tests
+  - travis-tool.sh install_deps
+  - travis-tool.sh run_tests
   - R CMD INSTALL .
   - Rscript -e "tinytex::install_tinytex()"
 
