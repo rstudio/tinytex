@@ -3,7 +3,10 @@
 #' The function \code{install_tinytex()} downloads the installation script from
 #' \url{https://github.com/yihui/tinytex} according to the platform (Unix or
 #' Windows), and executes it to install TinyTeX (a custom LaTeX distribution
-#' based on TeX Live). The function \code{uninstall_tinytex()} removes TinyTeX.
+#' based on TeX Live). The function \code{uninstall_tinytex()} removes TinyTeX;
+#' \code{reinstall_tinytex()} reinstalls TinyTeX as well as previously installed
+#' LaTeX packages by default; \code{tinytex_root()} returns the root directory
+#' of TinyTeX.
 #' @param force Whether to force to install (override) or uninstall TinyTeX.
 #' @param dir The directory to install or uninstall TinyTeX (should not exist
 #'   unless \code{force = TRUE}).
@@ -40,7 +43,7 @@ install_tinytex = function(
       system2('tlmgr', '--version')
       c(
         'Detected an existing tlmgr at ', Sys.which('tlmgr'), '. ',
-        'It seems TeX Live has been installed (check tinytex:::texlive_root()). '
+        'It seems TeX Live has been installed (check tinytex::tinytex_root()). '
       )
     } else if (Sys.which('pdftex') != '') {
       system2('pdftex', '--version')
@@ -171,7 +174,7 @@ install_tinytex = function(
 
 #' @rdname install_tinytex
 #' @export
-uninstall_tinytex = function(force = FALSE, dir = texlive_root()) {
+uninstall_tinytex = function(force = FALSE, dir = tinytex_root()) {
   tweak_path()
   if (dir == '') stop('TinyTeX does not seem to be installed.')
   if (!is_tinytex() && !force) stop(
@@ -189,7 +192,7 @@ uninstall_tinytex = function(force = FALSE, dir = texlive_root()) {
 #'   \code{packages = TRUE}).
 #' @rdname install_tinytex
 #' @export
-reinstall_tinytex = function(packages = TRUE, dir = texlive_root(), ...) {
+reinstall_tinytex = function(packages = TRUE, dir = tinytex_root(), ...) {
   pkgs = if (packages) tl_pkgs()
   uninstall_tinytex()
   install_tinytex(extra_packages = pkgs, dir = dir, ...)
@@ -204,14 +207,16 @@ win_app_dir = function(..., error = TRUE) {
   file.path(d, ...)
 }
 
-texlive_root = function() {
+#' @rdname install_tinytex
+#' @export
+tinytex_root = function() {
   tweak_path()
   path = Sys.which('tlmgr')
   if (path == '') return('')
   root_dir = function(path, ...) {
     dir = normalizePath(file.path(dirname(path), ...), mustWork = TRUE)
     if (!'bin' %in% list.files(dir)) stop(
-      dir, ' does not seem to be the root directory of TeXLive (no "bin/" dir under it)'
+      dir, ' does not seem to be the root directory of TeX Live (no "bin/" dir under it)'
     )
     dir
   }
@@ -234,7 +239,7 @@ symlink_root = function(path) {
 }
 
 is_tinytex = function() {
-  gsub('^[.]', '', tolower(basename(texlive_root()))) == 'tinytex'
+  gsub('^[.]', '', tolower(basename(tinytex_root()))) == 'tinytex'
 }
 
 in_dir = function(dir, expr) {
