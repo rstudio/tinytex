@@ -26,6 +26,18 @@
 #' command, you may set the global option \code{tinytex.makeindex.args} (e.g.,
 #' \code{options(tinytex.makeindex = 'zhmakeindex', tinytex.makeindex.args =
 #' c('-z', 'pinyin'))}).
+#'
+#' If you are using the LaTeX distribution TinyTeX, but its path is not in the
+#' \code{PATH} variable of your operating system, you may set the global option
+#' \code{tinytex.tlmgr.path} to the full path of the executable \command{tlmgr},
+#' so that \code{latexmk()} knows where to find executables like
+#' \command{pdflatex}. For example, if you are using Windows and your TinyTeX is
+#' on an external drive \file{Z:/} under the folder \file{TinyTeX}, you may set
+#' \code{options(tinytex.tlmgr.path = "Z:/TinyTeX/bin/win32/tlmgr.bat")}.
+#' Usually you should not need to set this option because TinyTeX can add itself
+#' to the \code{PATH} variable during installation or via
+#' \code{\link{use_tinytex}()}. In case both methods fail, you can use this
+#' manual approach.
 #' @param file A LaTeX file path.
 #' @param engine A LaTeX engine (can be set in the global option
 #'   \code{tinytex.engine}, e.g., \code{options(tinytex.engine = 'xelatex')}).

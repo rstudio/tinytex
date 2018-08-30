@@ -56,6 +56,7 @@ tweak_path = function() {
   f = if (is_linux()) '~/bin/tlmgr' else if (is_windows()) {
     win_app_dir('TinyTeX', 'bin', 'win32', 'tlmgr.bat', error = FALSE)
   } else return()
+  if (!file_test('-x', f)) f = getOption('tinytex.tlmgr.path', '')
   if (!file_test('-x', f)) return()
   bin = normalizePath(dirname(f))
   # if the pdftex from TinyTeX is already on PATH, no need to adjust the PATH
