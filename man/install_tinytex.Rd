@@ -4,13 +4,16 @@
 \alias{install_tinytex}
 \alias{uninstall_tinytex}
 \alias{reinstall_tinytex}
+\alias{tinytex_root}
 \title{Install/Uninstall TinyTeX}
 \usage{
 install_tinytex(force = FALSE, dir = "auto", repository = "ctan", extra_packages = NULL)
 
-uninstall_tinytex(force = FALSE, dir = texlive_root())
+uninstall_tinytex(force = FALSE, dir = tinytex_root())
 
-reinstall_tinytex(packages = TRUE, dir = texlive_root(), ...)
+reinstall_tinytex(packages = TRUE, dir = tinytex_root(), ...)
+
+tinytex_root()
 }
 \arguments{
 \item{force}{Whether to force to install (override) or uninstall TinyTeX.}
@@ -36,7 +39,10 @@ that the \code{extra_packages} argument will be set to \code{tl_pkgs()} if
 The function \code{install_tinytex()} downloads the installation script from
 \url{https://github.com/yihui/tinytex} according to the platform (Unix or
 Windows), and executes it to install TinyTeX (a custom LaTeX distribution
-based on TeX Live). The function \code{uninstall_tinytex()} removes TinyTeX.
+based on TeX Live). The function \code{uninstall_tinytex()} removes TinyTeX;
+\code{reinstall_tinytex()} reinstalls TinyTeX as well as previously installed
+LaTeX packages by default; \code{tinytex_root()} returns the root directory
+of TinyTeX.
 }
 \references{
 See the TinyTeX documentation (\url{https://yihui.name/tinytex/})
