@@ -5,6 +5,7 @@ bibtex
 booktabs
 caption
 dvipdfmx
+dvips
 ec
 etoolbox
 fancyvrb
@@ -14,9 +15,11 @@ geometry
 graphics
 graphics-def
 gsftopk
+helvetic
 hyperref
 ifluatex
 ifxetex
+inconsolata
 latexmk
 lm
 luaotfload
@@ -26,6 +29,8 @@ metafont
 mfware
 natbib
 oberdiek
+tex
+times
 titling
 tools
 upquote
