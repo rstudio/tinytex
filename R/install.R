@@ -88,6 +88,19 @@ install_tinytex = function(
       if (Sys.which(downloader) == '') stop(sprintf(
         "'%s' is not found but required to install TinyTeX", downloader
       ), call. = FALSE)
+      if (macos && file.access('/usr/local/bin', 2) != 0) {
+        chown_cmd = 'chown -R `whoami`:admin /usr/local/bin'
+        message(
+          'The directory /usr/local/bin is not writable. I need your admin privilege ',
+          'to make it writable. See https://github.com/yihui/tinytex/issues/24 for more info.'
+        )
+        if (system(sprintf(
+          "/usr/bin/osascript -e 'do shell script \"%s\" with administrator privileges'", chown_cmd
+          )) != 0) stop(
+          "Please run this command in your Terminal and retry installing TinyTeX:\n  sudo ",
+          chown_cmd, call. = FALSE
+        )
+      }
       if (!macos && !dir_exists('~/bin')) on.exit(message(
         'You may have to restart your system after installing TinyTeX to make sure ',
         '~/bin appears in your PATH variable (https://github.com/yihui/tinytex/issues/16).'
@@ -98,13 +111,7 @@ install_tinytex = function(
           '--no-admin', '--path', shQuote(repository), if (macos && https) 'tlgpg'
         )
       ))
-      if (res != 0) {
-        if (macos && file.access('/usr/local/bin', 2) != 0) message(
-          'The directory /usr/local/bin is not writable; ',
-          'see https://github.com/yihui/tinytex/issues/24 for more info.'
-        )
-        stop('Failed to install TinyTeX', call. = FALSE)
-      }
+      if (res != 0) stop('Failed to install TinyTeX', call. = FALSE)
       target = normalizePath(
         if (macos) '~/Library/TinyTeX' else '~/.TinyTeX'
       )
