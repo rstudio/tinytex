@@ -26,6 +26,12 @@ cd texlive
 TEXLIVE_INSTALL_ENV_NOCHECK=true TEXLIVE_INSTALL_NO_WELCOME=true ../install-tl-*/install-tl -profile=../texlive.profile
 rm -r ../install-tl-* ../texlive.profile install-tl.log
 
+# I believe one line is buggy in TLPDB.pm, causing the issue
+# https://github.com/yihui/tinytex/issues/77
+if [ "$1" = '--admin' ]; then
+  sed -i 's/ or die ("copy \$tmppath to \$path failed: \$!")//' tlpkg/TeXLive/TLPDB.pm
+fi
+
 cd bin/*
 if [ "$3" != '' ]; then
   ./tlmgr option repository "$3"
