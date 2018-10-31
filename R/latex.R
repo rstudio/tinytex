@@ -405,7 +405,7 @@ detect_files = function(text) {
   # ! Package pdftex.def Error: File `logo-mdpi-eps-converted-to.pdf' not found
   r = c(
     ".*! Font [^=]+=([^ ]+).+ not loadable.*",
-    '.*! The font "([^"]+)" cannot be found.*',
+    '.*! .*The font "([^"]+)" cannot be found.*',
     '.*!.+ error:.+\\(file ([^)]+)\\): .*',
     '.*Package widetext error: Install the ([^ ]+) package.*',
     ".* File `(.+eps-converted-to.pdf)'.*",
