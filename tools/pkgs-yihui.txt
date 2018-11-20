@@ -13,7 +13,6 @@ cleveref
 colortbl
 comment
 courier
-dvips
 eepic
 enumitem
 eso-pic
@@ -24,8 +23,6 @@ float
 floatrow
 fontaxes
 hardwrap
-helvetic
-inconsolata
 koma-script
 lastpage
 lettrine
@@ -69,11 +66,9 @@ subfig
 subfigure
 symbol
 tabu
-tex
 textcase
 threeparttable
 thumbpdf
-times
 titlesec
 tufte-latex
 ucs
