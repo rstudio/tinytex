@@ -159,7 +159,7 @@ latexmk_emu = function(
   on.exit({
     files2 = exist_files(aux_files)
     files3 = setdiff(files2, files1)
-    if (keep_log) files3 = setdiff(files3, logfile)
+    if (keep_log || latex_warning(logfile)) files3 = setdiff(files3, logfile)
     if (clean) unlink(files3)
   }, add = TRUE)
 
@@ -300,6 +300,15 @@ show_latex_error = function(file, logfile = gsub('[.]tex$', '.log', basename(fil
     message(paste(m, collapse = '\n'))
     stop(e, ' See ', logfile, ' for more info.', call. = FALSE)
   }
+}
+
+# whether a LaTeX log file contains warnings
+latex_warning = function(file) {
+  if (!file.exists(file)) return(FALSE)
+  x = readLines(file, warn = FALSE)
+  if (length(i <- grep(r <- '^LaTeX Warning:', x)) == 0) return(FALSE)
+  warning(paste(c('LaTeX Warning(s):', gsub(r, ' ', x[i])), collapse = '\n'), call. = FALSE)
+  TRUE
 }
 
 # check the version of latexmk
