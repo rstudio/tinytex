@@ -80,6 +80,12 @@ install_tinytex = function(
   }
   https = grepl('^https://', repository)
 
+  if ((texinput <- Sys.getenv('TEXINPUT')) != '') message(
+    'Your environment variable TEXINPUT is "', texinput,
+    '". Normally you should not set this variable, because it may lead to issues like ',
+    'https://github.com/yihui/tinytex/issues/92.'
+  )
+
   switch(
     os,
     'unix' = {
