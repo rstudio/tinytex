@@ -288,6 +288,7 @@ show_latex_error = function(file, logfile = gsub('[.]tex$', '.log', basename(fil
   if (!file.exists(logfile)) stop(e, call. = FALSE)
   x = readLines(logfile, warn = FALSE)
   b = grep('^\\s*$', x)  # blank lines
+  b = c(b, which(x == "Here is how much of TeX's memory you used:"))
   m = NULL
   for (i in grep('^! ', x)) {
     # ignore the last error message about the fatal error
