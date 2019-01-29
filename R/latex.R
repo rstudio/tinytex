@@ -299,8 +299,18 @@ show_latex_error = function(file, logfile = gsub('[.]tex$', '.log', basename(fil
   }
   if (length(m)) {
     message(paste(m, collapse = '\n'))
+    check_inline_math(m, file)
     stop(e, ' See ', logfile, ' for more info.', call. = FALSE)
   }
+}
+
+check_inline_math = function(x, f) {
+  if (!any('! Missing $ inserted.' == x) || !length(grep('\\\\times', x))) return()
+  s = xfun::with_ext(f, 'Rmd')
+  if (file.exists(s)) message(
+    'You may need to add $ $ around a certain inline R expression `r ` in ', s,
+    '. See https://github.com/rstudio/rmarkdown/issues/385 for more info.'
+  )
 }
 
 # whether a LaTeX log file contains warnings
