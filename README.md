@@ -5,7 +5,7 @@
 [![Coverage status](https://codecov.io/gh/yihui/tinytex/branch/master/graph/badge.svg)](https://codecov.io/github/yihui/tinytex?branch=master)
 [![Downloads from the RStudio CRAN mirror](https://cranlogs.r-pkg.org/badges/tinytex)](https://cran.r-project.org/package=tinytex)
 
-<a href="https://yihui.name/tinytex/"><img src="https://yihui.name/images/logo-tinytex.png" alt="tinytex logo" align="right" /></a>
+<a href="https://yihui.name/tinytex/"><img src="https://yihui.name/images/logo-tinytex.png" alt="tinytex logo" align="right" width="200px" /></a>
 
 The installation and maintenance of LaTeX have bothered me for several years. Yes, there are MiKTeX, MacTeX, and TeX Live, but the common problems are:
 
