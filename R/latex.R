@@ -159,7 +159,7 @@ latexmk_emu = function(
   on.exit({
     files2 = exist_files(aux_files)
     files3 = setdiff(files2, files1)
-    if (keep_log || latex_warning(logfile)) files3 = setdiff(files3, logfile)
+    if (keep_log || length(latex_warning(logfile, TRUE))) files3 = setdiff(files3, logfile)
     if (clean) unlink(files3)
   }, add = TRUE)
 
@@ -189,6 +189,7 @@ latexmk_emu = function(
     invisible(res)
   }
   run_engine()
+  if (install_packages) check_babel(logfile)
   # generate index
   if (file.exists(idx <- aux_files[2])) {
     idx_engine = getOption('tinytex.makeindex', 'makeindex')
@@ -317,13 +318,29 @@ check_inline_math = function(x, f) {
   )
 }
 
-# whether a LaTeX log file contains warnings
-latex_warning = function(file) {
-  if (!file.exists(file)) return(FALSE)
+# whether a LaTeX log file contains LaTeX or package (e.g. babel) warnings
+latex_warning = function(file, show = FALSE) {
+  if (!file.exists(file)) return()
   x = readLines(file, warn = FALSE)
-  if (length(i <- grep(r <- '^LaTeX Warning:', x)) == 0) return(FALSE)
-  warning(paste(c('LaTeX Warning(s):', gsub(r, ' ', x[i])), collapse = '\n'), call. = FALSE)
-  TRUE
+  if (length(i <- grep('^(LaTeX|Package [[:alnum:]]+) Warning:', x)) == 0) return()
+  b = grep('^\\s*$', x)
+  i = unlist(lapply(i, function(j) {
+    n = b[b > j]
+    n = if (length(n) == 0) i else min(n) - 1L
+    j:n
+  }))
+  i = sort(unique(i))
+  if (show) warning(paste(x[i], collapse = '\n'), call. = FALSE)
+  x[i]
+}
+
+# check if any babel packages are missing
+check_babel = function(file) {
+  if (length(m <- latex_warning(file)) == 0 || length(grep('^Package babel Warning:', m)) == 0)
+    return()
+  r = "^\\(babel).* language `([[:alpha:]]+)'.*$"
+  if (length(i <- grep(r, m)) == 0) return()
+  tlmgr_install(paste0('hyphen-', tolower(gsub(r, '\\1', m[i]))))
 }
 
 # check the version of latexmk
