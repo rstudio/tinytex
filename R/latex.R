@@ -323,6 +323,9 @@ latex_warning = function(file, show = FALSE) {
   if (!file.exists(file)) return()
   x = readLines(file, warn = FALSE)
   if (length(i <- grep('^(LaTeX|Package [[:alnum:]]+) Warning:', x)) == 0) return()
+  # these warnings may be okay (our Pandoc LaTeX template in rmarkdown may need an update)
+  i = i[grep('^Package (fixltx2e|caption|hyperref) Warning:', x[i], invert = TRUE)]
+  if (length(i) == 0) return()
   b = grep('^\\s*$', x)
   i = unlist(lapply(i, function(j) {
     n = b[b > j]
