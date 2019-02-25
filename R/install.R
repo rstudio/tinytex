@@ -18,7 +18,6 @@
 #'   installed.
 #' @references See the TinyTeX documentation (\url{https://yihui.name/tinytex/})
 #'   for the default installation directories on different platforms.
-#' @importFrom xfun download_file
 #' @export
 install_tinytex = function(
   force = FALSE, dir = 'auto', repository = 'ctan', extra_packages = NULL
@@ -273,6 +272,10 @@ dir_copy = function(from, to) {
     unlink(from, recursive = TRUE) == 0
 }
 
+download_file = function(...) {
+  xfun::download_file(..., quiet = Sys.getenv('APPVEYOR') != '')
+}
+
 # LaTeX packages that I use
 install_yihui_pkgs = function() {
   pkgs = readLines('https://github.com/yihui/tinytex/raw/master/tools/pkgs-yihui.txt')
@@ -283,7 +286,7 @@ install_yihui_pkgs = function() {
 install_prebuilt = function() {
   if (is_windows()) {
     installer = 'TinyTeX.zip'
-    xfun::download_file('https://ci.appveyor.com/api/projects/yihui/tinytex/artifacts/TinyTeX.zip', installer)
+    download_file('https://ci.appveyor.com/api/projects/yihui/tinytex/artifacts/TinyTeX.zip', installer)
     install_windows_zip(installer)
   } else if (is_linux()) {
     system('wget -qO- https://github.com/yihui/tinytex/raw/master/tools/download-travis-linux.sh | sh')
