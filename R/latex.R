@@ -398,7 +398,8 @@ file_rename = function(from, to) {
 parse_packages = function(
   log, text = readLines(log), files = detect_files(text), quiet = rep(FALSE, 3)
 ) {
-  pkgs = character(); quiet = rep_len(quiet, length.out = 3); x = files
+  pkgs = character(); quiet = rep_len(quiet, length.out = 3)
+  x = unique(c(files, miss_font()))
   if (length(x) == 0) {
     if (!quiet[1]) message(
       'I was unable to find any missing LaTeX packages from the error log',
@@ -466,16 +467,28 @@ detect_files = function(text) {
     v = gsub(p, '\\1', z)
     if (length(v) == 0) return(v)
     if (!(p %in% r[1:4])) return(if (p == r[5]) 'epstopdf' else v)
-    if (p == r[4]) return(paste0(v, '.sty'))
-    i = !grepl('[.]', v)
-    v[i] = paste0(v[i], '[.](tfm|afm|mf|otf)')
-    v
+    if (p == r[4]) paste0(v, '.sty') else font_ext(v)
   })))
 }
 
 # a helper function that combines parse_packages() and tlmgr_install()
 parse_install = function(...) {
   tlmgr_install(parse_packages(...))
+}
+
+# check missfont.log and detect the missing font packages
+miss_font = function() {
+  if (!file.exists(f <- 'missfont.log')) return()
+  on.exit(unlink(f), add = TRUE)
+  x = gsub('\\s*$', '', readLines(f))
+  x = unique(gsub('.+\\s+', '', x))
+  if (length(x)) font_ext(x)
+}
+
+font_ext = function(x) {
+  i = !grepl('[.]', x)
+  x[i] = paste0(x[i], '[.](tfm|afm|mf|otf)')
+  x
 }
 
 # it should be rare that we need to manually run texhash
