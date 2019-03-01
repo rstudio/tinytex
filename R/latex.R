@@ -101,7 +101,7 @@ latexmk = function(
     if (missing(pdf_file)) pdf_file = file.path(output_dir, basename(pdf_file))
   }
   check_pdf = function() {
-    if (!file.exists(pdf)) show_latex_error(file, sub('.pdf$', '.log', pdf))
+    if (!file.exists(pdf)) show_latex_error(file, sub('.pdf$', '.log', pdf), TRUE)
     file_rename(pdf, pdf_file)
     pdf_file
   }
@@ -284,7 +284,9 @@ use_file_stdout = function() {
 }
 
 # parse the LaTeX log and show error messages
-show_latex_error = function(file, logfile = gsub('[.]tex$', '.log', basename(file))) {
+show_latex_error = function(
+  file, logfile = gsub('[.]tex$', '.log', basename(file)), force = FALSE
+) {
   e = c('Failed to compile ', file, '. See https://yihui.name/tinytex/r/#debugging for debugging tips.')
   if (!file.exists(logfile)) stop(e, call. = FALSE)
   x = readLines(logfile, warn = FALSE)
@@ -302,7 +304,7 @@ show_latex_error = function(file, logfile = gsub('[.]tex$', '.log', basename(fil
     message(paste(m, collapse = '\n'))
     check_inline_math(m, file)
     stop(e, ' See ', logfile, ' for more info.', call. = FALSE)
-  }
+  } else if (force) stop(e, call. = FALSE)
 }
 
 check_inline_math = function(x, f) {
