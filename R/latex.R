@@ -90,8 +90,7 @@ latexmk = function(
   if (missing(engine_args)) engine_args = getOption('tinytex.engine_args', engine_args)
   if (missing(clean)) clean = getOption('tinytex.clean', TRUE)
   pdf = gsub('[.]tex$', '.pdf', basename(file))
-  output_dir = getOption('tinytex.output_dir')
-  if (!is.null(output_dir)) {
+  if (!is.null(output_dir <- getOption('tinytex.output_dir'))) {
     output_dir_arg = shQuote(paste0(if (emulation) '-', '-output-directory=', output_dir))
     if (length(grep(output_dir_arg, engine_args, fixed = TRUE)) == 0) stop(
       "When you set the global option 'tinytex.output_dir', the argument 'engine_args' ",
