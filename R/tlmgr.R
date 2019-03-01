@@ -49,7 +49,7 @@ tlmgr = function(args = character(), usermode = FALSE, ..., .quiet = FALSE) {
 # installed to ~/bin by default; on Windows, prioritize win_app_dir('TinyTeX')
 # if it exists (so TinyTeX can be used even when MiKTeX is installed)
 
-#' @importFrom xfun is_linux is_unix is_macos is_windows
+#' @importFrom xfun is_linux is_unix is_macos is_windows with_ext
 tweak_path = function() {
   if (is_macos()) return()  # assume symlinks were created under /usr/local/bin
   # check if ~/bin/tlmgr exists (created by TinyTeX by default)
