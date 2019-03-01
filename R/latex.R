@@ -1,7 +1,7 @@
-#' Compile a LaTeX document to PDF
+#' Compile a LaTeX document
 #'
 #' The function \code{latexmk()} emulates the system command \command{latexmk}
-#' (\url{https://ctan.org/pkg/latexmk}) to compile a LaTeX document to PDF. The
+#' (\url{https://ctan.org/pkg/latexmk}) to compile a LaTeX document. The
 #' functions \code{pdflatex()}, \code{xelatex()}, and \code{lualatex()} are
 #' wrappers of \code{latexmk(engine =, emulation = TRUE)}.
 #'
@@ -55,15 +55,16 @@
 #'   packages found by \code{\link{parse_packages}()} from the LaTeX log. This
 #'   argument is only for the emulation mode and TeX Live.
 #' @param pdf_file Path to the PDF output file. By default, it is under the same
-#'   directory as the input \code{file} and also has the same base name.
+#'   directory as the input \code{file} and also has the same base name. When
+#'   \code{engine == 'latex'}, this will be a DVI file.
 #' @param clean Whether to clean up auxiliary files after compilation (can be
 #'   set in the global option \code{tinytex.clean}, which defaults to
 #'   \code{TRUE}).
 #' @export
-#' @return A character string of the path of the PDF output file (i.e., the
-#'   value of the \code{pdf_file} argument).
+#' @return A character string of the path of the output file (i.e., the value of
+#'   the \code{pdf_file} argument).
 latexmk = function(
-  file, engine = c('pdflatex', 'xelatex', 'lualatex'),
+  file, engine = c('pdflatex', 'xelatex', 'lualatex', 'latex'),
   bib_engine = c('bibtex', 'biber'), engine_args = NULL, emulation = TRUE,
   max_times = 10, install_packages = emulation && tlmgr_available(),
   pdf_file = gsub('tex$', 'pdf', file), clean = TRUE
@@ -74,6 +75,7 @@ latexmk = function(
   if (missing(engine)) engine = getOption('tinytex.engine', engine)
   engine = gsub('^(pdf|xe|lua)(tex)$', '\\1la\\2', engine)  # normalize *tex to *latex
   engine = match.arg(engine)
+  is_latex = engine == 'latex'
   tweak_path()
   if (missing(emulation)) emulation = getOption('tinytex.latexmk.emulation', emulation)
   if (!emulation) {
@@ -89,7 +91,7 @@ latexmk = function(
   if (missing(bib_engine)) bib_engine = getOption('tinytex.bib_engine', bib_engine)
   if (missing(engine_args)) engine_args = getOption('tinytex.engine_args', engine_args)
   if (missing(clean)) clean = getOption('tinytex.clean', TRUE)
-  pdf = gsub('[.]tex$', '.pdf', basename(file))
+  pdf = gsub('tex$', if (is_latex) 'dvi' else 'pdf', basename(file))
   if (!is.null(output_dir <- getOption('tinytex.output_dir'))) {
     output_dir_arg = shQuote(paste0(if (emulation) '-', '-output-directory=', output_dir))
     if (length(grep(output_dir_arg, engine_args, fixed = TRUE)) == 0) stop(
@@ -99,8 +101,9 @@ latexmk = function(
     pdf = file.path(output_dir, pdf)
     if (missing(pdf_file)) pdf_file = file.path(output_dir, basename(pdf_file))
   }
+  if (is_latex) pdf_file = with_ext(pdf_file, 'dvi')
   check_pdf = function() {
-    if (!file.exists(pdf)) show_latex_error(file, sub('.pdf$', '.log', pdf), TRUE)
+    if (!file.exists(pdf)) show_latex_error(file, with_ext(pdf, 'log'), TRUE)
     file_rename(pdf, pdf_file)
     pdf_file
   }
@@ -109,8 +112,9 @@ latexmk = function(
     return(check_pdf())
   }
   system2_quiet('latexmk', c(
-    '-pdf -latexoption=-halt-on-error -interaction=batchmode',
-    paste0('-pdflatex=', engine), engine_args, shQuote(file)
+    '-latexoption=-halt-on-error -interaction=batchmode',
+    if (is_latex) '-latex=latex' else paste0('-pdf -pdflatex=', engine),
+    engine_args, shQuote(file)
   ), error = {
     if (install_packages) warning(
       'latexmk(install_packages = TRUE) does not work when emulation = FALSE'
@@ -163,7 +167,7 @@ latexmk_emu = function(
   }, add = TRUE)
 
   pkgs_last = character()
-  filep = sub('.log$', '.pdf', logfile)
+  filep = sub('.log$', if (engine == 'latex') '.dvi' else '.pdf', logfile)
   run_engine = function() {
     on_error  = function() {
       if (install_packages && file.exists(logfile)) {

@@ -5,12 +5,12 @@
 \alias{pdflatex}
 \alias{xelatex}
 \alias{lualatex}
-\title{Compile a LaTeX document to PDF}
+\title{Compile a LaTeX document}
 \usage{
-latexmk(file, engine = c("pdflatex", "xelatex", "lualatex"), bib_engine = c("bibtex", 
-    "biber"), engine_args = NULL, emulation = TRUE, max_times = 10, 
-    install_packages = emulation && tlmgr_available(), pdf_file = gsub("tex$", 
-        "pdf", file), clean = TRUE)
+latexmk(file, engine = c("pdflatex", "xelatex", "lualatex", "latex"), 
+    bib_engine = c("bibtex", "biber"), engine_args = NULL, emulation = TRUE, 
+    max_times = 10, install_packages = emulation && tlmgr_available(), 
+    pdf_file = gsub("tex$", "pdf", file), clean = TRUE)
 
 pdflatex(...)
 
@@ -43,7 +43,8 @@ packages found by \code{\link{parse_packages}()} from the LaTeX log. This
 argument is only for the emulation mode and TeX Live.}
 
 \item{pdf_file}{Path to the PDF output file. By default, it is under the same
-directory as the input \code{file} and also has the same base name.}
+directory as the input \code{file} and also has the same base name. When
+\code{engine == 'latex'}, this will be a DVI file.}
 
 \item{clean}{Whether to clean up auxiliary files after compilation (can be
 set in the global option \code{tinytex.clean}, which defaults to
@@ -53,12 +54,12 @@ set in the global option \code{tinytex.clean}, which defaults to
 \code{engine} and \code{emulation}).}
 }
 \value{
-A character string of the path of the PDF output file (i.e., the
-  value of the \code{pdf_file} argument).
+A character string of the path of the output file (i.e., the value of
+  the \code{pdf_file} argument).
 }
 \description{
 The function \code{latexmk()} emulates the system command \command{latexmk}
-(\url{https://ctan.org/pkg/latexmk}) to compile a LaTeX document to PDF. The
+(\url{https://ctan.org/pkg/latexmk}) to compile a LaTeX document. The
 functions \code{pdflatex()}, \code{xelatex()}, and \code{lualatex()} are
 wrappers of \code{latexmk(engine =, emulation = TRUE)}.
 }
