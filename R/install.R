@@ -93,13 +93,13 @@ install_tinytex = function(
       if (macos && file.access('/usr/local/bin', 2) != 0) {
         chown_cmd = 'chown -R `whoami`:admin /usr/local/bin'
         message(
-          'The directory /usr/local/bin is not writable. I need your admin privilege ',
-          'to make it writable. See https://github.com/yihui/tinytex/issues/24 for more info.'
+          'The directory /usr/local/bin is not writable. I recommend that you ',
+          'make it writable. See https://github.com/yihui/tinytex/issues/24 for more info.'
         )
         if (system(sprintf(
           "/usr/bin/osascript -e 'do shell script \"%s\" with administrator privileges'", chown_cmd
-          )) != 0) stop(
-          "Please run this command in your Terminal and retry installing TinyTeX:\n  sudo ",
+        )) != 0) warning(
+          "Please run this command in your Terminal (password required):\n  sudo ",
           chown_cmd, call. = FALSE
         )
       }

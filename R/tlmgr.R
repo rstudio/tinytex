@@ -47,15 +47,15 @@ tlmgr = function(args = character(), usermode = FALSE, ..., .quiet = FALSE) {
 # add ~/bin to PATH if necessary on Linux, because sometimes PATH may not be
 # inherited (https://github.com/rstudio/rstudio/issues/1878), and TinyTeX is
 # installed to ~/bin by default; on Windows, prioritize win_app_dir('TinyTeX')
-# if it exists (so TinyTeX can be used even when MiKTeX is installed)
+# if it exists (so TinyTeX can be used even when MiKTeX is installed); on macOS,
+# check if it is necessary to add ~/Library/TinyTeX/bin/*/ to PATH
 
 #' @importFrom xfun is_linux is_unix is_macos is_windows with_ext
 tweak_path = function() {
-  if (is_macos()) return()  # assume symlinks were created under /usr/local/bin
   # check if ~/bin/tlmgr exists (created by TinyTeX by default)
   f = if (is_linux()) '~/bin/tlmgr' else if (is_windows()) {
     win_app_dir('TinyTeX', 'bin', 'win32', 'tlmgr.bat', error = FALSE)
-  } else return()
+  } else if (is_macos()) '~/Library/TinyTeX/bin/x86_64-darwin/tlmgr' else return()
   if (!file_test('-x', f)) f = getOption('tinytex.tlmgr.path', '')
   if (!file_test('-x', f)) return()
   bin = normalizePath(dirname(f))
