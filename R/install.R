@@ -37,27 +37,24 @@ install_tinytex = function(
     user_dir = normalizePath(dir, mustWork = FALSE)
   }
   tweak_path()
-  if (!force) {
-    msg = if (tlmgr_available()) {
-      system2('tlmgr', '--version')
-      c(
-        'Detected an existing tlmgr at ', Sys.which('tlmgr'), '. ',
-        'It seems TeX Live has been installed (check tinytex::tinytex_root()). '
-      )
-    } else if (Sys.which('pdftex') != '') {
-      system2('pdftex', '--version')
-      c(
-        'Detected an existing LaTeX distribution (e.g., pdftex is at ',
-        Sys.which('pdftex'), '). '
-      )
-    }
-    if (length(msg)) stop(
-      msg, 'You have to uninstall it, or use install_tinytex(force = TRUE) ',
-      'if you are sure TinyTeX can override it (e.g., you are a PATH expert or ',
-      'installed TinyTeX previously).',
-      call. = FALSE
+  msg = if (tlmgr_available()) {
+    system2('tlmgr', '--version')
+    c(
+      'Detected an existing tlmgr at ', Sys.which('tlmgr'), '. ',
+      'It seems TeX Live has been installed (check tinytex::tinytex_root()). '
+    )
+  } else if (Sys.which('pdftex') != '') {
+    system2('pdftex', '--version')
+    c(
+      'Detected an existing LaTeX distribution (e.g., pdftex is at ',
+      Sys.which('pdftex'), '). '
     )
   }
+  if (length(msg)) warning(
+    msg, 'You are recommended to uninstall it, although TinyTeX should work well alongside ',
+    'another LaTeX distribution if a LaTeX document is compiled through tinytex::latexmk().',
+    call. = FALSE
+  )
   owd = setwd(tempdir())
   on.exit({
     unlink(c('install-unx.sh', 'install-tl.zip', 'pkgs-custom.txt', 'texlive.profile'))
