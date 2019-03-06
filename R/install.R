@@ -61,8 +61,8 @@ install_tinytex = function(
     setwd(owd)
     p = Sys.which('tlmgr')
     if (os == 'windows') message(
-      'Please restart your R session and IDE (if you are using one, such as RStudio or Emacs) ',
-      'and check if tinytex:::is_tinytex() is TRUE.'
+      'Please quit and reopen your R session and IDE (if you are using one, such ',
+      'as RStudio or Emacs) and check if tinytex:::is_tinytex() is TRUE.'
     ) else if (!is_tinytex()) warning(
       'TinyTeX was not successfully installed or configured.',
       if (p != '') c(' tlmgr was found at ', p) else {
