@@ -3,10 +3,10 @@
 cd ${TMPDIR:-/tmp}
 
 if [ $(uname) = 'Darwin' ]; then
-  TEXDIR=~/Library/TinyTeX
+  TEXDIR=${TINYTEX_DIR:~/Library/TinyTeX}
   alias download='curl -sL'
 else
-  TEXDIR=~/.TinyTeX
+  TEXDIR=${TINYTEX_DIR:~/.TinyTeX}
   alias download='wget -qO-'
 fi
 
