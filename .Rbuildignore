@@ -1,6 +1,7 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^tools$
+^TUGboat$
 ^\.travis\.yml$
 ^appveyor\.yml$
 ^codecov\.yml$
