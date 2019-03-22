@@ -41,7 +41,7 @@ If you do not want to be bothered by LaTeX errors that tell you certain class or
 
 - It takes much longer to update packages if you choose to update all via `tlmgr update --all` (and you will be installing newer versions of packages that you do not need, too).
 
-Without installing the full version, you may be confused when compiling a document and certain packages are not installed. The Github issue https://github.com/rstudio/rmarkdown/issues/39 is a very good example to show how users can be confused. The main reason for the confusion is that an error message like below does not really tell you how you could resolve the issue (i.e., which package to install and how to install):
+Without installing the full version, you may be confused when compiling a document and certain packages are not installed. The Github issue https://github.com/rstudio/rmarkdown/issues/39 is a very good example to show how users can be confused. The main reason for the confusion is that an error message like below does not tell you how you could resolve the issue (i.e., which package to install and how to install):
 
 ```
 ! Error: File `framed.sty' not found.
@@ -177,7 +177,7 @@ Secondly, the installation of TinyTeX and the (automatic) installation of additi
 
 Thirdly, TinyTeX was created mainly for individual users who install TinyTeX for themselves. If a sysadmin wants to install a shared copy of TinyTeX for multiple users, there will be more technical details to learn (in particular, issues related to permissions, the "user mode", and packages that are not "relocatable"). I have mentioned them on the FAQ page: https://yihui.name/tinytex/faq/.
 
-Lastly, TinyTeX is essentially a version of TeX Live installed through an installation script. I did not provide prebuilt binaries, even though it would be easy technically. I do not fully understand the TeX Live license and LaTeX package licenses. I guess I would be very likely to violate these licenses if I provide binaries without also shipping the source files inside at the same time. Anyway, installing TinyTeX over the Internet usually takes only a minute or two, so this may not really be a big concern.
+Lastly, TinyTeX is essentially a version of TeX Live installed through an installation script. I did not provide prebuilt binaries, even though it would be easy technically. I do not fully understand the TeX Live license and LaTeX package licenses. I guess I would be very likely to violate these licenses if I provide binaries without also shipping the source files inside at the same time. Anyway, installing TinyTeX over the Internet usually takes only a minute or two, so this may not be a big concern.
 
 I hope you would find TinyTeX (and the R package **tinytex**, if you happen to be an R user, too) useful. If you have any feedback or questions or bug reports, please feel free to post them to the Github repository: https://github.com/yihui/tinytex.
 
