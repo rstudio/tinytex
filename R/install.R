@@ -107,6 +107,10 @@ install_tinytex = function(
         'You may have to restart your system after installing TinyTeX to make sure ',
         '~/bin appears in your PATH variable (https://github.com/yihui/tinytex/issues/16).'
       ), add = TRUE)
+      if (repository != 'ctan') {
+        Sys.setenv(CTAN_REPO = repository)
+        on.exit(Sys.unsetenv('CTAN_REPO'), add = TRUE)
+      }
       download_file('https://github.com/yihui/tinytex/raw/master/tools/install-unx.sh')
       res = system2('sh', c(
         'install-unx.sh', if (repository != 'ctan') c(
@@ -132,9 +136,10 @@ install_tinytex = function(
     'windows' = {
       target = if (user_dir == '') win_app_dir('TinyTeX') else user_dir
       unlink('install-tl-*', recursive = TRUE)
-      download_file(
-        'http://mirror.ctan.org/systems/texlive/tlnet/install-tl.zip', mode = 'wb'
-      )
+      download_file(paste0(
+        if (repository == 'ctan') 'http://mirror.ctan.org/systems/texlive/tlnet' else repository,
+        '/install-tl.zip'
+      ), mode = 'wb')
       download_file('https://github.com/yihui/tinytex/raw/master/tools/pkgs-custom.txt')
       pkgs_custom = readLines('pkgs-custom.txt')
       download_file('https://github.com/yihui/tinytex/raw/master/tools/texlive.profile')
