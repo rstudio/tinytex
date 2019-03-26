@@ -2,7 +2,8 @@
 
 rm -f install-tl-unx.tar.gz texlive.profile
 echo "Downloading install-tl-unx.tar.gz to ${PWD} ..."
-TLURL="${CTAN_REPO:-http://mirror.ctan.org/systems/texlive/tlnet}/install-tl-unx.tar.gz"
+TLREPO=${CTAN_REPO:-http://mirror.ctan.org/systems/texlive/tlnet}
+TLURL="${TLREPO}/install-tl-unx.tar.gz"
 PRURL="https://github.com/yihui/tinytex/raw/master/tools/texlive.profile"
 if [ $(uname) = 'Darwin' ]; then
   curl -LO $TLURL
@@ -23,7 +24,7 @@ rm install-tl-unx.tar.gz
 
 mkdir texlive
 cd texlive
-TEXLIVE_INSTALL_ENV_NOCHECK=true TEXLIVE_INSTALL_NO_WELCOME=true ../install-tl-*/install-tl -profile=../texlive.profile
+TEXLIVE_INSTALL_ENV_NOCHECK=true TEXLIVE_INSTALL_NO_WELCOME=true ../install-tl-*/install-tl -profile=../texlive.profile -repository $TLREPO
 rm -r ../install-tl-* ../texlive.profile install-tl.log
 
 # I believe one line is buggy in TLPDB.pm, causing the issue
