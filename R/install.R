@@ -75,6 +75,7 @@ install_tinytex = function(
     system2(bin, c('conf', 'auxtrees', 'add', r_texmf_path()))
   }
   https = grepl('^https://', repository)
+  not_ctan = repository != 'ctan'
 
   if ((texinput <- Sys.getenv('TEXINPUT')) != '') message(
     'Your environment variable TEXINPUT is "', texinput,
@@ -107,13 +108,13 @@ install_tinytex = function(
         'You may have to restart your system after installing TinyTeX to make sure ',
         '~/bin appears in your PATH variable (https://github.com/yihui/tinytex/issues/16).'
       ), add = TRUE)
-      if (repository != 'ctan') {
+      if (not_ctan) {
         Sys.setenv(CTAN_REPO = repository)
         on.exit(Sys.unsetenv('CTAN_REPO'), add = TRUE)
       }
       download_file('https://github.com/yihui/tinytex/raw/master/tools/install-unx.sh')
       res = system2('sh', c(
-        'install-unx.sh', if (repository != 'ctan') c(
+        'install-unx.sh', if (not_ctan) c(
           '--no-admin', '--path', shQuote(repository), if (macos && https) 'tlgpg'
         )
       ))
@@ -168,7 +169,7 @@ install_tinytex = function(
       in_dir(target, {
         bin_tlmgr = file.path('bin', 'win32', 'tlmgr')
         tlmgr = function(...) system2(bin_tlmgr, ...)
-        if (repository != 'ctan') {
+        if (not_ctan) {
           tlmgr(c('option', 'repository', shQuote(repository)))
           if (https) tlmgr(c('--repository', 'http://www.preining.info/tlgpg/', 'install', 'tlgpg'))
           if (tlmgr(c('update', '--list')) != 0) {
