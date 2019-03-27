@@ -306,9 +306,14 @@ show_latex_error = function(
   }
   if (length(m)) {
     message(paste(m, collapse = '\n'))
-    check_inline_math(m, file)
+    latex_hints(m, file)
     stop(e, ' See ', logfile, ' for more info.', call. = FALSE)
   } else if (force) stop(e, call. = FALSE)
+}
+
+latex_hints = function(x, f) {
+  check_inline_math(x, f)
+  check_unicode(x)
 }
 
 check_inline_math = function(x, f) {
@@ -321,6 +326,13 @@ check_inline_math = function(x, f) {
     'You may need to add $ $ around a certain inline R expression `r ` in ', s,
     if (length(m)) ' (see the above hint)',
     '. See https://github.com/rstudio/rmarkdown/issues/385 for more info.'
+  )
+}
+
+check_unicode = function(x) {
+  if (length(grep('! Package inputenc Error: Unicode character', x))) message(
+    'Try other LaTeX engines instead (e.g., xelatex) if you are using pdflatex. ',
+    'For R Markdown users, see https://bookdown.org/yihui/rmarkdown/pdf-document.html'
   )
 }
 
