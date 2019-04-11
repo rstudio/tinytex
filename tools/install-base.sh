@@ -1,10 +1,10 @@
 #!/bin/sh
 
-rm -f install-tl-unx.tar.gz texlive.profile
+rm -f install-tl-unx.tar.gz tinytex.profile
 echo "Downloading install-tl-unx.tar.gz to ${PWD} ..."
 TLREPO=${CTAN_REPO:-http://mirror.ctan.org/systems/texlive/tlnet}
 TLURL="${TLREPO}/install-tl-unx.tar.gz"
-PRURL="https://github.com/yihui/tinytex/raw/master/tools/texlive.profile"
+PRURL="https://github.com/yihui/tinytex/raw/master/tools/tinytex.profile"
 if [ $(uname) = 'Darwin' ]; then
   curl -LO $TLURL
   curl -LO $PRURL
@@ -16,7 +16,7 @@ else
   # (e.g., users want to make LaTeX binaries available system-wide)
   if [ "$1" != '--admin' ]; then
     mkdir -p $HOME/bin
-    echo "tlpdbopt_sys_bin ${HOME}/bin" >> texlive.profile
+    echo "tlpdbopt_sys_bin ${HOME}/bin" >> tinytex.profile
   fi
 fi
 tar -xzf install-tl-unx.tar.gz
@@ -24,8 +24,8 @@ rm install-tl-unx.tar.gz
 
 mkdir texlive
 cd texlive
-TEXLIVE_INSTALL_ENV_NOCHECK=true TEXLIVE_INSTALL_NO_WELCOME=true ../install-tl-*/install-tl -profile=../texlive.profile -repository $TLREPO
-rm -r ../install-tl-* ../texlive.profile install-tl.log
+TEXLIVE_INSTALL_ENV_NOCHECK=true TEXLIVE_INSTALL_NO_WELCOME=true ../install-tl-*/install-tl -profile=../tinytex.profile -repository $TLREPO
+rm -r ../install-tl-* ../tinytex.profile install-tl.log
 
 # I believe one line is buggy in TLPDB.pm, causing the issue
 # https://github.com/yihui/tinytex/issues/77

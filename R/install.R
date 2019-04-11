@@ -57,7 +57,7 @@ install_tinytex = function(
   )
   owd = setwd(tempdir())
   on.exit({
-    unlink(c('install-unx.sh', 'install-tl.zip', 'pkgs-custom.txt', 'texlive.profile'))
+    unlink(c('install-unx.sh', 'install-tl.zip', 'pkgs-custom.txt', 'tinytex.profile'))
     setwd(owd)
     p = Sys.which('tlmgr')
     if (os == 'windows') message(
@@ -143,9 +143,9 @@ install_tinytex = function(
       ), mode = 'wb')
       download_file('https://github.com/yihui/tinytex/raw/master/tools/pkgs-custom.txt')
       pkgs_custom = readLines('pkgs-custom.txt')
-      download_file('https://github.com/yihui/tinytex/raw/master/tools/texlive.profile')
-      x = readLines('texlive.profile')
-      writeLines(gsub('./', './TinyTeX/', x, fixed = TRUE), 'texlive.profile')
+      download_file('https://github.com/yihui/tinytex/raw/master/tools/tinytex.profile')
+      x = readLines('tinytex.profile')
+      writeLines(gsub('./', './TinyTeX/', x, fixed = TRUE), 'tinytex.profile')
       unzip('install-tl.zip')
       in_dir(list.files('.', '^install-tl-.*'), {
         message('Starting to install TinyTeX to ', target, '. It will take a few minutes.')
@@ -160,7 +160,7 @@ install_tinytex = function(
           grep('^pause\\s*$', bat, ignore.case = TRUE, invert = TRUE, value = TRUE),
           'install-tl-windows.bat'
         )
-        shell('install-tl-windows.bat -profile=../texlive.profile', invisible = FALSE)
+        shell('install-tl-windows.bat -profile=../tinytex.profile', invisible = FALSE)
         file.remove('TinyTeX/install-tl.log')
         dir.create(target, showWarnings = FALSE, recursive = TRUE)
         file.copy(list.files('TinyTeX', full.names = TRUE), target, recursive = TRUE)

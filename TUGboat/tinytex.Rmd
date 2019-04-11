@@ -74,7 +74,7 @@ The first way can be achieved by installing a very minimal scheme of TeX Live fi
 
 The second and third ways can be specified through installation options, which I will mention soon. The package documentation contributes a considerable amount to the total size of a TeX Live installation. However, I have to admit I rarely read them, and I do not even know where these documentation files are on my computer. When I have a question, I will almost surely end up in a certain post on https://tex.stackexchange.com, and find a solution there. It is even rarer for me to read the package source files, since I am not a LaTeX expert, nor am I interested in becoming an expert.
 
-With the Net installer of TeX Live (https://tug.org/texlive/acquire-netinstall.html), we can put the above pieces together, and automate the installation through an "installation profile" file. Below is the one that I used for TinyTeX (named `texlive.profile`):
+With the Net installer of TeX Live (https://tug.org/texlive/acquire-netinstall.html), we can put the above pieces together, and automate the installation through an "installation profile" file. Below is the one that I used for TinyTeX (named `tinytex.profile`):
 
 ```
 selected_scheme scheme-infraonly
@@ -94,7 +94,7 @@ portable 1
 The installation is done through
 
 ```
-./install-tl -profile=texlive.profile
+./install-tl -profile=tinytex.profile
 ```
 
 where `install-tl` is extracted from the Net installer (use `install-tl-windows.bat` on Windows). The full source of the installation scripts can be found on Github at https://github.com/yihui/tinytex/tree/master/tools. To install TinyTeX on *nix, run `install-unx.sh`; to install it on Windows, run `install-windows.bat`.
