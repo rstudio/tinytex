@@ -10,14 +10,14 @@ else
   alias download='wget -qO-'
 fi
 
-download https://github.com/yihui/tinytex/raw/master/tools/install-base.sh | sh -s - "$@"
+download https://yihui.name/gh/tinytex/tools/install-base.sh | sh -s - "$@"
 
 rm -rf $TEXDIR
 mkdir -p $TEXDIR
 mv texlive/* $TEXDIR
 rm -r texlive
 
-$TEXDIR/bin/*/tlmgr install $(download https://github.com/yihui/tinytex/raw/master/tools/pkgs-custom.txt | tr '\n' ' ')
+$TEXDIR/bin/*/tlmgr install $(download https://yihui.name/gh/tinytex/tools/pkgs-custom.txt | tr '\n' ' ')
 
 if [ "$1" = '--admin' ]; then
   if [ "$2" != '--no-path' ]; then

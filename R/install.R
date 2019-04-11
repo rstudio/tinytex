@@ -112,7 +112,7 @@ install_tinytex = function(
         Sys.setenv(CTAN_REPO = repository)
         on.exit(Sys.unsetenv('CTAN_REPO'), add = TRUE)
       }
-      download_file('https://github.com/yihui/tinytex/raw/master/tools/install-unx.sh')
+      download_file('https://yihui.name/gh/tinytex/tools/install-unx.sh')
       res = system2('sh', c(
         'install-unx.sh', if (not_ctan) c(
           '--no-admin', '--path', shQuote(repository), if (macos && https) 'tlgpg'
@@ -141,9 +141,9 @@ install_tinytex = function(
         if (repository == 'ctan') 'http://mirror.ctan.org/systems/texlive/tlnet' else repository,
         '/install-tl.zip'
       ), mode = 'wb')
-      download_file('https://github.com/yihui/tinytex/raw/master/tools/pkgs-custom.txt')
+      download_file('https://yihui.name/gh/tinytex/tools/pkgs-custom.txt')
       pkgs_custom = readLines('pkgs-custom.txt')
-      download_file('https://github.com/yihui/tinytex/raw/master/tools/tinytex.profile')
+      download_file('https://yihui.name/gh/tinytex/tools/tinytex.profile')
       x = readLines('tinytex.profile')
       writeLines(gsub('./', './TinyTeX/', x, fixed = TRUE), 'tinytex.profile')
       unzip('install-tl.zip')
@@ -281,7 +281,7 @@ download_file = function(...) {
 
 # LaTeX packages that I use
 install_yihui_pkgs = function() {
-  pkgs = readLines('https://github.com/yihui/tinytex/raw/master/tools/pkgs-yihui.txt')
+  pkgs = readLines('https://yihui.name/gh/tinytex/tools/pkgs-yihui.txt')
   tlmgr_install(pkgs)
 }
 
@@ -292,7 +292,7 @@ install_prebuilt = function() {
     download_file('https://ci.appveyor.com/api/projects/yihui/tinytex/artifacts/TinyTeX.zip', installer)
     install_windows_zip(installer)
   } else if (is_linux()) {
-    system('wget -qO- https://github.com/yihui/tinytex/raw/master/tools/download-travis-linux.sh | sh')
+    system('wget -qO- https://yihui.name/gh/tinytex/tools/download-travis-linux.sh | sh')
   } else {
     stop('TinyTeX was not prebuilt for this platform.')
   }
