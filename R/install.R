@@ -30,7 +30,7 @@ install_tinytex = function(
     )
   }
   user_dir = ''
-  if (!missing(dir)) {
+  if (!(dir %in% c('', 'auto'))) {
     dir = gsub('[/\\]+$', '', dir)  # remove trailing slashes
     check_dir(dir)
     unlink(dir, recursive = TRUE)
@@ -209,6 +209,11 @@ uninstall_tinytex = function(force = FALSE, dir = tinytex_root()) {
 #' @export
 reinstall_tinytex = function(packages = TRUE, dir = tinytex_root(), ...) {
   pkgs = if (packages) tl_pkgs()
+  if (length(pkgs)) message(
+    'If reinstallation fails, try install_tinytex() again. Then ',
+    'install the following packages:\n\ntinytex::tlmgr_install(c(',
+    paste('"', pkgs, '"', sep = '', collapse = ', '), '))\n'
+  )
   uninstall_tinytex()
   install_tinytex(extra_packages = pkgs, dir = dir, ...)
 }
