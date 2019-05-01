@@ -220,7 +220,7 @@ auto_size = function(bytes) format(structure(bytes, class = 'object_size'), 'aut
 #' \pkg{tex.x86_64-darwin}.
 #' @export
 #' @return A character vector of package names.
-tl_pkgs = function() gsub('[.].*', '', tl_list(stdout = TRUE))
+tl_pkgs = function() gsub('[.].*', '', tl_list(stdout = TRUE, .quiet = TRUE))
 
 tl_list = function(pkgs = NULL, field = 'name', ...) {
   tlmgr(c('info', '--list', '--only-installed', '--data', field, pkgs), ...)
