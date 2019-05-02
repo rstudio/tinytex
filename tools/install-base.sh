@@ -24,7 +24,7 @@ rm install-tl-unx.tar.gz
 
 mkdir texlive
 cd texlive
-TEXLIVE_INSTALL_ENV_NOCHECK=true TEXLIVE_INSTALL_NO_WELCOME=true ../install-tl-*/install-tl -profile=../tinytex.profile -repository $TLREPO
+TEXLIVE_INSTALL_ENV_NOCHECK=true TEXLIVE_INSTALL_NO_WELCOME=true ../install-tl-*/install-tl -no-gui -profile=../tinytex.profile -repository $TLREPO
 rm -r ../install-tl-* ../tinytex.profile install-tl.log
 
 # I believe one line is buggy in TLPDB.pm, causing the issue
