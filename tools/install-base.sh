@@ -34,6 +34,9 @@ if [ "$1" = '--admin' ]; then
 fi
 
 cd bin/*
+
+./tlmgr option repository "$TLREPO"
+
 if [ "$3" != '' ]; then
   ./tlmgr option repository "$3"
   if [ "$4" != '' ]; then
