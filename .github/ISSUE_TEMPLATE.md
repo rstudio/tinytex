@@ -13,3 +13,5 @@ By filing an issue to this repo, I promise that
     - If I'm filing a bug report, I have included a minimal, self-contained, and reproducible example, and have also included `xfun::session_info('tinytex')`. I have upgraded all my packages to their latest versions (e.g., R, RStudio, and R packages), and also tried the development version: `remotes::install_github('yihui/tinytex')`.
     - If I have posted the same issue elsewhere, I have also mentioned it in this issue.
 - [ ] I have learned the Github Markdown syntax, and formatted my issue correctly.
+
+I understand that my issue may be closed if I don't fulfill my promises.
