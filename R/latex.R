@@ -466,6 +466,7 @@ detect_files = function(text) {
   # Package widetext error: Install the flushend package which is a part of sttools
   # Package biblatex Info: ... file 'trad-abbrv.bbx' not found
   # ! Package pdftex.def Error: File `logo-mdpi-eps-converted-to.pdf' not found
+  # ! Package tikz Error: I did not find the tikz library 'hobby'... named tikzlibraryhobby.code.tex
   r = c(
     ".*! Font [^=]+=([^ ]+).+ not loadable.*",
     '.*! .*The font "([^"]+)" cannot be found.*',
@@ -477,6 +478,7 @@ detect_files = function(text) {
     '.*the language definition file ([^ ]+) .*',
     '.* \\(file ([^)]+)\\): cannot open .*',
     ".*! CTeX fontset `([^']+)' is unavailable.*",
+    '.* (tikzlibrary[^.]+[.]code[.]tex).*',
     ".*: ([^:]+): command not found.*"
   )
   x = grep(paste(r, collapse = '|'), text, value = TRUE)
