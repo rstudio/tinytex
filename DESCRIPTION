@@ -16,7 +16,7 @@ Description: Helper functions to install and maintain the 'LaTeX' distribution
 Imports: xfun (>= 0.5)
 Suggests: testit, rstudioapi
 License: MIT + file LICENSE
-URL: https://github.com/yihui/tinytex
+URL: https://github.com/yihui/tinytex, https://yihui.name/tinytex/
 BugReports: https://github.com/yihui/tinytex/issues
 Encoding: UTF-8
 LazyData: true
