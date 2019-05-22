@@ -467,16 +467,20 @@ detect_files = function(text) {
   # Package biblatex Info: ... file 'trad-abbrv.bbx' not found
   # ! Package pdftex.def Error: File `logo-mdpi-eps-converted-to.pdf' not found
   # ! Package tikz Error: I did not find the tikz library 'hobby'... named tikzlibraryhobby.code.tex
+  # support file `supp-pdf.mkii' (supp-pdf.tex) is missing
   r = c(
     ".*! Font [^=]+=([^ ]+).+ not loadable.*",
     '.*! .*The font "([^"]+)" cannot be found.*',
     '.*!.+ error:.+\\(file ([^)]+)\\): .*',
     '.*Package widetext error: Install the ([^ ]+) package.*',
+    # the above are messages about missing fonts; below are typically missing .sty or commands
+
     ".* File `(.+eps-converted-to.pdf)'.*",
     ".*! LaTeX Error: File `([^']+)' not found.*",
     ".* file '([^']+)' not found.*",
     '.*the language definition file ([^ ]+) .*',
     '.* \\(file ([^)]+)\\): cannot open .*',
+    ".*file `([^']+)' .*is missing.*",
     ".*! CTeX fontset `([^']+)' is unavailable.*",
     '.* (tikzlibrary[^.]+[.]code[.]tex).*',
     ".*: ([^:]+): command not found.*"
