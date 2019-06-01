@@ -220,8 +220,13 @@ auto_size = function(bytes) format(structure(bytes, class = 'object_size'), 'aut
 #' \pkg{tex.x86_64-darwin}.
 #' @export
 #' @return A character vector of package names.
-tl_pkgs = function() gsub('[.].*', '', tl_list(stdout = TRUE, .quiet = TRUE))
+tl_pkgs = function() {
+  x = tl_list(stdout = TRUE, .quiet = TRUE)
+  unique(sub(paste0('.', tl_platform()), '', x))
+}
 
 tl_list = function(pkgs = NULL, field = 'name', ...) {
   tlmgr(c('info', '--list', '--only-installed', '--data', field, pkgs), ...)
 }
+
+tl_platform = function() tlmgr('print-platform', stdout = TRUE, .quiet = TRUE)
