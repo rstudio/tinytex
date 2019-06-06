@@ -9,6 +9,7 @@ dvips
 ec
 etoolbox
 fancyvrb
+float
 fontspec
 framed
 geometry
