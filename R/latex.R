@@ -238,7 +238,7 @@ latexmk_emu = function(
   }
   for (i in seq_len(times)) {
     if (file.exists(logfile)) {
-      if (!any(grepl('(Rerun to get |Please \\(re\\)run | Rerun LaTeX\\.)', readLines(logfile), useBytes = TRUE))) break
+      if (!needs_rerun(logfile)) break
     } else warning('The LaTeX log file "', logfile, '" is not found')
     run_engine()
   }
@@ -259,6 +259,13 @@ tweak_aux = function(aux, x = readLines(aux)) {
   if (length(i <- grep(r, x)) == 0) return()
   x[i] = gsub('[.]bib([,}])', '\\1', x[i])
   writeLines(x, aux)
+}
+
+needs_rerun = function(log) {
+  any(grepl(
+    '(Rerun to get |Please \\(re\\)run | Rerun LaTeX\\.)', readLines(log),
+    useBytes = TRUE
+  ))
 }
 
 system2_quiet = function(..., error = NULL, fail_rerun = TRUE) {
