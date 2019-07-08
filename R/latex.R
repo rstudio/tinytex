@@ -186,7 +186,7 @@ latexmk_emu = function(
     }
     res = system2_quiet(
       engine, c('-halt-on-error', '-interaction=batchmode', engine_args, shQuote(file)),
-      error = on_error(), fail_rerun = getOption('tinytex.verbose', FALSE)
+      error = on_error(), logfile = logfile, fail_rerun = getOption('tinytex.verbose', FALSE)
     )
     # PNAS you are the worst! Why don't you singal an error in case of missing packages?
     if (res == 0 && !file.exists(filep)) on_error()
@@ -268,19 +268,21 @@ needs_rerun = function(log) {
   ))
 }
 
-system2_quiet = function(..., error = NULL, fail_rerun = TRUE) {
+system2_quiet = function(..., error = NULL, logfile = NULL, fail_rerun = TRUE) {
   # system2(stdout = FALSE) fails on Windows with MiKTeX's pdflatex in the R
   # console in RStudio: https://github.com/rstudio/rstudio/issues/2446 so I have
   # to redirect stdout and stderr to files instead
-  system2_file = function() {
-    f1 = tempfile('stdout'); f2 = tempfile('stderr')
-    on.exit(unlink(c(f1, f2)), add = TRUE)
-    system2(..., stdout = f1, stderr = f2)
-  }
+  f1 = tempfile('stdout'); f2 = tempfile('stderr')
+  on.exit(unlink(c(f1, f2)), add = TRUE)
+
   # run the command quietly if possible
-  res = if (use_file_stdout()) system2_file() else {
-    system2(..., stdout = FALSE, stderr = FALSE)
+  res = system2(..., stdout = if (use_file_stdout()) f1 else FALSE, stderr = f2)
+  if (is.character(logfile) && file.exists(f2) && length(e <- xfun::read_utf8(f2))) {
+    i = grep('^\\s*$', e, invert = TRUE)
+    e[i] = paste('!', e[i])  # prepend ! to non-empty error messages
+    cat('', e, file = logfile, sep = '\n', append = TRUE)
   }
+
   # if failed, use the normal mode
   if (fail_rerun && res != 0) res = system2(...)
   # if still fails, run the error callback
@@ -465,6 +467,7 @@ detect_files = function(text) {
   # /usr/local/bin/mktexpk: line 123: mf: command not found
   # ! Font U/psy/m/n/10=psyr at 10.0pt not loadable: Metric (TFM) file not found
   # !pdfTeX error: /usr/local/bin/pdflatex (file tcrm0700): Font tcrm0700 at 600 not found
+  # xdvipdfmx:fatal: Unable to find TFM file "rsfs10"
   # ! The font "FandolSong-Regular" cannot be found.
   # ! Package babel Error: Unknown option `ngerman'. Either you misspelled it
   # (babel)                or the language definition file ngerman.ldf was not found.
@@ -480,6 +483,7 @@ detect_files = function(text) {
     '.*! .*The font "([^"]+)" cannot be found.*',
     '.*!.+ error:.+\\(file ([^)]+)\\): .*',
     '.*Package widetext error: Install the ([^ ]+) package.*',
+    '.*Unable to find TFM file "([^"]+)".*',
     # the above are messages about missing fonts; below are typically missing .sty or commands
 
     ".* File `(.+eps-converted-to.pdf)'.*",
@@ -497,7 +501,7 @@ detect_files = function(text) {
     z = grep(p, x, value = TRUE)
     v = gsub(p, '\\1', z)
     if (length(v) == 0) return(v)
-    if (!(p %in% r[1:4])) return(if (p == r[5]) 'epstopdf' else v)
+    if (!(p %in% r[1:5])) return(if (p == r[6]) 'epstopdf' else v)
     if (p == r[4]) paste0(v, '.sty') else font_ext(v)
   })))
 }
