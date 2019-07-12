@@ -14,7 +14,7 @@ del install-tl.zip
 
 rem download tinytex.profile and modify it (set texdir to ./TinyTeX)
 powershell -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest https://yihui.name/gh/tinytex/tools/tinytex.profile -OutFile tinytex.profile" || exit /b
-powershell -Command "(gc tinytex.profile) -replace './', './TinyTex/' | Out-File -encoding ASCII tinytex.profile"
+powershell -Command "(gc tinytex.profile) -replace '\./', './TinyTex/' | Out-File -encoding ASCII tinytex.profile"
 
 rem download the custom package list
 powershell -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest https://yihui.name/gh/tinytex/tools/pkgs-custom.txt -OutFile pkgs-custom.txt"
