@@ -19,7 +19,6 @@ eso-pic
 eurosym
 extsizes
 fancyhdr
-float
 floatrow
 fontaxes
 hardwrap
@@ -31,7 +30,7 @@ lipsum
 listings
 ltxkeys
 ly1
-mathalfa
+mathalpha
 mathpazo
 mathtools
 mdframed
