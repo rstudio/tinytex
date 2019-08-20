@@ -537,9 +537,9 @@ updmap = function(usermode = FALSE) {
   system2(if (usermode) 'updmap-user' else 'updmap-sys')
 }
 
-fmtutil = function(usermode = FALSE) {
+fmtutil = function(usermode = FALSE, ...) {
   tweak_path()
-  system2(if (usermode) 'fmtutil-user' else 'fmtutil-sys', '--all')
+  system2(if (usermode) 'fmtutil-user' else 'fmtutil-sys', '--all', ...)
 }
 
 fc_cache = function(args = c('-v', '-r')) {

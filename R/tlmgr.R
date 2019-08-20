@@ -136,7 +136,7 @@ tlmgr_remove = function(pkgs = character(), usermode = FALSE) {
 #' @export
 tlmgr_update = function(all = TRUE, self = TRUE, more_args = character(), usermode = FALSE, run_fmtutil = TRUE) {
   tlmgr(c('update', if (all) '--all', if (self && !usermode) '--self', more_args), usermode)
-  if (run_fmtutil) fmtutil(usermode)
+  if (run_fmtutil) fmtutil(usermode, stdout = FALSE)
 }
 
 
