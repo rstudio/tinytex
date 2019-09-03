@@ -24,5 +24,5 @@ if [ "$1" = '--admin' ]; then
     sudo $TEXDIR/bin/*/tlmgr path add
   fi
 else
-  $TEXDIR/bin/*/tlmgr path add
+  $TEXDIR/bin/*/tlmgr path add || true
 fi
