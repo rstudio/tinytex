@@ -496,7 +496,7 @@ detect_files = function(text) {
     ".*! CTeX fontset `([^']+)' is unavailable.*",
     '.* (tikzlibrary[^.]+[.]code[.]tex).*',
     ".*: ([^:]+): command not found.*",
-    ".*file ([^']+) not found.*"
+    ".*Package file ([^']+) not found.*"
   )
   x = grep(paste(r, collapse = '|'), text, value = TRUE)
   if (length(x) > 0) unique(unlist(lapply(r, function(p) {
