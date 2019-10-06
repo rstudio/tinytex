@@ -478,6 +478,7 @@ detect_files = function(text) {
   # ! Package pdftex.def Error: File `logo-mdpi-eps-converted-to.pdf' not found
   # ! Package tikz Error: I did not find the tikz library 'hobby'... named tikzlibraryhobby.code.tex
   # support file `supp-pdf.mkii' (supp-pdf.tex) is missing
+  # ! Package isodate.sty Error: Package file substr.sty not found.
   r = c(
     ".*! Font [^=]+=([^ ]+).+ not loadable.*",
     '.*! .*The font "([^"]+)" cannot be found.*',
@@ -494,7 +495,8 @@ detect_files = function(text) {
     ".*file `([^']+)' .*is missing.*",
     ".*! CTeX fontset `([^']+)' is unavailable.*",
     '.* (tikzlibrary[^.]+[.]code[.]tex).*',
-    ".*: ([^:]+): command not found.*"
+    ".*: ([^:]+): command not found.*",
+    ".*file ([^']+) not found.*"
   )
   x = grep(paste(r, collapse = '|'), text, value = TRUE)
   if (length(x) > 0) unique(unlist(lapply(r, function(p) {
