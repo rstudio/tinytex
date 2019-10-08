@@ -488,7 +488,7 @@ detect_files = function(text) {
 
     ".* File `(.+eps-converted-to.pdf)'.*",
     ".*! LaTeX Error: File `([^']+)' not found.*",
-    ".* file '([^']+)' not found.*",
+    ".* file '?([^' ]+)'? not found.*",
     '.*the language definition file ([^ ]+) .*',
     '.* \\(file ([^)]+)\\): cannot open .*',
     ".*file `([^']+)' .*is missing.*",
