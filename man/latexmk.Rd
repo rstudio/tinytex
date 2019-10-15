@@ -7,10 +7,11 @@
 \alias{lualatex}
 \title{Compile a LaTeX document}
 \usage{
-latexmk(file, engine = c("pdflatex", "xelatex", "lualatex", "latex"), 
-    bib_engine = c("bibtex", "biber"), engine_args = NULL, emulation = TRUE, 
-    max_times = 10, install_packages = emulation && tlmgr_available(), 
-    pdf_file = gsub("tex$", "pdf", file), clean = TRUE)
+latexmk(file, engine = c("pdflatex", "xelatex", "lualatex", "latex"),
+  bib_engine = c("bibtex", "biber"), engine_args = NULL,
+  emulation = TRUE, min_times = 1, max_times = 10,
+  install_packages = emulation && tlmgr_available(),
+  pdf_file = gsub("tex$", "pdf", file), clean = TRUE)
 
 pdflatex(...)
 
@@ -33,9 +34,9 @@ be set in the global option \code{tinytex.engine_args}, e.g.,
 
 \item{emulation}{Whether to emulate the executable \command{latexmk} using R.}
 
-\item{max_times}{The maximum number of times to rerun the LaTeX engine when
-using emulation. You can set the global option
-\code{tinytex.compile.max_times}, e.g.,
+\item{min_times, max_times}{The minimum and maximum number of times to rerun
+the LaTeX engine when using emulation. You can set the global options
+\code{tinytex.compile.min_times} or \code{tinytex.compile.max_times}, e.g.,
 \code{options(tinytex.compile.max_times = 3)}.}
 
 \item{install_packages}{Whether to automatically install missing LaTeX

@@ -47,9 +47,9 @@
 #'   be set in the global option \code{tinytex.engine_args}, e.g.,
 #'   \code{options(tinytex.engine_args = '-shell-escape'}).
 #' @param emulation Whether to emulate the executable \command{latexmk} using R.
-#' @param max_times The maximum number of times to rerun the LaTeX engine when
-#'   using emulation. You can set the global option
-#'   \code{tinytex.compile.max_times}, e.g.,
+#' @param min_times,max_times The minimum and maximum number of times to rerun
+#'   the LaTeX engine when using emulation. You can set the global options
+#'   \code{tinytex.compile.min_times} or \code{tinytex.compile.max_times}, e.g.,
 #'   \code{options(tinytex.compile.max_times = 3)}.
 #' @param install_packages Whether to automatically install missing LaTeX
 #'   packages found by \code{\link{parse_packages}()} from the LaTeX log. This
@@ -66,7 +66,7 @@
 latexmk = function(
   file, engine = c('pdflatex', 'xelatex', 'lualatex', 'latex'),
   bib_engine = c('bibtex', 'biber'), engine_args = NULL, emulation = TRUE,
-  max_times = 10, install_packages = emulation && tlmgr_available(),
+  min_times = 1, max_times = 10, install_packages = emulation && tlmgr_available(),
   pdf_file = gsub('tex$', 'pdf', file), clean = TRUE
 ) {
   if (!grepl('[.]tex$', file))
@@ -87,6 +87,7 @@ latexmk = function(
       emulation = TRUE
     }
   }
+  if (missing(min_times)) min_times = getOption('tinytex.compile.min_times', min_times)
   if (missing(max_times)) max_times = getOption('tinytex.compile.max_times', max_times)
   if (missing(bib_engine)) bib_engine = getOption('tinytex.bib_engine', bib_engine)
   if (missing(engine_args)) engine_args = getOption('tinytex.engine_args', engine_args)
@@ -108,7 +109,10 @@ latexmk = function(
     pdf_file
   }
   if (emulation) {
-    latexmk_emu(file, engine, bib_engine, engine_args, max_times, install_packages, clean)
+    latexmk_emu(
+      file, engine, bib_engine, engine_args, min_times, max_times,
+      install_packages, clean
+    )
     return(check_pdf())
   }
   system2_quiet('latexmk', c(
@@ -142,7 +146,7 @@ lualatex = function(...) latexmk(engine = 'lualatex', emulation = TRUE, ...)
 # a quick and dirty version of latexmk (should work reasonably well unless the
 # LaTeX document is extremely complicated)
 latexmk_emu = function(
-  file, engine, bib_engine = c('bibtex', 'biber'), engine_args = NULL, times = 10,
+  file, engine, bib_engine = c('bibtex', 'biber'), engine_args = NULL, min_times = 1, max_times = 10,
   install_packages = FALSE, clean
 ) {
   aux = c(
@@ -235,10 +239,12 @@ latexmk_emu = function(
       for (i in 1:3) if (check_blg()) break
     }
   }
-  for (i in seq_len(times)) {
-    if (file.exists(logfile)) {
-      if (!needs_rerun(logfile)) break
-    } else warning('The LaTeX log file "', logfile, '" is not found')
+  for (i in seq_len(max_times)) {
+    if (i > min_times) {
+      if (file.exists(logfile)) {
+        if (!needs_rerun(logfile)) break
+      } else warning('The LaTeX log file "', logfile, '" is not found')
+    }
     run_engine()
   }
 }
