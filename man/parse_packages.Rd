@@ -4,8 +4,8 @@
 \alias{parse_packages}
 \title{Find missing LaTeX packages from a LaTeX log file}
 \usage{
-parse_packages(log, text = readLines(log), files = detect_files(text), 
-    quiet = rep(FALSE, 3))
+parse_packages(log, text = readLines(log), files = detect_files(text),
+  quiet = rep(FALSE, 3))
 }
 \arguments{
 \item{log}{Path to the LaTeX log file (typically named \file{*.log}).}

@@ -12,14 +12,16 @@
 \usage{
 tlmgr(args = character(), usermode = FALSE, ..., .quiet = FALSE)
 
-tlmgr_search(what, file = TRUE, all = FALSE, global = TRUE, word = FALSE, ...)
+tlmgr_search(what, file = TRUE, all = FALSE, global = TRUE,
+  word = FALSE, ...)
 
-tlmgr_install(pkgs = character(), usermode = FALSE, path = !usermode && os != "windows")
+tlmgr_install(pkgs = character(), usermode = FALSE, path = !usermode
+  && os != "windows")
 
 tlmgr_remove(pkgs = character(), usermode = FALSE)
 
-tlmgr_update(all = TRUE, self = TRUE, more_args = character(), usermode = FALSE, 
-    run_fmtutil = TRUE)
+tlmgr_update(all = TRUE, self = TRUE, more_args = character(),
+  usermode = FALSE, run_fmtutil = TRUE)
 
 tlmgr_path(action = c("add", "remove"))
 
@@ -87,7 +89,7 @@ tasks. Please consult the \pkg{tlmgr} manual for full details.
 }
 \examples{
 # search for a package that contains titling.sty
-tlmgr_search("titling.sty")
+tlmgr_search('titling.sty')
 
 #' to match titling.sty exactly, add a slash before the keyword, e.g.
 #' tlmgr_search('/titling.sty')
@@ -96,7 +98,7 @@ tlmgr_search("titling.sty")
 #' tlmgr_search('/titling\\\\.sty$')
 
 # list all installed LaTeX packages
-tlmgr(c("info", "--list", "--only-installed", "--data", "name"))
+tlmgr(c('info', '--list', '--only-installed', '--data', 'name'))
 }
 \references{
 The \pkg{tlmgr} manual:

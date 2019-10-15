@@ -18,11 +18,11 @@ used to add/remove R's texmf tree to/from TeX Live via
 \code{\link{tlmgr_conf}('auxtrees')}.
 }
 \examples{
-r_texmf("remove")
-r_texmf("add")
+r_texmf('remove')
+r_texmf('add')
 
 # all files under R's texmf tree
-list.files(file.path(R.home("share"), "texmf"), recursive = TRUE, full.names = TRUE)
+list.files(file.path(R.home('share'), 'texmf'), recursive = TRUE, full.names = TRUE)
 }
 \references{
 See the \pkg{tlmgr} manual for detailed information about
