@@ -13,7 +13,9 @@
 #' @param repository The CTAN repository to be used. By default, a fast mirror
 #'   is automatically chosen. You can manually set one if the automatic mirror
 #'   is not really fast enough, e.g., if you are in China, you may consider
-#'   \code{'http://mirrors.tuna.tsinghua.edu.cn/CTAN/systems/texlive/tlnet'}.
+#'   \code{'http://mirrors.tuna.tsinghua.edu.cn/CTAN/'}, or if you are in the
+#'   midwest in the US, you may use
+#'   \code{'https://mirror.las.iastate.edu/tex-archive/'}.
 #' @param extra_packages A character vector of extra LaTeX packages to be
 #'   installed.
 #' @references See the TinyTeX documentation (\url{https://yihui.name/tinytex/})
@@ -75,7 +77,10 @@ install_tinytex = function(
     system2(bin, c('conf', 'auxtrees', 'add', r_texmf_path()))
   }
   https = grepl('^https://', repository)
-  not_ctan = repository != 'ctan'
+  if (not_ctan <- repository != 'ctan') {
+    repository = sub('systems/texlive/tlnet/?$', '', repository)
+    repository = paste0(sub('/+$', '', repository), '/', 'systems/texlive/tlnet')
+  }
 
   if ((texinput <- Sys.getenv('TEXINPUT')) != '') message(
     'Your environment variable TEXINPUT is "', texinput,

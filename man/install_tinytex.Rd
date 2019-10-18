@@ -25,7 +25,9 @@ unless \code{force = TRUE}).}
 \item{repository}{The CTAN repository to be used. By default, a fast mirror
 is automatically chosen. You can manually set one if the automatic mirror
 is not really fast enough, e.g., if you are in China, you may consider
-\code{'http://mirrors.tuna.tsinghua.edu.cn/CTAN/systems/texlive/tlnet'}.}
+\code{'http://mirrors.tuna.tsinghua.edu.cn/CTAN/'}, or if you are in the
+midwest in the US, you may use
+\code{'https://mirror.las.iastate.edu/tex-archive/'}.}
 
 \item{extra_packages}{A character vector of extra LaTeX packages to be
 installed.}
