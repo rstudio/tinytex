@@ -43,7 +43,7 @@ for /F %%a in (pkgs-custom.txt) do set "pkgs=!pkgs! %%a"
 
 del pkgs-custom.txt
 
-"%APPDATA%\TinyTeX\bin\win32\tlmgr" path add && "%APPDATA%\TinyTeX\bin\win32\tlmgr" install latex-bin xetex %pkgs%
+call "%APPDATA%\TinyTeX\bin\win32\tlmgr" path add
+call "%APPDATA%\TinyTeX\bin\win32\tlmgr" install latex-bin xetex %pkgs%
 
-rem TODO: the above line will make this batch file exit prematurely, but I don't know why
 pause
