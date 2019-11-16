@@ -10,9 +10,9 @@ repos:
   XRAN: https://xran.yihui.org
 
 before_install:
-  - "curl https://xran.yihui.org/.gitconfig -o ~/.gitconfig"
+  - "curl -L https://xran.yihui.org/.gitconfig -o ~/.gitconfig"
   - Rscript -e 'if (!require("covr")) install.packages("covr")'
 
 after_success:
   - Rscript -e 'covr::codecov()'
-  - "(curl https://xran.yihui.org/r-xran | bash)"
+  - "(curl -L https://xran.yihui.org/r-xran | bash)"
