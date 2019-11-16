@@ -7,12 +7,12 @@ env:
     - R_PKG="$(basename $TRAVIS_REPO_SLUG)"
 
 repos:
-  XRAN: https://xran.yihui.name
+  XRAN: https://xran.yihui.org
 
 before_install:
-  - "curl https://xran.yihui.name/.gitconfig -o ~/.gitconfig"
+  - "curl https://xran.yihui.org/.gitconfig -o ~/.gitconfig"
   - Rscript -e 'if (!require("covr")) install.packages("covr")'
 
 after_success:
   - Rscript -e 'covr::codecov()'
-  - "(curl https://xran.yihui.name/r-xran | bash)"
+  - "(curl https://xran.yihui.org/r-xran | bash)"
