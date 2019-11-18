@@ -305,7 +305,7 @@ use_file_stdout = function() {
 show_latex_error = function(
   file, logfile = gsub('[.]tex$', '.log', basename(file)), force = FALSE
 ) {
-  e = c('Failed to compile ', file, '. See https://yihui.name/tinytex/r/#debugging for debugging tips.')
+  e = c('Failed to compile ', file, '. See https://yihui.org/tinytex/r/#debugging for debugging tips.')
   if (!file.exists(logfile)) stop(e, call. = FALSE)
   x = readLines(logfile, warn = FALSE)
   b = grep('^\\s*$', x)  # blank lines

@@ -4,7 +4,7 @@ rm -f install-tl-unx.tar.gz tinytex.profile
 echo "Downloading install-tl-unx.tar.gz to ${PWD} ..."
 TLREPO=${CTAN_REPO:-http://mirror.ctan.org/systems/texlive/tlnet}
 TLURL="${TLREPO}/install-tl-unx.tar.gz"
-PRURL="https://yihui.name/gh/tinytex/tools/tinytex.profile"
+PRURL="https://yihui.org/gh/tinytex/tools/tinytex.profile"
 if [ $(uname) = 'Darwin' ]; then
   curl -LO $TLURL
   curl -LO $PRURL

@@ -3,10 +3,10 @@ title: 'TinyTeX: A lightweight, cross-platform, and easy-to-maintain LaTeX distr
 author:
   - name: "Yihui Xie"
     address: RStudio, Inc.
-    email: xie\@yihui.name
-    url: https\://yihui.name
+    email: xie\@yihui.org
+    url: https\://yihui.org
 abstract: >
-  As a LaTeX user for 15 years, I have suffered from two problems related to the installation of LaTeX and maintenance of packages: 1) The full versions of common LaTeX distributions are often too big, whereas the smaller basic versions often lack packages that I frequently use; 2) It is tedious to figure out which missing packages to install by reading the error log from the LaTeX compilation. TinyTeX (https://yihui.name/tinytex/) is my attempt to address these problems. The basic version of TinyTeX is relatively small (150MB on Linux/macOS when installed), and you only install additional packages if/when you actually need them. Further, if you are an R user, the installation of missing packages can be automatic when you compile LaTeX or R Markdown documents through the R package **tinytex**.
+  As a LaTeX user for 15 years, I have suffered from two problems related to the installation of LaTeX and maintenance of packages: 1) The full versions of common LaTeX distributions are often too big, whereas the smaller basic versions often lack packages that I frequently use; 2) It is tedious to figure out which missing packages to install by reading the error log from the LaTeX compilation. TinyTeX (https://yihui.org/tinytex/) is my attempt to address these problems. The basic version of TinyTeX is relatively small (150MB on Linux/macOS when installed), and you only install additional packages if/when you actually need them. Further, if you are an R user, the installation of missing packages can be automatic when you compile LaTeX or R Markdown documents through the R package **tinytex**.
 documentclass: ltugboat
 biblio-style: tugboat
 bibliography: tinytex.bib
@@ -192,7 +192,7 @@ There is no free lunch. TinyTeX also has its drawbacks, and you have to consider
 
 Secondly, the installation of TinyTeX and the (automatic) installation of additional LaTeX packages requires an Internet connection. This may be the biggest drawback of TinyTeX. If you plan to work offline, you will have to make sure all packages have been installed in advance.
 
-Thirdly, TinyTeX was created mainly for individual users who install TinyTeX for themselves. If a sysadmin wants to install a shared copy of TinyTeX for multiple users, there will be more technical details to learn (in particular, issues related to permissions, the "user mode", and packages that are not "relocatable"). I have mentioned them on the FAQ page: https://yihui.name/tinytex/faq/.
+Thirdly, TinyTeX was created mainly for individual users who install TinyTeX for themselves. If a sysadmin wants to install a shared copy of TinyTeX for multiple users, there will be more technical details to learn (in particular, issues related to permissions, the "user mode", and packages that are not "relocatable"). I have mentioned them on the FAQ page: https://yihui.org/tinytex/faq/.
 
 Lastly, TinyTeX is essentially a version of TeX Live installed through an installation script. I did not provide prebuilt binaries, even though it would be easy technically. I do not fully understand the TeX Live license and LaTeX package licenses, but I guess I would be very likely to violate these licenses if I provide binaries without also shipping the source files inside at the same time. Anyway, installing TinyTeX over the Internet usually takes only a minute or two, so this may not be a big concern.
 
