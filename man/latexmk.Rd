@@ -7,11 +7,18 @@
 \alias{lualatex}
 \title{Compile a LaTeX document}
 \usage{
-latexmk(file, engine = c("pdflatex", "xelatex", "lualatex", "latex"),
-  bib_engine = c("bibtex", "biber"), engine_args = NULL,
-  emulation = TRUE, min_times = 1, max_times = 10,
+latexmk(
+  file,
+  engine = c("pdflatex", "xelatex", "lualatex", "latex"),
+  bib_engine = c("bibtex", "biber"),
+  engine_args = NULL,
+  emulation = TRUE,
+  min_times = 1,
+  max_times = 10,
   install_packages = emulation && tlmgr_available(),
-  pdf_file = gsub("tex$", "pdf", file), clean = TRUE)
+  pdf_file = gsub("tex$", "pdf", file),
+  clean = TRUE
+)
 
 pdflatex(...)
 

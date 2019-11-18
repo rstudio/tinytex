@@ -7,8 +7,12 @@
 \alias{tinytex_root}
 \title{Install/Uninstall TinyTeX}
 \usage{
-install_tinytex(force = FALSE, dir = "auto", repository = "ctan",
-  extra_packages = NULL)
+install_tinytex(
+  force = FALSE,
+  dir = "auto",
+  repository = "ctan",
+  extra_packages = NULL
+)
 
 uninstall_tinytex(force = FALSE, dir = tinytex_root())
 

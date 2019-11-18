@@ -5,8 +5,10 @@
 \alias{use_tinytex}
 \title{Copy TinyTeX to another location and use it in another system}
 \usage{
-copy_tinytex(from = tinytex_root(),
-  to = select_dir("Select Destination Directory"))
+copy_tinytex(
+  from = tinytex_root(),
+  to = select_dir("Select Destination Directory")
+)
 
 use_tinytex(from = select_dir("Select TinyTeX Directory"))
 }
