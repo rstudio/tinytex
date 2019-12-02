@@ -21,6 +21,7 @@ hyperref
 ifluatex
 ifxetex
 inconsolata
+kvoptions
 latexmk
 lm
 luaotfload
@@ -30,6 +31,7 @@ metafont
 mfware
 natbib
 oberdiek
+pdftexcmds
 tex
 times
 titling
