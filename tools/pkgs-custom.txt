@@ -34,7 +34,6 @@ oberdiek
 pdftexcmds
 tex
 times
-titling
 tools
 upquote
 url
