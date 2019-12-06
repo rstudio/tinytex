@@ -23,6 +23,7 @@ ifxetex
 inconsolata
 kvoptions
 latexmk
+letltxmacro
 lm
 luaotfload
 makeindex
