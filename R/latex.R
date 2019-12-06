@@ -481,6 +481,7 @@ detect_files = function(text) {
   # Package widetext error: Install the flushend package which is a part of sttools
   # Package biblatex Info: ... file 'trad-abbrv.bbx' not found
   # ! Package pdftex.def Error: File `logo-mdpi-eps-converted-to.pdf' not found
+  # ! xdvipdfmx:fatal: pdf_ref_obj(): passed invalid object.
   # ! Package tikz Error: I did not find the tikz library 'hobby'... named tikzlibraryhobby.code.tex
   # support file `supp-pdf.mkii' (supp-pdf.tex) is missing
   r = c(
@@ -492,6 +493,8 @@ detect_files = function(text) {
     # the above are messages about missing fonts; below are typically missing .sty or commands
 
     ".* File `(.+eps-converted-to.pdf)'.*",
+    ".*xdvipdfmx:fatal: pdf_ref_obj.*",
+
     ".*! LaTeX Error: File `([^']+)' not found.*",
     ".* file '?([^' ]+)'? not found.*",
     '.*the language definition file ([^ ]+) .*',
@@ -506,7 +509,7 @@ detect_files = function(text) {
     z = grep(p, x, value = TRUE)
     v = gsub(p, '\\1', z)
     if (length(v) == 0) return(v)
-    if (!(p %in% r[1:5])) return(if (p == r[6]) 'epstopdf' else v)
+    if (!(p %in% r[1:5])) return(if (p %in% r[6:7]) 'epstopdf' else v)
     if (p == r[4]) paste0(v, '.sty') else font_ext(v)
   })))
 }
