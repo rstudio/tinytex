@@ -1,6 +1,8 @@
 amscls
 amsfonts
 amsmath
+atbegshi
+atveryend
 bibtex
 booktabs
 caption
@@ -21,6 +23,7 @@ hyperref
 ifluatex
 ifxetex
 inconsolata
+infwarerr
 kvoptions
 latexmk
 letltxmacro
@@ -33,6 +36,7 @@ mfware
 natbib
 oberdiek
 pdftexcmds
+rerunfilecheck
 tex
 times
 titling
