@@ -149,7 +149,8 @@ tlmgr_update = function(
 #'   directory to/from the system environment variable \code{PATH}.
 #' @rdname tlmgr
 #' @export
-tlmgr_path = function(action = c('add', 'remove')) tlmgr(c('path', match.arg(action)))
+tlmgr_path = function(action = c('add', 'remove'))
+  tlmgr(c('path', match.arg(action)), .quiet = TRUE)
 
 
 #' @rdname tlmgr
