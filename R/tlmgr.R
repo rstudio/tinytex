@@ -16,8 +16,9 @@
 #'   which you do not have write permission. This option should not be needed on
 #'   personal computers, and has some limitations, so please read the
 #'   \pkg{tlmgr} manual very carefully before using it.
-#' @param ... Additional arguments passed to \code{\link{system2}()} (e.g.,
-#'   \code{stdout = TRUE} to capture stdout).
+#' @param ... For \code{tlmgr()}, additional arguments to be passed to
+#'   \code{\link{system2}()} (e.g., \code{stdout = TRUE} to capture stdout). For
+#'   other functions, arguments to be passed to \code{tlmgr()}.
 #' @param .quiet Whether to hide the actual command before executing it.
 #' @references The \pkg{tlmgr} manual:
 #'   \url{https://www.tug.org/texlive/doc/tlmgr.html}
@@ -36,7 +37,7 @@
 #' tlmgr(c('info', '--list', '--only-installed', '--data', 'name'))
 tlmgr = function(args = character(), usermode = FALSE, ..., .quiet = FALSE) {
   tweak_path()
-  if (!tlmgr_available()) {
+  if (!.quiet && !tlmgr_available()) {
     warning('TeX Live does not seem to be installed. See https://yihui.org/tinytex/.')
   }
   if (usermode) args = c('--usermode', args)
@@ -134,8 +135,11 @@ tlmgr_remove = function(pkgs = character(), usermode = FALSE) {
 #'   format and hyphenation files after updating \pkg{tlmgr}.
 #' @rdname tlmgr
 #' @export
-tlmgr_update = function(all = TRUE, self = TRUE, more_args = character(), usermode = FALSE, run_fmtutil = TRUE) {
-  tlmgr(c('update', if (all) '--all', if (self && !usermode) '--self', more_args), usermode)
+tlmgr_update = function(
+  all = TRUE, self = TRUE, more_args = character(), usermode = FALSE,
+  run_fmtutil = TRUE, ...
+) {
+  tlmgr(c('update', if (all) '--all', if (self && !usermode) '--self', more_args), usermode, ...)
   if (run_fmtutil) fmtutil(usermode, stdout = FALSE)
 }
 
