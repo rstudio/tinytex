@@ -4,6 +4,7 @@ amsmath
 atbegshi
 atveryend
 bibtex
+bitset
 booktabs
 caption
 dvipdfmx
