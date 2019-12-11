@@ -35,6 +35,7 @@ metafont
 mfware
 natbib
 oberdiek
+pdfescape
 pdftexcmds
 rerunfilecheck
 tex
