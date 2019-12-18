@@ -18,6 +18,7 @@ float
 fontspec
 framed
 geometry
+gettitlestring
 graphics
 graphics-def
 gsftopk
