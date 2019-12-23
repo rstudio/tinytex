@@ -78,7 +78,7 @@ install_tinytex = function(
     system2(bin, c('conf', 'auxtrees', 'add', r_texmf_path()))
   }
   https = grepl('^https://', repository)
-  if (not_ctan <- repository != 'ctan') {
+  if ((not_ctan <- repository != 'ctan') && !grepl('tlnet/?$', repository)) {
     repository = sub('systems/texlive/tlnet/?$', '', repository)
     repository = paste0(sub('/+$', '', repository), '/', 'systems/texlive/tlnet')
   }
