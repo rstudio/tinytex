@@ -11,6 +11,7 @@ caption
 dvipdfmx
 dvips
 ec
+epstopdf-pkg
 etexcmds
 etoolbox
 fancyvrb
