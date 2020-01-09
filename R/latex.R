@@ -524,13 +524,18 @@ parse_install = function(...) {
   tlmgr_install(parse_packages(...))
 }
 
-# check missfont.log and detect the missing font packages
+# check missfont.log and detect the missing font packages; missfont.log
+# typically looks like this:
+#   mktexpk --mfmode / --bdpi 600 --mag 1+0/600 --dpi 600 ecrm0900
 miss_font = function() {
   if (!file.exists(f <- 'missfont.log')) return()
   on.exit(unlink(f), add = TRUE)
   x = gsub('\\s*$', '', readLines(f))
-  x = unique(gsub('.+\\s+', '', x))
-  if (length(x)) font_ext(x)
+  x = grep('.+\\s+.+', x, value = TRUE)
+  if (length(x) == 0) return()
+  x1 = gsub('.+\\s+', '', x)  # possibly missing fonts
+  x2 = gsub('\\s+.+', '', x)  # the command to make fonts
+  unique(c(font_ext(x1), x2))
 }
 
 font_ext = function(x) {
