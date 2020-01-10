@@ -20,6 +20,7 @@ framed
 geometry
 gettitlestring
 graphics
+graphics-cfg
 graphics-def
 gsftopk
 helvetic
