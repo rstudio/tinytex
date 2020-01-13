@@ -172,13 +172,14 @@ latexmk_emu = function(
 
   pkgs_last = character()
   filep = sub('.log$', if (engine == 'latex') '.dvi' else '.pdf', logfile)
+  verbose = getOption('tinytex.verbose', FALSE)
   run_engine = function() {
     on_error  = function() {
       if (install_packages && file.exists(logfile)) {
-        pkgs = parse_packages(logfile, quiet = c(TRUE, FALSE, FALSE))
+        pkgs = parse_packages(logfile, quiet = !verbose)
         if (length(pkgs) && !identical(pkgs, pkgs_last)) {
-          message('Trying to automatically install missing LaTeX packages...')
-          if (tlmgr_install(pkgs) == 0) {
+          if (verbose) message('Trying to automatically install missing LaTeX packages...')
+          if (tlmgr_install(pkgs, .quiet = !verbose) == 0) {
             pkgs_last <<- pkgs
             return(run_engine())
           }
@@ -194,7 +195,7 @@ latexmk_emu = function(
           run_fmtutil = FALSE, .quiet = TRUE, stdout = FALSE, stderr = FALSE
         )
         on_error()
-      }, logfile = logfile, fail_rerun = getOption('tinytex.verbose', FALSE)
+      }, logfile = logfile, fail_rerun = verbose
     )
     # PNAS you are the worst! Why don't you singal an error in case of missing packages?
     if (res == 0 && !file.exists(filep)) on_error()
