@@ -501,7 +501,7 @@ detect_files = function(text) {
     ".*xdvipdfmx:fatal: pdf_ref_obj.*",
 
     ".*! LaTeX Error: File `([^']+)' not found.*",
-    ".* file '?([^' ]+)'? not found.*",
+    ".* file ['`]?([^' ]+)'? not found.*",
     '.*the language definition file ([^ ]+) .*',
     '.* \\(file ([^)]+)\\): cannot open .*',
     ".*file `([^']+)' .*is missing.*",

@@ -20,6 +20,8 @@ assert('detect_files() can detect filenames from LaTeX log', {
   (detect_files("! CTeX fontset `fandol' is unavailable in current mode") %==% 'fandol')
 
   (detect_files('Package widetext error: Install the flushend package which is a part of sttools') %==% 'flushend.sty')
-  
+
   (detect_files('! Package isodate.sty Error: Package file substr.sty not found.') %==% 'substr.sty')
+
+  (detect_files("! Package fontenc Error: Encoding file `t2aenc.def' not found.") %==% 't2aenc.def')
 })
