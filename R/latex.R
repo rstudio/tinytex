@@ -501,13 +501,14 @@ detect_files = function(text) {
     ".* File `(.+eps-converted-to.pdf)'.*",
     ".*xdvipdfmx:fatal: pdf_ref_obj.*",
 
+    '.* (tikzlibrary[^.]+[.]code[.]tex).*',
+
     ".*! LaTeX Error: File `([^']+)' not found.*",
     ".* file ['`]?([^' ]+)'? not found.*",
     '.*the language definition file ([^ ]+) .*',
     '.* \\(file ([^)]+)\\): cannot open .*',
     ".*file `([^']+)' .*is missing.*",
     ".*! CTeX fontset `([^']+)' is unavailable.*",
-    '.* (tikzlibrary[^.]+[.]code[.]tex).*',
     ".*: ([^:]+): command not found.*"
   )
   x = grep(paste(r, collapse = '|'), text, value = TRUE)
@@ -515,6 +516,7 @@ detect_files = function(text) {
     z = grep(p, x, value = TRUE)
     v = gsub(p, '\\1', z)
     if (length(v) == 0) return(v)
+    if (p == r[8] && length(grep('! Package tikz Error:', text)) == 0) return()
     if (!(p %in% r[1:5])) return(if (p %in% r[6:7]) 'epstopdf' else v)
     if (p == r[4]) paste0(v, '.sty') else font_ext(v)
   })))
