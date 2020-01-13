@@ -101,13 +101,13 @@ tlmgr_search = function(what, file = TRUE, all = FALSE, global = TRUE, word = FA
 #'   even if no binary packages were installed).
 #' @rdname tlmgr
 #' @export
-tlmgr_install = function(pkgs = character(), usermode = FALSE, path = !usermode && os != 'windows') {
+tlmgr_install = function(pkgs = character(), usermode = FALSE, path = !usermode && os != 'windows', ...) {
   res = 0L
   if (length(pkgs)) {
-    res = tlmgr(c('install', pkgs), usermode)
+    res = tlmgr(c('install', pkgs), usermode, ...)
     if (res != 0 || tl_list(pkgs, stdout = FALSE, stderr = FALSE, .quiet = TRUE) != 0) {
       tlmgr_update(all = FALSE, usermode = usermode)
-      res = tlmgr(c('install', pkgs), usermode)
+      res = tlmgr(c('install', pkgs), usermode, ...)
     }
     if ('epstopdf' %in% pkgs && is_unix() && Sys.which('gs') == '') {
       if (is_macos() && Sys.which('brew') != '') {
