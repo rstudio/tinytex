@@ -102,22 +102,21 @@ tlmgr_search = function(what, file = TRUE, all = FALSE, global = TRUE, word = FA
 #' @rdname tlmgr
 #' @export
 tlmgr_install = function(pkgs = character(), usermode = FALSE, path = !usermode && os != 'windows', ...) {
-  res = 0L
-  if (length(pkgs)) {
+  if (length(pkgs) == 0) return(invisible(0L))
+
+  res = tlmgr(c('install', pkgs), usermode, ...)
+  if (res != 0 || !check_installed(pkgs)) {
+    tlmgr_update(all = FALSE, usermode = usermode)
     res = tlmgr(c('install', pkgs), usermode, ...)
-    if (res != 0 || !check_installed(pkgs)) {
-      tlmgr_update(all = FALSE, usermode = usermode)
-      res = tlmgr(c('install', pkgs), usermode, ...)
-    }
-    if ('epstopdf' %in% pkgs && is_unix() && Sys.which('gs') == '') {
-      if (is_macos() && Sys.which('brew') != '') {
-        message('Trying to install GhostScript via Homebrew for the epstopdf package.')
-        system('brew install ghostscript')
-      }
-      if (Sys.which('gs') == '') warning('GhostScript is required for the epstopdf package.')
-    }
-    if (path) tlmgr_path('add')
   }
+  if ('epstopdf' %in% pkgs && is_unix() && Sys.which('gs') == '') {
+    if (is_macos() && Sys.which('brew') != '') {
+      message('Trying to install GhostScript via Homebrew for the epstopdf package.')
+      system('brew install ghostscript')
+    }
+    if (Sys.which('gs') == '') warning('GhostScript is required for the epstopdf package.')
+  }
+  if (path) tlmgr_path('add')
   invisible(res)
 }
 
