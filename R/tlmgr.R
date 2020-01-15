@@ -105,7 +105,7 @@ tlmgr_install = function(pkgs = character(), usermode = FALSE, path = !usermode 
   res = 0L
   if (length(pkgs)) {
     res = tlmgr(c('install', pkgs), usermode, ...)
-    if (res != 0 || tl_list(pkgs, stdout = FALSE, stderr = FALSE, .quiet = TRUE) != 0) {
+    if (res != 0 || !check_installed(pkgs)) {
       tlmgr_update(all = FALSE, usermode = usermode)
       res = tlmgr(c('install', pkgs), usermode, ...)
     }
@@ -119,6 +119,17 @@ tlmgr_install = function(pkgs = character(), usermode = FALSE, path = !usermode 
     if (path) tlmgr_path('add')
   }
   invisible(res)
+}
+
+# check of certain LaTeX packages are installed: if installed, `tlmgr info pkgs`
+# should return `pkgs`
+check_installed = function(pkgs) {
+  if (length(pkgs) == 0) return(TRUE)
+  res = tryCatch(
+    tl_list(pkgs, stdout = TRUE, stderr = FALSE, .quiet = TRUE),
+    error = function(e) NULL, warning = function(e) NULL
+  )
+  identical(res, pkgs)
 }
 
 #' @rdname tlmgr
