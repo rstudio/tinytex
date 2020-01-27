@@ -278,9 +278,9 @@ symlink_root = function(path) {
   in_dir(dirname(path), symlink_root(path2))
 }
 
-is_tinytex = function() {
+is_tinytex = function() tryCatch({
   gsub('^[.]', '', tolower(basename(tinytex_root()))) == 'tinytex'
-}
+}, error = function(e) FALSE)
 
 in_dir = function(dir, expr) {
   owd = setwd(dir); on.exit(setwd(owd), add = TRUE)
