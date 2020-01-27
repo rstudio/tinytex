@@ -8,6 +8,7 @@ bigintcalc
 bitset
 booktabs
 caption
+dehyph-exptl
 dvipdfmx
 dvips
 ec
@@ -50,6 +51,7 @@ pdftexcmds
 refcount
 rerunfilecheck
 tex
+texlive-scripts
 times
 tools
 uniquecounter
