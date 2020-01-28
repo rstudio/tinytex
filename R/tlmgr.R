@@ -37,9 +37,9 @@
 #' tlmgr(c('info', '--list', '--only-installed', '--data', 'name'))
 tlmgr = function(args = character(), usermode = FALSE, ..., .quiet = FALSE) {
   tweak_path()
-  if (!.quiet && !tlmgr_available()) {
-    warning('TeX Live does not seem to be installed. See https://yihui.org/tinytex/.')
-  }
+  if (!.quiet && !tlmgr_available()) warning(
+    '\nTeX Live does not seem to be installed. See https://yihui.org/tinytex/.\n'
+  )
   if (usermode) args = c('--usermode', args)
   if (!.quiet) message(paste(c('tlmgr', args), collapse = ' '))
   system2('tlmgr', args, ...)
