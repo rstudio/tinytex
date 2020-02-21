@@ -204,7 +204,7 @@ uninstall_tinytex = function(force = FALSE, dir = tinytex_root()) {
   )
   r_texmf('remove')
   tlmgr_path('remove')
-  unlink(dir, recursive = TRUE)
+  unlink(c(dir, path.expand('~/.TinyTeX')), recursive = TRUE)
 }
 
 #' @param packages Whether to reinstall all currently installed packages.
