@@ -2,7 +2,7 @@
 title: 'TinyTeX: A lightweight, cross-platform, and easy-to-maintain LaTeX distribution based on TeX Live'
 author:
   - name: "Yihui Xie"
-    address: RStudio, Inc.
+    address: RStudio, PBC
     email: xie\@yihui.org
     url: https\://yihui.org
 abstract: >

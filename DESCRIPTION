@@ -4,7 +4,7 @@ Title: Helper Functions to Install and Maintain 'TeX Live', and Compile 'LaTeX' 
 Version: 0.19.2
 Authors@R: c(
   person("Yihui", "Xie", role = c("aut", "cre", "cph"), email = "xie@yihui.name", comment = c(ORCID = "0000-0003-0645-5666")),
-  person(family = "RStudio, Inc.", role = "cph"),
+  person(family = "RStudio, PBC", role = "cph"),
   person("Fernando", "Cagua", role = "ctb"),
   person("Ethan", "Heinzen", role = "ctb"),
   person()
