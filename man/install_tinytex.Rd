@@ -11,7 +11,8 @@ install_tinytex(
   force = FALSE,
   dir = "auto",
   repository = "ctan",
-  extra_packages = NULL
+  extra_packages = NULL,
+  add_path = TRUE
 )
 
 uninstall_tinytex(force = FALSE, dir = tinytex_root())
@@ -36,6 +37,9 @@ list of mirrors at \url{https://ctan.org/mirrors}.}
 
 \item{extra_packages}{A character vector of extra LaTeX packages to be
 installed.}
+
+\item{add_path}{Whether to run the command \command{tlmgr path add} to add
+the bin path of TeX Live to the system environment variable \var{PATH}.}
 
 \item{packages}{Whether to reinstall all currently installed packages.}
 
