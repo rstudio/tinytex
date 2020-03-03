@@ -116,6 +116,9 @@ tlmgr_install = function(pkgs = character(), usermode = FALSE, path = !usermode 
     }
     if (Sys.which('gs') == '') warning('GhostScript is required for the epstopdf package.')
   }
+  # only run `tlmgr path add` if the symlink for tlmgr exists under
+  # /usr/local/bin; it may not exist when TinyTeX is installed with --no-path
+  if (missing(path)) path = path && file.exists('/usr/local/bin/tlmgr')
   if (path) tlmgr_path('add')
   invisible(res)
 }
