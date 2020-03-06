@@ -153,7 +153,10 @@ install_tinytex = function(
       download_file('https://yihui.org/gh/tinytex/tools/pkgs-custom.txt')
       pkgs_custom = readLines('pkgs-custom.txt')
       download_file('https://yihui.org/gh/tinytex/tools/tinytex.profile')
-      x = readLines('tinytex.profile')
+      x = c(
+        readLines('tinytex.profile'), 'TEXMFCONFIG $TEXMFSYSCONFIG',
+        'TEXMFHOME $TEXMFLOCAL', 'TEXMFVAR $TEXMFSYSVAR'
+      )
       writeLines(gsub('./', './TinyTeX/', x, fixed = TRUE), 'tinytex.profile')
       unzip('install-tl.zip')
       in_dir(list.files('.', '^install-tl-.*'), {
