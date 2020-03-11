@@ -15,7 +15,7 @@ else
   # /usr/local/bin unless this script is invoked with the argument '--admin'
   # (e.g., users want to make LaTeX binaries available system-wide), in which
   # case we personalize texmf variables
-  if [ "$1" == '--admin' ]; then
+  if [ "$1" = '--admin' ]; then
     echo 'TEXMFCONFIG $HOME/.TinyTeX/texmf-config' >> tinytex.profile
     echo 'TEXMFHOME $HOME/.TinyTeX/texmf-home' >> tinytex.profile
     echo 'TEXMFVAR $HOME/.TinyTeX/texmf-var' >> tinytex.profile
