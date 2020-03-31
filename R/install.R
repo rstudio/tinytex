@@ -193,7 +193,6 @@ install_tinytex = function(
         if (add_path) tlmgr(c('path', 'add'))
         add_texmf(bin_tlmgr)
       })
-      message('TinyTeX installed to ', target)
     },
     stop('This platform is not supported.')
   )
