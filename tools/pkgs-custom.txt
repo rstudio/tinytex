@@ -27,8 +27,6 @@ gsftopk
 helvetic
 hycolor
 hyperref
-ifluatex
-ifxetex
 inconsolata
 infwarerr
 intcalc
