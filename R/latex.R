@@ -168,6 +168,7 @@ latexmk_emu = function(
     files3 = setdiff(files2, files1)
     if (keep_log || length(latex_warning(logfile, TRUE))) files3 = setdiff(files3, logfile)
     if (clean) unlink(files3)
+    .global$update_noted = NULL
   }, add = TRUE)
 
   pkgs_last = character()
@@ -194,9 +195,7 @@ latexmk_emu = function(
     res = system2_quiet(
       engine, c('-halt-on-error', '-interaction=batchmode', engine_args, shQuote(file)),
       error = {
-        if (install_packages) tlmgr_update(
-          run_fmtutil = FALSE, .quiet = TRUE, stdout = FALSE, stderr = FALSE
-        )
+        if (install_packages) tlmgr_update(run_fmtutil = FALSE, .quiet = TRUE)
         on_error()
       }, logfile = logfile, fail_rerun = verbose
     )

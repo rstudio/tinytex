@@ -152,10 +152,35 @@ tlmgr_update = function(
   all = TRUE, self = TRUE, more_args = character(), usermode = FALSE,
   run_fmtutil = TRUE, ...
 ) {
-  tlmgr(c('update', if (all) '--all', if (self && !usermode) '--self', more_args), usermode, ...)
+  # if unable to update due to a new release of TeX Live, skip the update
+  if (isTRUE(.global$update_noted)) return(invisible(NULL))
+  res = suppressWarnings(tlmgr(
+    c('update', if (all) '--all', if (self && !usermode) '--self', more_args),
+    usermode, ..., stdout = TRUE, stderr = TRUE
+  ))
+  check_tl_version(res)
   if (run_fmtutil) fmtutil(usermode, stdout = FALSE)
 }
 
+# check if a new version of TeX Live has been released and give instructions on
+# how to upgrade
+check_tl_version = function(x) {
+  if (length(x) == 0) return()
+  i = grep('Local TeX Live \\([0-9]+) is older than remote repository \\([0-9]+)', x)
+  if (length(i) == 0) return()
+  message(
+    'A new version of TeX Live has been released. If you need to install or update ',
+    'any LaTeX packages, you have to upgrade ',
+    if (!is_tinytex()) 'TeX Live.' else c(
+      'TinyTeX with tinytex::reinstall_tinytex(). If it fails to upgrade, you ',
+      'might be using a default random CTAN mirror that has not been fully synced ',
+      'to the main CTAN repository, and you need to wait for a few more days or ',
+      'use a CTAN mirror that is known to be up-to-date (see the "repository" ',
+      'argument on the help page ?tinytex::install_tinytex()).'
+    )
+  )
+  .global$update_noted = TRUE
+}
 
 #' @param action On Unix, add/remove symlinks of binaries to/from the system's
 #'   \code{PATH}. On Windows, add/remove the path to the TeXLive binary

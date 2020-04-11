@@ -2,3 +2,5 @@
 NULL
 
 os = .Platform$OS.type
+
+.global = new.env(parent = emptyenv())
