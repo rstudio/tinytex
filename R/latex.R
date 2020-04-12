@@ -524,7 +524,12 @@ detect_files = function(text) {
   })))
 }
 
-# a helper function that combines parse_packages() and tlmgr_install()
+#' Parse the LaTeX log and install missing LaTeX packages if possible
+#'
+#' This is a helper function that combines \code{\link{parse_packages}()} and
+#' \code{\link{tlmgr_install}()}.
+#' @param ... Arguments passed to \code{\link{parse_packages}()}.
+#' @export
 parse_install = function(...) {
   tlmgr_install(parse_packages(...))
 }
