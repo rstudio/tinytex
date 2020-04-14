@@ -52,4 +52,4 @@ if [ "$3" != '' ]; then
   # test if the repository is accessible; if not, set the default CTAN repo
   ./tlmgr update --list || ./tlmgr option repository ctan
 fi
-./tlmgr install latex-bin luatex xetex
+./tlmgr install latex-bin luahbtex luatex xetex
