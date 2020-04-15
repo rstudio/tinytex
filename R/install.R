@@ -10,13 +10,16 @@
 #' @param force Whether to force to install (override) or uninstall TinyTeX.
 #' @param dir The directory to install or uninstall TinyTeX (should not exist
 #'   unless \code{force = TRUE}).
-#' @param repository The CTAN repository to be used. By default, a fast mirror
-#'   is automatically chosen. You can manually set one if the automatic mirror
-#'   is not really fast enough, e.g., if you are in China, you may consider
+#' @param repository The CTAN repository to be used. By default, a random fast
+#'   mirror is automatically chosen (via \code{http://mirror.ctan.org}). You can
+#'   manually set one if the automatic mirror is not really fast enough, e.g.,
+#'   if you are in China, you may consider
 #'   \code{'http://mirrors.tuna.tsinghua.edu.cn/CTAN/'}, or if you are in the
 #'   midwest in the US, you may use
 #'   \code{'https://mirror.las.iastate.edu/tex-archive/'}. You can find the full
-#'   list of mirrors at \url{https://ctan.org/mirrors}.
+#'   list of mirrors at \url{https://ctan.org/mirrors}. This argument should end
+#'   with the path \file{/systems/texlive/tlnet}, and if it is not, the path
+#'   will be automatically appended.
 #' @param extra_packages A character vector of extra LaTeX packages to be
 #'   installed.
 #' @param add_path Whether to run the command \command{tlmgr path add} to add
