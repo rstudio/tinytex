@@ -216,9 +216,12 @@ uninstall_tinytex = function(force = FALSE, dir = tinytex_root()) {
   unlink(dir, recursive = TRUE)
 }
 
-# delete user's texmf tree
+# delete user's texmf tree; make sure the `bin` dir and other files are not
+# under ~/.TinyTeX because TinyTeX itself might be installed there
 delete_texmf_user = function() {
   r = dir.exists(d <- path.expand('~/.TinyTeX'))
+  if (!r || length(list.files(d, '^(bin|release-texlive.txt|LICENSE.TL)$')) > 0)
+    return(FALSE)
   unlink(d, recursive = TRUE)
   r
 }
