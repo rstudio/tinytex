@@ -6,7 +6,7 @@
 #' based on TeX Live). The function \code{uninstall_tinytex()} removes TinyTeX;
 #' \code{reinstall_tinytex()} reinstalls TinyTeX as well as previously installed
 #' LaTeX packages by default; \code{tinytex_root()} returns the root directory
-#' of TinyTeX.
+#' of TinyTeX if found.
 #' @param force Whether to force to install (override) or uninstall TinyTeX.
 #' @param dir The directory to install or uninstall TinyTeX (should not exist
 #'   unless \code{force = TRUE}).
@@ -216,12 +216,15 @@ uninstall_tinytex = function(force = FALSE, dir = tinytex_root()) {
   unlink(dir, recursive = TRUE)
 }
 
-# delete user's texmf tree; make sure the `bin` dir and other files are not
-# under ~/.TinyTeX because TinyTeX itself might be installed there
+# delete user's texmf tree; don't delete ~/.TinyTeX if TinyTeX itself is
+# installed there
 delete_texmf_user = function() {
   r = dir.exists(d <- path.expand('~/.TinyTeX'))
-  if (!r || length(list.files(d, '^(bin|release-texlive.txt|LICENSE.TL)$')) > 0)
-    return(FALSE)
+  if (!r) return(FALSE)
+  d1 = xfun::normalize_path(tinytex_root(error = FALSE))
+  if (d1 == '') return()  # not TinyTeX
+  d2 = xfun::normalize_path(d)
+  if (substr(d1, 1, nchar(d2)) == d2) return(FALSE)
   unlink(d, recursive = TRUE)
   r
 }
@@ -266,24 +269,25 @@ win_app_dir = function(..., error = TRUE) {
   file.path(d, ...)
 }
 
+#' @param error Whether to signal an error if TinyTeX is not found.
 #' @rdname install_tinytex
 #' @export
-tinytex_root = function() {
+tinytex_root = function(error = TRUE) {
   tweak_path()
   path = Sys.which('tlmgr')
   if (path == '') return('')
   root_dir = function(path, ...) {
     dir = normalizePath(file.path(dirname(path), ...), mustWork = TRUE)
-    if (!'bin' %in% list.files(dir)) stop(
+    if (!'bin' %in% list.files(dir)) if (error) stop(
       dir, ' does not seem to be the root directory of TeX Live (no "bin/" dir under it)'
-    )
+    ) else return('')
     dir
   }
   if (os == 'windows') return(root_dir(path, '..', '..'))
-  if (Sys.readlink(path) == '') stop(
+  if (Sys.readlink(path) == '') if (error) stop(
     'Cannot figure out the root directory of TeX Live from ', path,
     ' (not a symlink on ', os, ')'
-  )
+  ) else return('')
   path = symlink_root(path)
   root_dir(normalizePath(path), '..', '..', '..')
 }

@@ -19,7 +19,7 @@ uninstall_tinytex(force = FALSE, dir = tinytex_root())
 
 reinstall_tinytex(packages = TRUE, dir = tinytex_root(), ...)
 
-tinytex_root()
+tinytex_root(error = TRUE)
 }
 \arguments{
 \item{force}{Whether to force to install (override) or uninstall TinyTeX.}
@@ -49,6 +49,8 @@ the bin path of TeX Live to the system environment variable \var{PATH}.}
 \item{...}{Other arguments to be passed to \code{install_tinytex()} (note
 that the \code{extra_packages} argument will be set to \code{tl_pkgs()} if
 \code{packages = TRUE}).}
+
+\item{error}{Whether to signal an error if TinyTeX is not found.}
 }
 \description{
 The function \code{install_tinytex()} downloads the installation script from
@@ -57,7 +59,7 @@ Windows), and executes it to install TinyTeX (a custom LaTeX distribution
 based on TeX Live). The function \code{uninstall_tinytex()} removes TinyTeX;
 \code{reinstall_tinytex()} reinstalls TinyTeX as well as previously installed
 LaTeX packages by default; \code{tinytex_root()} returns the root directory
-of TinyTeX.
+of TinyTeX if found.
 }
 \references{
 See the TinyTeX documentation (\url{https://yihui.org/tinytex/})
