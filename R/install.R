@@ -177,6 +177,8 @@ install_tinytex = function(
         )
         shell('install-tl-windows.bat -no-gui -profile=../tinytex.profile', invisible = FALSE)
         file.remove('TinyTeX/install-tl.log')
+        # target shouldn't be a file but a directory
+        if (file_test('-f', target)) file.remove(target)
         dir.create(target, showWarnings = FALSE, recursive = TRUE)
         file.copy(list.files('TinyTeX', full.names = TRUE), target, recursive = TRUE)
       })
