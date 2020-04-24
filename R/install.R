@@ -153,11 +153,11 @@ install_tinytex = function(
         if (repository == 'ctan') 'http://mirror.ctan.org/systems/texlive/tlnet' else repository,
         '/install-tl.zip'
       ), mode = 'wb')
-      download_file('https://yihui.org/gh/tinytex/tools/pkgs-custom.txt')
+      download_file('https://sites.northwestern.edu/mthomas/files/2020/04/pkgs-custom.txt')
       pkgs_custom = readLines('pkgs-custom.txt')
-      download_file('https://yihui.org/gh/tinytex/tools/tinytex.profile')
+      download_file('https://sites.northwestern.edu/mthomas/files/2020/04/tinytex.profile.txt')
       x = c(
-        readLines('tinytex.profile'), 'TEXMFCONFIG $TEXMFSYSCONFIG',
+        readLines('tinytex.profile.txt'), 'TEXMFCONFIG $TEXMFSYSCONFIG',
         'TEXMFHOME $TEXMFLOCAL', 'TEXMFVAR $TEXMFSYSVAR'
       )
       writeLines(gsub('./', './TinyTeX/', x, fixed = TRUE), 'tinytex.profile')
