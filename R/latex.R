@@ -493,6 +493,7 @@ detect_files = function(text) {
   # ! xdvipdfmx:fatal: pdf_ref_obj(): passed invalid object.
   # ! Package tikz Error: I did not find the tikz library 'hobby'... named tikzlibraryhobby.code.tex
   # support file `supp-pdf.mkii' (supp-pdf.tex) is missing
+  # ! I can't find file `hyph-de-1901.ec.tex'.
   r = c(
     ".*! Font [^=]+=([^ ]+).+ not loadable.*",
     '.*! .*The font "([^"]+)" cannot be found.*',
@@ -512,7 +513,8 @@ detect_files = function(text) {
     '.* \\(file ([^)]+)\\): cannot open .*',
     ".*file `([^']+)' .*is missing.*",
     ".*! CTeX fontset `([^']+)' is unavailable.*",
-    ".*: ([^:]+): command not found.*"
+    ".*: ([^:]+): command not found.*",
+    ".*! I can't find file `([^']+)'.*"
   )
   x = grep(paste(r, collapse = '|'), text, value = TRUE)
   if (length(x) > 0) unique(unlist(lapply(r, function(p) {
