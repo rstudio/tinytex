@@ -16,6 +16,7 @@ cache:
 build_script:
   - set PATH=%PATH:C:\MinGW\msys\1.0\bin;=%
   - echo | tools\install-windows.bat
+  - Rscript -e "update.packages(ask = FALSE, checkBuilt = TRUE, repos = 'https://cran.rstudio.com')"
 
 test_script:
   - tlmgr --version
