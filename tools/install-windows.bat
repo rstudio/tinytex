@@ -50,4 +50,3 @@ del pkgs-custom.txt
 call "%APPDATA%\TinyTeX\bin\win32\tlmgr" path add
 call "%APPDATA%\TinyTeX\bin\win32\tlmgr" install latex-bin xetex %pkgs%
 
-pause
