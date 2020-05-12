@@ -4,7 +4,7 @@ cache: packages
 
 env:
   global:
-    - R_PKG="$(basename $TRAVIS_REPO_SLUG)"
+    - R_PKG="$(basename $TRAVIS_REPO_SLUG)" _R_CHECK_TESTS_NLINES_=0
 
 repos:
   XRAN: https://xran.yihui.org
