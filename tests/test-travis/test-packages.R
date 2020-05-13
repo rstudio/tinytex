@@ -25,7 +25,7 @@ if (.Platform$OS.type == 'unix') xfun::in_dir('../../../tools', {
     'latexmk',  # https://github.com/yihui/tinytex/issues/51
     'float', # https://github.com/yihui/tinytex/issues/122
     # https://github.com/yihui/tinytex/issues/73
-    'ec', 'inconsolata', 'times', 'tex', 'helvetic', 'dvips'
+    'ec', 'inconsolata', 'times', 'tex', 'helvetic', 'dvips', 'metafont'
   )))
   tlmgr_install(x1)
   x2 = sort(readLines('pkgs-custom.txt'))

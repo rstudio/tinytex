@@ -39,6 +39,7 @@ lm-math
 ltxcmds
 lualatex-math
 mdwtools
+metafont
 natbib
 pdfescape
 pdftexcmds
