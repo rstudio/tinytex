@@ -1,11 +1,13 @@
 a4wide
 ae
 algorithms
+amscls
 appendix
 babel-english
 bbm-macros
 beamer
 breakurl
+caption
 catoptions
 charter
 cite
@@ -69,6 +71,7 @@ textcase
 threeparttable
 thumbpdf
 titlesec
+translator
 tufte-latex
 ucs
 ulem
