@@ -2,6 +2,7 @@
 # compile basic R Markdown documents and bookdown books to PDF
 if (.Platform$OS.type == 'unix') xfun::in_dir('../../../tools', {
   system('sh install-base.sh && ./texlive/bin/*/tlmgr path add')
+  unlink(normalizePath('~/texlive'), recursive = TRUE)
   bookdown:::bookdown_skeleton('book')
   xfun::in_dir('book', for (i in c('pdflatex', 'xelatex', 'lualatex')) {
     bookdown::render_book(
