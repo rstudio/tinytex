@@ -116,11 +116,18 @@ tlmgr_install = function(pkgs = character(), usermode = FALSE, path = !usermode 
     }
     if (Sys.which('gs') == '') warning('GhostScript is required for the epstopdf package.')
   }
-  # only run `tlmgr path add` if the symlink for tlmgr exists under
-  # /usr/local/bin; it may not exist when TinyTeX is installed with --no-path
-  if (missing(path)) path = path && file.exists('/usr/local/bin/tlmgr')
+  if (missing(path)) path = path && need_add_path()
   if (path) tlmgr_path('add')
   invisible(res)
+}
+
+# we should run `tlmgr path add` after `tlmgr install` only when the `tlmgr`
+# found from PATH is a symlink that links to another symlink (typically under
+# TinyTeX/bin/platform/tlmgr, which is typically a symlink to tlmgr.pl)
+need_add_path = function() {
+  (p <- Sys.which('tlmgr')) != '' && is_writable(p) &&
+    (p2 <- Sys.readlink(p)) != '' && basename(Sys.readlink(p2)) == 'tlmgr.pl' &&
+    basename(dirname(dirname(p2))) == 'bin'
 }
 
 is_writable = function(p) file.access(p, 2) == 0
