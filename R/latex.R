@@ -214,8 +214,7 @@ latexmk_emu = function(
   }
   # generate bibliography
   bib_engine = match.arg(bib_engine)
-  if (install_packages && bib_engine == 'biber' && Sys.which('biber') == '')
-    tlmgr_install('biber')
+  if (install_packages && Sys.which(bib_engine) == '') tlmgr_install(bib_engine)
   aux = aux_files[if ((biber <- bib_engine == 'biber')) 'bcf' else 'aux']
   if (file.exists(aux)) {
     if (biber || require_bibtex(aux)) {
