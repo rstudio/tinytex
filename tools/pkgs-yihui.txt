@@ -36,8 +36,8 @@ mathalpha
 mathpazo
 mathtools
 mdframed
-mdwtools
 microtype
+modes
 morefloats
 ms
 multirow
@@ -81,6 +81,5 @@ vmargin
 wallpaper
 wrapfig
 xargs
-xcolor
 xstring
 xwatermark
