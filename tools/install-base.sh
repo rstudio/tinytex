@@ -40,17 +40,16 @@ cd texlive
 TEXLIVE_INSTALL_ENV_NOCHECK=true TEXLIVE_INSTALL_NO_WELCOME=true ../install-tl-*/install-tl -no-gui -profile=../tinytex.profile -repository $TLREPO
 rm -r ../install-tl-* ../tinytex.profile install-tl.log
 
-rm -f bin/man
-cd bin/*
+alias tlmgr='./bin/*/tlmgr'
 
-./tlmgr option repository "$TLREPO"
+tlmgr option repository "$TLREPO"
 
 if [ "$3" != '' ]; then
-  ./tlmgr option repository "$3"
+  tlmgr option repository "$3"
   if [ "$4" != '' ]; then
-    ./tlmgr --repository http://www.preining.info/tlgpg/ install tlgpg
+    tlmgr --repository http://www.preining.info/tlgpg/ install tlgpg
   fi
   # test if the repository is accessible; if not, set the default CTAN repo
-  ./tlmgr update --list || ./tlmgr option repository ctan
+  tlmgr update --list || ./tlmgr option repository ctan
 fi
-./tlmgr install latex-bin luatex xetex
+tlmgr install latex-bin luatex xetex
