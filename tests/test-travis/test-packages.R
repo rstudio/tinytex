@@ -27,6 +27,7 @@ if (.Platform$OS.type == 'unix') xfun::in_dir('../../../tools', {
     # https://github.com/yihui/tinytex/issues/73
     'ec', 'inconsolata', 'times', 'tex', 'helvetic', 'dvips'
   )))
+  tlmgr_install(x1)
   x2 = sort(readLines('pkgs-custom.txt'))
   if (!identical(x1, x2)) stop(
     'pkgs-custom.txt needs to be updated.\n\nPackages required are:\n',
