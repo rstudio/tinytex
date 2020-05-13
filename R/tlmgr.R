@@ -123,6 +123,8 @@ tlmgr_install = function(pkgs = character(), usermode = FALSE, path = !usermode 
   invisible(res)
 }
 
+is_writable = function(p) file.access(p, 2) == 0
+
 # check of certain LaTeX packages are installed: if installed, `tlmgr info pkgs`
 # should return `pkgs`
 check_installed = function(pkgs) {

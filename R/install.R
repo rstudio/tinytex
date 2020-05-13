@@ -103,7 +103,7 @@ install_tinytex = function(
       if (Sys.which(downloader) == '') stop(sprintf(
         "'%s' is not found but required to install TinyTeX", downloader
       ), call. = FALSE)
-      if (macos && file.access('/usr/local/bin', 2) != 0) {
+      if (macos && !is_writable('/usr/local/bin')) {
         chown_cmd = 'chown -R `whoami`:admin /usr/local/bin'
         message(
           'The directory /usr/local/bin is not writable. I recommend that you ',

@@ -184,7 +184,7 @@ latexmk_emu = function(
             pkgs_last <<- pkgs
             return(run_engine())
           }
-        } else if (file.access(Sys.which('tlmgr'), 2) == 0) {
+        } else if (is_writable(Sys.which('tlmgr'))) {
           # chances are you are the sysadmin, and don't need ~/.TinyTeX
           if (delete_texmf_user()) return(run_engine())
         }
