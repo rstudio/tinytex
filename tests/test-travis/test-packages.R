@@ -21,4 +21,12 @@ if (.Platform$OS.type == 'unix') xfun::in_dir('../../../tools', {
     'pkgs-custom.txt needs to be updated.\n\nPackages required are:\n',
     paste(x1, collapse = '\n')
   )
+
+  # any new packages need to be added to pkgs-yihui.txt?
+  rmarkdown::render('test-basic.Rmd', 'beamer_presentation')
+  x3 = sort(setdiff(tinytex::tl_pkgs(), c(x1, x0)))
+  x4 = sort(readLines('pkgs-yihui.txt'))
+  if (length(x5 <- setdiff(x3, x4))) stop(
+    'pkgs-yihui.txt needs to include:\n', paste(x5, collapse = '\n')
+  )
 })
