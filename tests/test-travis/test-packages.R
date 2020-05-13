@@ -24,8 +24,8 @@ if (.Platform$OS.type == 'unix') xfun::in_dir('../../../tools', {
     setdiff(tinytex::tl_pkgs(), x0),
     'latexmk',  # https://github.com/yihui/tinytex/issues/51
     'float', # https://github.com/yihui/tinytex/issues/122
-    'inconsolata', 'times', 'tex', 'helvetic', 'dvips', # https://github.com/yihui/tinytex/issues/73
-    NULL
+    # https://github.com/yihui/tinytex/issues/73
+    'ec', 'inconsolata', 'times', 'tex', 'helvetic', 'dvips'
   )))
   x2 = sort(readLines('pkgs-custom.txt'))
   if (!identical(x1, x2)) stop(
@@ -34,7 +34,7 @@ if (.Platform$OS.type == 'unix') xfun::in_dir('../../../tools', {
   )
 
   # any new packages need to be added to pkgs-yihui.txt?
-  rmarkdown::render('test-basic.Rmd', 'beamer_presentation')
+  rmarkdown::render('test-basic.Rmd', 'beamer_presentation', quiet = TRUE)
   x3 = sort(setdiff(tinytex::tl_pkgs(), c(x1, x0)))
   x4 = sort(readLines('pkgs-yihui.txt'))
   if (length(x5 <- setdiff(x3, x4))) stop(

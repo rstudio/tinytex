@@ -8,6 +8,7 @@ bigintcalc
 bitset
 booktabs
 dvips
+ec
 epstopdf-pkg
 etexcmds
 etoolbox
