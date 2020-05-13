@@ -1,0 +1,16 @@
+---
+title: A basic R Markdown document
+output:
+  pdf_document: default
+  beamer_presentation: default
+---
+
+# Section One
+
+Hello world!
+
+```{r}
+1 + 1
+knitr::kable(head(iris))
+plot(cars)
+```
