@@ -3,7 +3,8 @@
 if (.Platform$OS.type == 'unix') xfun::in_dir('../../../tools', {
   system('sh install-base.sh && ./texlive/bin/*/tlmgr path add')
   unlink(normalizePath('~/texlive'), recursive = TRUE)
-  x0 = tinytex::tl_pkgs()  # packages from the infraonly scheme
+  x0 = tinytex::tl_pkgs()  # packages from the minimal installation
+  cat('Base packages are:', sort(x0))
 
   # render some Rmd files to automatically install LaTeX packages to TinyTeX
   rmarkdown::render('test-basic.Rmd', 'pdf_document')
@@ -16,7 +17,13 @@ if (.Platform$OS.type == 'unix') xfun::in_dir('../../../tools', {
   })
 
   # now see which packages are required to compile the above Rmd files
-  x1 = sort(setdiff(tinytex::tl_pkgs(), x0))
+  x1 = sort(unique(c(
+    setdiff(tinytex::tl_pkgs(), x0),
+    'latexmk',  # https://github.com/yihui/tinytex/issues/51
+    'float', # https://github.com/yihui/tinytex/issues/122
+    'inconsolata', 'times', 'tex', 'helvetic', 'dvips', # https://github.com/yihui/tinytex/issues/73
+    NULL
+  )))
   x2 = sort(readLines('pkgs-custom.txt'))
   if (!identical(x1, x2)) stop(
     'pkgs-custom.txt needs to be updated.\n\nPackages required are:\n',
