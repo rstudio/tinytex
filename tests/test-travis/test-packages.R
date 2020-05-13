@@ -4,12 +4,12 @@ if (.Platform$OS.type == 'unix') xfun::in_dir('../../../tools', {
   system('sh install-base.sh && ./texlive/bin/*/tlmgr path add')
   unlink(normalizePath('~/texlive'), recursive = TRUE)
   bookdown:::bookdown_skeleton('book')
-  for (i in c('pdflatex', 'xelatex', 'lualatex')) xfun::in_dir('book', {
+  xfun::in_dir('book', lapply(c('pdflatex', 'xelatex', 'lualatex'), function(i) {
     bookdown::render_book(
       'index.Rmd', 'bookdown::pdf_book', output_options = list(latex_engine = i),
       quiet = TRUE
     )
-  })
+  }))
   x1 = sort(tinytex::tl_pkgs())
   x2 = sort(readLines('pkgs-custom.txt'))
   if (!identical(x1, x2)) stop(
