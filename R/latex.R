@@ -205,16 +205,23 @@ latexmk_emu = function(
   }
   run_engine()
   if (install_packages) check_babel(logfile)
+
+  # install commands like bibtex, biber, and makeindex if necessary
+  install_cmd = function(cmd) {
+    if (install_packages && Sys.which(cmd) == '') parse_install(file = cmd)
+  }
+
   # generate index
   if (file.exists(idx <- aux_files['idx'])) {
     idx_engine = getOption('tinytex.makeindex', 'makeindex')
+    install_cmd(idx_engine)
     system2_quiet(idx_engine, c(getOption('tinytex.makeindex.args'), shQuote(idx)), error = {
       stop("Failed to build the index via ", idx_engine, call. = FALSE)
     })
   }
   # generate bibliography
   bib_engine = match.arg(bib_engine)
-  if (install_packages && Sys.which(bib_engine) == '') tlmgr_install(bib_engine)
+  install_cmd(bib_engine)
   aux = aux_files[if ((biber <- bib_engine == 'biber')) 'bcf' else 'aux']
   if (file.exists(aux)) {
     if (biber || require_bibtex(aux)) {
