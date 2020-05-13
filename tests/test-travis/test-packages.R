@@ -7,7 +7,7 @@ if (.Platform$OS.type == 'unix') xfun::in_dir('../../../tools', {
   cat('Base packages are:', sort(x0))
 
   # render some Rmd files to automatically install LaTeX packages to TinyTeX
-  rmarkdown::render('test-basic.Rmd', 'pdf_document')
+  rmarkdown::render('test-basic.Rmd', 'pdf_document', quiet = TRUE)
   bookdown:::bookdown_skeleton('book')
   xfun::in_dir('book', for (i in c('pdflatex', 'xelatex', 'lualatex')) {
     bookdown::render_book(
@@ -15,6 +15,9 @@ if (.Platform$OS.type == 'unix') xfun::in_dir('../../../tools', {
       quiet = TRUE, clean_envir = FALSE
     )
   })
+
+  # report the size of TeX Live after installing the above packages
+  system('du -sh texlive')
 
   # now see which packages are required to compile the above Rmd files
   x1 = sort(unique(c(
