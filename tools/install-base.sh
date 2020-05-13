@@ -40,7 +40,7 @@ cd texlive
 TEXLIVE_INSTALL_ENV_NOCHECK=true TEXLIVE_INSTALL_NO_WELCOME=true ../install-tl-*/install-tl -no-gui -profile=../tinytex.profile -repository $TLREPO
 rm -r ../install-tl-* ../tinytex.profile install-tl.log
 
-ls -l bin
+rm -f bin/man
 cd bin/*
 
 ./tlmgr option repository "$TLREPO"
