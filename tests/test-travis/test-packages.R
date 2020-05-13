@@ -12,8 +12,7 @@ if (.Platform$OS.type == 'unix') xfun::in_dir('../../../tools', {
   x1 = sort(tinytex::tl_pkgs())
   x2 = sort(readLines('pkgs-custom.txt'))
   if (!identical(x1, x2)) stop(
-    'pkgs-custom.txt needs to be updated.\n\nPackages installed are:\n',
-    paste(x2, collapse = '\n'), '\n\nPackages required are:\n',
+    'pkgs-custom.txt needs to be updated.\n\nPackages required are:\n',
     paste(x1, collapse = '\n')
   )
 })
