@@ -2,8 +2,6 @@ language: r
 sudo: false
 cache: packages
 pandoc_version: 2.7.3
-r_packages:
-  - bookdown
 
 env:
   global:
