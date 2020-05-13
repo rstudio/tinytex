@@ -9,9 +9,10 @@ if (.Platform$OS.type == 'unix') xfun::in_dir('../../../tools', {
   rmarkdown::render('test-basic.Rmd', 'pdf_document')
   bookdown:::bookdown_skeleton('book')
   xfun::in_dir('book', for (i in c('pdflatex', 'xelatex', 'lualatex')) {
-    x = readLines('_output.yml')
-    writeLines(gsub('^(\\s+latex_engine:).+$', paste('\\1', i), x), '_output.yml')
-    bookdown::render_book('index.Rmd', 'bookdown::pdf_book', quiet = TRUE)
+    bookdown::render_book(
+      'index.Rmd', 'bookdown::pdf_book', output_options = list(latex_engine = i),
+      quiet = TRUE, clean_envir = FALSE
+    )
   })
 
   # now see which packages are required to compile the above Rmd files
