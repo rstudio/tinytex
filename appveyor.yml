@@ -20,7 +20,6 @@ build_script:
 
 before_test:
   - choco install pandoc --version 2.7.3
-  - ps: $env:Path += ";C:\Program Files (x86)\Pandoc\"
   - pandoc -v
 
 test_script:
