@@ -1,6 +1,6 @@
 # TinyTeX
 
-[![Build Status](https://travis-ci.org/yihui/tinytex.svg)](https://travis-ci.org/yihui/tinytex)
+[![Build Status](https://travis-ci.com/yihui/tinytex.svg)](https://travis-ci.com/yihui/tinytex)
 [![AppVeyor build status](https://ci.appveyor.com/api/projects/status/github/yihui/tinytex?svg=true&branch=master)](https://ci.appveyor.com/project/yihui/tinytex)
 [![Coverage status](https://codecov.io/gh/yihui/tinytex/branch/master/graph/badge.svg)](https://codecov.io/github/yihui/tinytex?branch=master)
 [![Downloads from the RStudio CRAN mirror](https://cranlogs.r-pkg.org/badges/tinytex)](https://cran.r-project.org/package=tinytex)
