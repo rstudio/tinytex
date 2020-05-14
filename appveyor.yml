@@ -27,6 +27,7 @@ test_script:
   - travis-tool.sh install_deps
   - travis-tool.sh run_tests
   - R CMD INSTALL .
+  - Rscript "tools/test-basic.R"
   - Rscript -e "tinytex::install_tinytex(force = TRUE)"
 
 artifacts:
