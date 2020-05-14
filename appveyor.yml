@@ -18,6 +18,11 @@ build_script:
   - echo | tools\install-windows.bat
   - Rscript -e "update.packages(ask = FALSE, checkBuilt = TRUE, repos = 'https://cran.rstudio.com')"
 
+before_test:
+  - choco install pandoc --version 2.7.3
+  - ps: $env:Path += ";C:\Program Files (x86)\Pandoc\"
+  - pandoc -v
+
 test_script:
   - tlmgr --version
   - pdflatex --version
