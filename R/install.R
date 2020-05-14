@@ -141,6 +141,7 @@ install_tinytex = function(
         target = user_dir
       }
       bin = file.path(list.files(file.path(target, 'bin'), full.names = TRUE), 'tlmgr')
+      bin = bin[file_test('-x', bin)][1]
       if (add_path) system2(bin, c('path', 'add'))
       if (length(extra_packages)) system2(bin, c('install', extra_packages))
       add_texmf(bin)
