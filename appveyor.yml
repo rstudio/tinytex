@@ -30,9 +30,9 @@ test_script:
   - Rscript -e "tinytex::tlmgr_install(readLines('tools/pkgs-yihui.txt'))"
   - 7z a TinyTeX.zip %APPDATA%\\TinyTeX
   - travis-tool.sh install_deps
-  - travis-tool.sh run_tests
   - R CMD INSTALL .
   - Rscript "tools/test-basic.R"
+  - travis-tool.sh run_tests
   - Rscript -e "tinytex::install_tinytex(force = TRUE)"
 
 artifacts:
