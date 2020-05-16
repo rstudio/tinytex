@@ -11,4 +11,5 @@ if [ ! -d ~/.TinyTeX/bin ]; then
 fi
 
 cd ~/.TinyTeX/bin/*/
+./tlmgr option sys_bin ~/bin
 ./tlmgr path add
