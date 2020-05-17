@@ -131,17 +131,14 @@ install_tinytex = function(
         )
       ))
       if (res != 0) stop('Failed to install TinyTeX', call. = FALSE)
-      target = normalizePath(
-        if (macos) '~/Library/TinyTeX' else '~/.TinyTeX'
-      )
+      target = normalizePath(default_inst)
       if (!dir_exists(target)) stop('Failed to install TinyTeX.')
       if (!user_dir %in% c('', target)) {
         dir.create(dirname(user_dir), showWarnings = FALSE, recursive = TRUE)
         dir_rename(target, user_dir)
         target = user_dir
       }
-      bin = file.path(list.files(file.path(target, 'bin'), full.names = TRUE), 'tlmgr')
-      bin = bin[file_test('-x', bin)][1]
+      bin = find_tlmgr(target)
       if (add_path) system2(bin, c('path', 'add'))
       if (length(extra_packages)) system2(bin, c('install', extra_packages))
       add_texmf(bin)
@@ -185,7 +182,7 @@ install_tinytex = function(
       })
       unlink('install-tl-*', recursive = TRUE)
       in_dir(target, {
-        bin_tlmgr = file.path('bin', 'win32', 'tlmgr')
+        bin_tlmgr = find_tlmgr('.')
         tlmgr = function(...) system2(bin_tlmgr, ...)
         if (not_ctan) {
           tlmgr(c('option', 'repository', shQuote(repository)))
@@ -202,6 +199,27 @@ install_tinytex = function(
     },
     stop('This platform is not supported.')
   )
+}
+
+win_app_dir = function(..., error = TRUE) {
+  d = Sys.getenv('APPDATA')
+  if (d == '') {
+    if (error) stop('Environment variable "APPDATA" not set.')
+    return(d)
+  }
+  file.path(d, ...)
+}
+
+os_index = if (is_windows()) 1 else if (is_linux()) 2 else if (is_macos()) 3
+
+default_inst = c(
+  win_app_dir('TinyTeX', error = FALSE), '~/.TinyTeX', '~/Library/TinyTeX'
+)[os_index]
+
+find_tlmgr = function(dir = default_inst) {
+  bin = file.path(list.files(file.path(dir, 'bin'), full.names = TRUE), 'tlmgr')
+  if (is_windows()) bin = paste0(bin, '.bat')
+  bin[file_test('-x', bin)][1]
 }
 
 #' @rdname install_tinytex
@@ -261,15 +279,6 @@ reinstall_tinytex = function(packages = TRUE, dir = tinytex_root(), ...) {
   }
   uninstall_tinytex()
   install_tinytex(extra_packages = pkgs, dir = dir, ...)
-}
-
-win_app_dir = function(..., error = TRUE) {
-  d = Sys.getenv('APPDATA')
-  if (d == '') {
-    if (error) stop('Environment variable "APPDATA" not set.')
-    return(d)
-  }
-  file.path(d, ...)
 }
 
 #' @param error Whether to signal an error if TinyTeX is not found.

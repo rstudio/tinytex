@@ -53,11 +53,9 @@ tlmgr = function(args = character(), usermode = FALSE, ..., .quiet = FALSE) {
 
 #' @importFrom xfun is_linux is_unix is_macos is_windows with_ext
 tweak_path = function() {
-  # check if ~/bin/tlmgr exists (created by TinyTeX by default)
-  f = if (is_linux()) '~/bin/tlmgr' else if (is_windows()) {
-    win_app_dir('TinyTeX', 'bin', 'win32', 'tlmgr.bat', error = FALSE)
-  } else if (is_macos()) '~/Library/TinyTeX/bin/x86_64-darwin/tlmgr' else return()
-  if (!file_test('-x', f)) f = getOption('tinytex.tlmgr.path', '')
+  # check tlmgr exists under the default installation dir of TinyTeX, or the
+  # global option tinytex.tlmgr.path
+  f = getOption('tinytex.tlmgr.path', find_tlmgr())
   if (!file_test('-x', f)) return()
   bin = normalizePath(dirname(f))
   # if the pdftex from TinyTeX is already on PATH, no need to adjust the PATH
