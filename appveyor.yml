@@ -1,39 +1,79 @@
+image:
+  - Visual Studio 2019
+  - macOS
+
 environment:
-  PATH: "%APPDATA%\\TinyTeX\\bin\\win32;%PATH%"
-
-init:
-  ps: |
-        $ErrorActionPreference = "Stop"
-        Invoke-WebRequest http://raw.github.com/krlmlr/r-appveyor/master/scripts/appveyor-tool.ps1 -OutFile "..\appveyor-tool.ps1"
-        Import-Module '..\appveyor-tool.ps1'
-
-install:
-  ps: Bootstrap
-
-cache:
-  - C:\RLibrary
-
-build_script:
-  - set PATH=%PATH:C:\MinGW\msys\1.0\bin;=%
-  - echo | tools\install-windows.bat
-  - Rscript -e "update.packages(ask = FALSE, checkBuilt = TRUE, repos = 'https://cran.rstudio.com')"
-
-before_test:
-  - choco install pandoc --version 2.7.3
-  - pandoc -v
+  matrix:
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+      PATH: "%APPDATA%\\TinyTeX\\bin\\win32;%PATH%"
 
 test_script:
   - tlmgr --version
   - pdflatex --version
   - xelatex --version
   - Rscript -e "tinytex::tlmgr_install(readLines('tools/pkgs-yihui.txt'))"
-  - 7z a TinyTeX.zip %APPDATA%\\TinyTeX
-  - travis-tool.sh install_deps
-  - R CMD INSTALL .
-  - Rscript "tools/test-basic.R"
-  - travis-tool.sh run_tests
-  - Rscript -e "tinytex::install_tinytex(force = TRUE)"
 
-artifacts:
-  - path: TinyTeX.zip
-    name: TinyTeX
+for:
+-
+  matrix:
+    only:
+      - image: Visual Studio 2019
+
+  init:
+    ps: |
+          $ErrorActionPreference = "Stop"
+          Invoke-WebRequest http://raw.github.com/krlmlr/r-appveyor/master/scripts/appveyor-tool.ps1 -OutFile "..\appveyor-tool.ps1"
+          Import-Module '..\appveyor-tool.ps1'
+
+  install:
+    ps: Bootstrap
+
+  cache:
+    - C:\RLibrary
+
+  build_script:
+    - set PATH=%PATH:C:\MinGW\msys\1.0\bin;=%
+    - echo | tools\install-windows.bat
+    - Rscript -e "update.packages(ask = FALSE, checkBuilt = TRUE, repos = 'https://cran.rstudio.com')"
+
+  before_test:
+    - choco install pandoc --version 2.7.3
+    - pandoc -v
+
+  test_script:
+    - 7z a TinyTeX.zip %APPDATA%\\TinyTeX
+    - travis-tool.sh install_deps
+    - R CMD INSTALL .
+    - Rscript "tools/test-basic.R"
+    - travis-tool.sh run_tests
+    - Rscript -e "tinytex::install_tinytex(force = TRUE)"
+
+  artifacts:
+    - path: TinyTeX.zip
+      name: TinyTeX
+
+-
+  matrix:
+    only:
+      - image: macOS
+
+  cache:
+    - ~/R
+
+  install:
+    - brew install pandoc pandoc-citeproc
+    - brew cask install r
+    - echo 'R_LIBS_USER="~/R"' > ~/.Renviron
+    - Rscript -e "install.packages('tinytex', dependencies = TRUE)"
+    - R CMD INSTALL .
+
+  build_script:
+    - ./tools/install_unx.sh
+    - tar zcf TinyTeX-macOS.tar.gz -C ~/Library TinyTeX
+
+  test_script:
+    - Rscript "tools/test-basic.R"
+
+  artifacts:
+    - path: TinyTeX-macOS.tar.gz
+      name: TinyTeX-macOS
