@@ -56,9 +56,7 @@ for:
 
   install:
     - brew cask install r
-    - echo 'options(repos = "https://cran.rstudio.com")' > ~/.Rprofile
-    - mkdir -p ~/R
-    - echo 'R_LIBS_USER="~/R"' > ~/.Renviron
+    - Rscript tools/config.R
     - Rscript -e "install.packages('tinytex', dependencies = TRUE)"
     - R CMD INSTALL .
 
@@ -84,9 +82,7 @@ for:
   install:
     - sudo apt -y -q update
     - sudo apt -y -q install r-base-dev pandoc pandoc-citeproc
-    - echo 'options(repos = "https://cran.rstudio.com")' > ~/.Rprofile
-    - mkdir -p ~/R
-    - echo 'R_LIBS_USER="~/R"' > ~/.Renviron
+    - Rscript tools/config.R
     - Rscript -e "install.packages('tinytex', dependencies = TRUE)"
     - R CMD INSTALL .
 
