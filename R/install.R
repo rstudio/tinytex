@@ -355,7 +355,7 @@ install_prebuilt = function(path) {
     dir.create('~/bin', FALSE, TRUE)
     tlmgr(c('option', 'sys_bin', '~/bin'))
   }
-  tlmgr_path(); texhash(); fmtutil(); updmap(); fc_cache()
+  tlmgr_path(); texhash(); fmtutil(stdout = FALSE); updmap(); fc_cache()
 }
 
 download_installer = function(file) {
