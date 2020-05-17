@@ -58,7 +58,7 @@ for:
     - R CMD INSTALL .
 
   build_script:
-    - ./tools/install_unx.sh
+    - ./tools/install-unx.sh
 
   test_script:
     - Rscript "tools/test-basic.R"
