@@ -347,11 +347,11 @@ install_yihui_pkgs = function() {
 
 # install a prebuilt version of TinyTeX
 install_prebuilt = function(path) {
-  i = if (is_windows()) 1 else if (is_linux()) 2 else if (is_macos()) 3
-  if (missing(path)) path = paste0('TinyTeX.', c('zip', 'tar.gz', 'tgz')[i])
+  if (missing(path)) path = paste0('TinyTeX.', c('zip', 'tar.gz', 'tgz')[os_index])
   if (!file.exists(path)) download_installer(path)
-  untar(path, exdir = path.expand(c(win_app_dir(), '~', '~/Library')[i]))
-  if (i == 2) {
+  extract = if (grepl('[.]zip$', path)) unzip else untar
+  extract(path, exdir = path.expand(dirname(default_inst)))
+  if (os_index == 2) {
     dir.create('~/bin', FALSE, TRUE)
     tlmgr(c('option', 'sys_bin', '~/bin'))
   }
