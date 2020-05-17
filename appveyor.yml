@@ -52,7 +52,7 @@ for:
     - $HOME/R
 
   install:
-    - brew install pandoc pandoc-citeproc p7zip
+    - brew install pandoc pandoc-citeproc p7zip > /dev/null
     - brew cask install r
     - echo 'options(repos = "https://cran.rstudio.com")' > ~/.Rprofile
     - mkdir -p ~/R
@@ -80,8 +80,8 @@ for:
     - $HOME/R
 
   install:
-    - sudo apt -y update
-    - sudo apt -y install r-base-dev pandoc pandoc-citeproc
+    - sudo apt -y -q update
+    - sudo apt -y -q install r-base-dev pandoc pandoc-citeproc
     - echo 'options(repos = "https://cran.rstudio.com")' > ~/.Rprofile
     - mkdir -p ~/R
     - echo 'R_LIBS_USER="~/R"' > ~/.Renviron
