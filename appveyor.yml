@@ -48,10 +48,10 @@ for:
       - image: macOS
 
   cache:
-    - ~/R
+    - $HOME/R
 
   install:
-    - brew install pandoc pandoc-citeproc
+    - brew install pandoc pandoc-citeproc p7zip
     - brew cask install r
     - echo 'options(repos = "https://cran.rstudio.com")' > ~/.Rprofile
     - mkdir -p ~/R
