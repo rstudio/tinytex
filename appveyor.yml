@@ -7,12 +7,6 @@ environment:
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
       PATH: "%APPDATA%\\TinyTeX\\bin\\win32;%PATH%"
 
-test_script:
-  - tlmgr --version
-  - pdflatex --version
-  - xelatex --version
-  - Rscript -e "tinytex::tlmgr_install(readLines('tools/pkgs-yihui.txt'))"
-
 for:
 -
   matrix:
@@ -41,10 +35,10 @@ for:
     - pandoc -v
 
   test_script:
-    - 7z a TinyTeX.zip %APPDATA%\\TinyTeX
     - travis-tool.sh install_deps
     - R CMD INSTALL .
     - Rscript "tools/test-basic.R"
+    - 7z a TinyTeX.zip %APPDATA%\\TinyTeX
     - travis-tool.sh run_tests
     - Rscript -e "tinytex::install_tinytex(force = TRUE)"
 
@@ -69,10 +63,10 @@ for:
 
   build_script:
     - ./tools/install_unx.sh
-    - tar zcf TinyTeX-macOS.tar.gz -C ~/Library TinyTeX
 
   test_script:
     - Rscript "tools/test-basic.R"
+    - tar zcf TinyTeX-macOS.tar.gz -C ~/Library TinyTeX
 
   artifacts:
     - path: TinyTeX-macOS.tar.gz

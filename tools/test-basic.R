@@ -1,3 +1,9 @@
+for (i in c('tlmgr', 'pdflatex', 'xelatex')) {
+  cat('\nThe version of', i, '\n\n')
+  system2(i, '--version')
+}
+tinytex::tlmgr_install(readLines('tools/pkgs-yihui.txt'))
+
 # make sure a basic Rmd document compiles with TinyTeX
 options(tinytex.verbose = TRUE)
 for (i in c('pdflatex', 'xelatex', 'lualatex')) {
