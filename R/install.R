@@ -337,35 +337,20 @@ install_yihui_pkgs = function() {
 }
 
 # install a prebuilt version of TinyTeX
-install_prebuilt = function() {
-  if (is_windows()) {
-    install_windows_zip()
-  } else if (is_linux()) {
-    system('wget -qO- https://yihui.org/gh/tinytex/tools/download-travis-linux.sh | sh')
-  } else if (is_macos()) {
-    install_macos_tgz()
-  } else {
-    stop('TinyTeX was not prebuilt for this platform.')
+install_prebuilt = function(path) {
+  i = if (is_windows()) 1 else if (is_linux()) 2 else if (is_macos()) 3
+  if (missing(path)) path = paste0('TinyTeX.', c('zip', 'tar.gz', 'tgz')[i])
+  if (!file.exists(path)) download_installer(path)
+  untar(path, exdir = path.expand(c(win_app_dir(), '~', '~/Library')[i]))
+  if (i == 2) {
+    dir.create('~/bin', FALSE, TRUE)
+    tlmgr(c('option', 'sys_bin', '~/bin'))
   }
-}
-
-download_installer = function(file, extra = '') {
-  download_file(paste0(
-    'https://ci.appveyor.com/api/projects/yihui/tinytex/artifacts/', file, URLencode(extra)
-  ), file)
-}
-
-# if you have already downloaded the zip archive, use this function to install it
-install_windows_zip = function(path = 'TinyTeX.zip') {
-  if (missing(path) && !file.exists(path)) download_installer(path, '?job=image: Visual Studio 2019')
-  unzip(path, exdir =  win_app_dir())
   tlmgr_path(); texhash(); fmtutil(); updmap(); fc_cache()
 }
 
-install_macos_tgz = function(path = 'TinyTeX.tar.gz') {
-  if (missing(path) && !file.exists(path)) download_installer(path, '?job=image: macos')
-  untar(path, exdir = path.expand('~/Library'))
-  tlmgr_path()
+download_installer = function(file) {
+  download_file(paste0('https://yihui.org/tinytex/', file), file)
 }
 
 #' Copy TinyTeX to another location and use it in another system
