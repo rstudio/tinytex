@@ -51,8 +51,10 @@ for:
   cache:
     - $HOME/R
 
-  install:
+  init:
     - brew install pandoc pandoc-citeproc p7zip > /dev/null
+
+  install:
     - brew cask install r
     - echo 'options(repos = "https://cran.rstudio.com")' > ~/.Rprofile
     - mkdir -p ~/R
