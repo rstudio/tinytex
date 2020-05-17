@@ -80,8 +80,8 @@ for:
     - $HOME/R
 
   install:
-    - sudo apt update
-    - sudo apt install r-base-dev pandoc pandoc-citeproc
+    - sudo apt -y update
+    - sudo apt -y install r-base-dev pandoc pandoc-citeproc
     - echo 'options(repos = "https://cran.rstudio.com")' > ~/.Rprofile
     - mkdir -p ~/R
     - echo 'R_LIBS_USER="~/R"' > ~/.Renviron
