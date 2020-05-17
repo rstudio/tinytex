@@ -80,8 +80,8 @@ for:
     - $HOME/R
 
   install:
-    - sudo apt -y -q update
-    - sudo apt -y -q install r-base-dev pandoc pandoc-citeproc
+    - sudo apt -qq update > /dev/null
+    - sudo apt -qq install r-base-dev pandoc pandoc-citeproc
     - Rscript tools/config.R
     - Rscript -e "install.packages('tinytex', dependencies = TRUE)"
     - R CMD INSTALL .
