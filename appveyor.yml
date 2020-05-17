@@ -54,6 +54,7 @@ for:
     - brew install pandoc pandoc-citeproc
     - brew cask install r
     - echo 'options(repos = "https://cran.rstudio.com")' > ~/.Rprofile
+    - mkdir -p ~/R
     - echo 'R_LIBS_USER="~/R"' > ~/.Renviron
     - Rscript -e "install.packages('tinytex', dependencies = TRUE)"
     - R CMD INSTALL .
