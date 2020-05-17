@@ -30,6 +30,7 @@ for:
     - pandoc -v
 
   test_script:
+    - set PATH=%APPDATA%\TinyTeX\bin\win32;%PATH%
     - travis-tool.sh install_deps
     - R CMD INSTALL .
     - Rscript "tools/test-basic.R"
