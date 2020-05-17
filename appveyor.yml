@@ -1,5 +1,6 @@
 image:
-  - macos
+  - macOS
+  - Ubuntu
   - Visual Studio 2019
 
 for:
@@ -64,7 +65,35 @@ for:
 
   test_script:
     - Rscript "tools/test-basic.R"
-    - tar zcf TinyTeX.tar.gz -C ~/Library TinyTeX
+    - tar zcf TinyTeX.tgz -C ~/Library TinyTeX
+
+  artifacts:
+    - path: TinyTeX.tgz
+      name: TinyTeX
+
+-
+  matrix:
+    only:
+      - image: Ubuntu
+
+  cache:
+    - $HOME/R
+
+  install:
+    - sudo apt update
+    - sudo apt install r-base-dev pandoc pandoc-citeproc
+    - echo 'options(repos = "https://cran.rstudio.com")' > ~/.Rprofile
+    - mkdir -p ~/R
+    - echo 'R_LIBS_USER="~/R"' > ~/.Renviron
+    - Rscript -e "install.packages('tinytex', dependencies = TRUE)"
+    - R CMD INSTALL .
+
+  build_script:
+    - ./tools/install-unx.sh
+
+  test_script:
+    - Rscript "tools/test-basic.R"
+    - tar zcf TinyTeX.tar.gz -C ~ .TinyTeX
 
   artifacts:
     - path: TinyTeX.tar.gz
