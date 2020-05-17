@@ -64,8 +64,8 @@ for:
 
   test_script:
     - Rscript "tools/test-basic.R"
-    - tar zcf TinyTeX-macOS.tar.gz -C ~/Library TinyTeX
+    - tar zcf TinyTeX.tar.gz -C ~/Library TinyTeX
 
   artifacts:
-    - path: TinyTeX-macOS.tar.gz
-      name: TinyTeX-macOS
+    - path: TinyTeX.tar.gz
+      name: TinyTeX
