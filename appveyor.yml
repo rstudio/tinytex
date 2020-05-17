@@ -1,11 +1,6 @@
 image:
+  - macos
   - Visual Studio 2019
-  - macOS
-
-environment:
-  matrix:
-    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
-      PATH: "%APPDATA%\\TinyTeX\\bin\\win32;%PATH%"
 
 for:
 -
