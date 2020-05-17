@@ -37,6 +37,7 @@ mathpazo
 mathtools
 mdframed
 microtype
+modes
 morefloats
 ms
 multirow
