@@ -1,4 +1,4 @@
-for (i in c('tlmgr', 'pdflatex', 'xelatex')) {
+for (i in c('tlmgr', 'pdflatex', 'xelatex', 'pandoc')) {
   cat('\nThe version of', i, '\n\n')
   system2(i, '--version')
 }

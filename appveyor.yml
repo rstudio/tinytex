@@ -90,6 +90,7 @@ for:
     - ./tools/install-unx.sh
 
   test_script:
+    - export PATH="$HOME/bin:$PATH"
     - Rscript "tools/test-basic.R"
     - tar zcf TinyTeX.tar.gz -C ~ .TinyTeX
 
