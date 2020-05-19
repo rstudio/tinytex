@@ -60,7 +60,7 @@ tweak_path = function() {
   bin = normalizePath(dirname(f))
   # if the pdftex from TinyTeX is already on PATH, no need to adjust the PATH
   if ((p <- Sys.which('pdftex')) != '') {
-    p2 = xfun::with_ext(file.path(bin, 'pdftex'), xfun::file_ext(p))
+    p2 = with_ext(file.path(bin, 'pdftex'), xfun::file_ext(p))
     if (xfun::same_path(p, p2)) return()
   }
   old = Sys.getenv('PATH')

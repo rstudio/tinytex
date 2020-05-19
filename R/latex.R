@@ -348,7 +348,7 @@ check_inline_math = function(x, f) {
   r = 'l[.][0-9]+\\s*|\\s*[0-9.]+\\\\times.*'
   if (!any('! Missing $ inserted.' == x) || !length(i <- grep(r, x))) return()
   m = gsub(r, '', x[i]); m = m[m != '']
-  s = xfun::with_ext(f, 'Rmd')
+  s = with_ext(f, 'Rmd')
   if (file.exists(s)) message(
     if (length(m)) c('Try to find the following text in ', s, ':\n', paste(' ', m, '\n'), '\n'),
     'You may need to add $ $ around a certain inline R expression `r ` in ', s,
