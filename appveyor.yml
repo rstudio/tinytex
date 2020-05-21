@@ -36,7 +36,7 @@ for:
     - R CMD INSTALL .
     - Rscript "tools/test-basic.R"
     - 7z a TinyTeX.zip %APPDATA%\\TinyTeX
-    - ps: Compress-Archive %APPDATA%\\TinyTeX TinyTeX-ps.zip
+    - ps: Compress-Archive $Env:APPDATA\\TinyTeX TinyTeX-ps.zip
     - travis-tool.sh run_tests
     - Rscript -e "tinytex::install_tinytex(force = TRUE)"
 
