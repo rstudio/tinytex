@@ -2,3 +2,11 @@
 .Rhistory
 .RData
 .Ruserdata
+
+*.aux
+*.bbl
+*.blg
+*.bcf
+*.log
+*.run.xml
+

@@ -1,0 +1,13 @@
+      R Core Team [1].
+
+
+References
+[1]    R Core Team. R: A Language and Environment for Statistical Comput-
+       ing. R Foundation for Statistical Computing. Vienna, Austria, 2016. url:
+       https://www.R-project.org/.
+
+
+
+
+                                        1
+

@@ -32,8 +32,15 @@ lualatex(...)
 \item{engine}{A LaTeX engine (can be set in the global option
 \code{tinytex.engine}, e.g., \code{options(tinytex.engine = 'xelatex')}).}
 
-\item{bib_engine}{A bibliography engine (can be set in the global option
-\code{tinytex.bib_engine}).}
+\item{bib_engine}{A bibliography engine, one of \code{'bibtex'} and
+\code{'biber'} (can be set in the global option
+\code{tinytex.bib_engine}).
+If missing, the engine is inferred from the contents of \code{file}: if
+the file contains \verb{\addbibresource} then the engine is assumed to
+be \code{'biber'} unless \verb{backend=biber} occurs in the optional argument
+to \code{biblatex}, provided the package occurs on one line. Otherwise,
+the engine is assumed to be \code{'bibtex'} if \verb{\bibliography}
+is present in \code{file}.}
 
 \item{engine_args}{Command-line arguments to be passed to \code{engine} (can
 be set in the global option \code{tinytex.engine_args}, e.g.,
