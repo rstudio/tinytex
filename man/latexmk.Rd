@@ -48,7 +48,9 @@ the LaTeX engine when using emulation. You can set the global options
 
 \item{install_packages}{Whether to automatically install missing LaTeX
 packages found by \code{\link{parse_packages}()} from the LaTeX log. This
-argument is only for the emulation mode and TeX Live.}
+argument is only for the emulation mode and TeX Live. Its value can also be
+set via the global option \code{tinytex.install_packages}, e.g.,
+\code{options(tinytex.install_packages = FALSE)}.}
 
 \item{pdf_file}{Path to the PDF output file. By default, it is under the same
 directory as the input \code{file} and also has the same base name. When
