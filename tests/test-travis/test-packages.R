@@ -35,10 +35,22 @@ if (.Platform$OS.type == 'unix') xfun::in_dir('../../../tools', {
   )
 
   # any new packages need to be added to pkgs-yihui.txt?
-  rmarkdown::render('test-basic.Rmd', 'beamer_presentation', quiet = TRUE)
-  x3 = sort(setdiff(tinytex::tl_pkgs(), c(x1, x0)))
-  x4 = sort(readLines('pkgs-yihui.txt'))
-  if (length(x5 <- setdiff(x3, x4))) stop(
-    'pkgs-yihui.txt needs to include:\n', paste(x5, collapse = '\n')
-  )
+  tlmgr_install(readLines('pkgs-yihui.txt'))
+  x3 = tinytex::tl_pkgs()
+  build_more = function() {
+    rmarkdown::render('test-basic.Rmd', 'beamer_presentation', quiet = TRUE)
+  }
+  # do not automatically install missing LaTeX packages; if the compilation
+  # fails, try to install packages and compile again; if it succeeds, output the
+  # new packages required
+  opts = options(tinytex.install_packages = FALSE)
+  tryCatch(build_more(), error = function(e) {
+    message(e)
+    options(opts)
+    build_more()
+    x4 = tinytex::tl_pkgs()
+    if (length(x5 <- setdiff(x4, x3))) stop(
+      'pkgs-yihui.txt needs to include:\n', paste(x5, collapse = '\n')
+    )
+  })
 })
