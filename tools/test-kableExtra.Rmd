@@ -5,8 +5,7 @@ output: pdf_document
 
 ```{r}
 library(knitr)
-options(repos = c(CRAN = 'https://cran.rstudio.com'))
-xfun::pkg_attach2('kableExtra')
+library(kableExtra)
 kable(head(iris)) %>%
   kable_styling(latex_options = "striped")
 kable(head(iris, 5), booktabs = TRUE) %>%
