@@ -2,8 +2,6 @@ language: r
 sudo: false
 cache: packages
 pandoc_version: 2.7.3
-r_packages:
-  - kableExtra
 
 env:
   global:
@@ -12,6 +10,9 @@ env:
 before_install:
   - "curl -L https://xran.yihui.org/.gitconfig -o ~/.gitconfig"
   - Rscript -e 'if (!require("covr")) install.packages("covr")'
+
+before_script:
+  - Rscript tools/test-packages.R
 
 after_success:
   - Rscript -e 'covr::codecov()'

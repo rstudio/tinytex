@@ -5,6 +5,7 @@ output: pdf_document
 
 ```{r}
 library(knitr)
+xfun::pkg_load2('kableExtra')
 library(kableExtra)
 kable(head(iris)) %>%
   kable_styling(latex_options = "striped")
