@@ -45,20 +45,12 @@ build_more = function() {
   render('test-basic.Rmd', 'beamer_presentation', quiet = TRUE)
   render('test-kableExtra.Rmd', quiet = TRUE)
 }
-# do not automatically install missing LaTeX packages; if the compilation
-# fails, try to install packages and compile again; if it succeeds, output the
-# new packages required
-opts = options(tinytex.install_packages = FALSE)
-tryCatch(build_more(), error = function(e) {
-  message(e)
-  options(opts)
-  build_more()
-  x4 = tinytex::tl_pkgs()
-  if (length(x5 <- setdiff(x4, x3))) stop(
-    'pkgs-yihui.txt needs to include:\n', paste(x5, collapse = '\n')
-  )
-})
-options(opts)
+build_more()
+# were there any new packages installed?
+x4 = tinytex::tl_pkgs()
+if (length(x5 <- setdiff(x4, x3))) stop(
+  'pkgs-yihui.txt needs to include:\n', paste(x5, collapse = '\n')
+)
 
 unlink('texlive', recursive = TRUE)
 setwd(owd)
