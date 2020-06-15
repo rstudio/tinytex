@@ -29,7 +29,7 @@ x1 = sort(unique(c(
   # https://github.com/yihui/tinytex/issues/73
   'ec', 'inconsolata', 'times', 'tex', 'helvetic', 'dvips', 'metafont', 'mfware', 'xkeyval'
 )))
-tlmgr_install(x1)
+tinytex::tlmgr_install(x1)
 x2 = sort(readLines('pkgs-custom.txt'))
 if (!identical(x1, x2)) stop(
   'pkgs-custom.txt needs to be updated.\n\nPackages required are:\n',
@@ -37,7 +37,7 @@ if (!identical(x1, x2)) stop(
 )
 
 # any new packages need to be added to pkgs-yihui.txt?
-tlmgr_install(readLines('pkgs-yihui.txt'))
+tinytex::tlmgr_install(readLines('pkgs-yihui.txt'))
 x3 = tinytex::tl_pkgs()
 build_more = function() {
   rmarkdown::render('test-basic.Rmd', 'beamer_presentation', quiet = TRUE)
