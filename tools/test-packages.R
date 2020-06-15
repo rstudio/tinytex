@@ -5,7 +5,7 @@ owd = setwd('tools')
 system('sh install-base.sh && ./texlive/bin/*/tlmgr path add')
 unlink(normalizePath('~/texlive'), recursive = TRUE)
 x0 = tinytex::tl_pkgs()  # packages from the minimal installation
-cat('Base packages are:', sort(x0))
+cat('\nBase packages are:', sort(x0), '\n\n')
 
 xfun::pkg_load2('bookdown')
 # render some Rmd files to automatically install LaTeX packages to TinyTeX
