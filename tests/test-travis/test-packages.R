@@ -39,6 +39,7 @@ if (.Platform$OS.type == 'unix') xfun::in_dir('../../../tools', {
   x3 = tinytex::tl_pkgs()
   build_more = function() {
     rmarkdown::render('test-basic.Rmd', 'beamer_presentation', quiet = TRUE)
+    rmarkdown::render('test-kableExtra.Rmd', quiet = TRUE)
   }
   # do not automatically install missing LaTeX packages; if the compilation
   # fails, try to install packages and compile again; if it succeeds, output the

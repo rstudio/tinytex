@@ -1,0 +1,30 @@
+---
+title: Make sure kableExtra works with the prebuilt version of TinyTeX
+output: pdf_document
+---
+
+```{r}
+library(knitr)
+xfun::pkg_attach2('kableExtra')
+kable(head(iris)) %>%
+  kable_styling(latex_options = "striped")
+kable(head(iris, 5), booktabs = TRUE) %>%
+  kable_styling(font_size = 8)
+kable(head(iris, 5), align = 'c', booktabs = TRUE) %>%
+  row_spec(1, bold = TRUE, italic = TRUE) %>% 
+  row_spec(2:3, color = 'white', background = 'black') %>%
+  row_spec(4, underline = TRUE, monospace = TRUE) %>% 
+  row_spec(5, angle = 45) %>% 
+  column_spec(5, strikeout = TRUE)
+iris2 <- iris[1:5, c(1, 3, 2, 4, 5)]
+names(iris2) <- gsub('[.].+', '', names(iris2))
+kable(iris2, booktabs = TRUE) %>%
+  add_header_above(c("Length" = 2, "Width" = 2, " " = 1)) %>% 
+  add_header_above(c("Measurements" = 4, "More attributes" = 1))
+iris3 <- iris[c(1:2, 51:54, 101:103), ]
+kable(iris3[, 1:4], booktabs = TRUE) %>% pack_rows(
+  index = c("setosa" = 2, "versicolor" = 4, "virginica" = 3)
+)
+kable(tail(mtcars, 5), booktabs = TRUE)%>%
+  kable_styling(latex_options = "scale_down")
+```
