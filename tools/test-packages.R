@@ -7,16 +7,18 @@ unlink(normalizePath('~/texlive'), recursive = TRUE)
 x0 = tinytex::tl_pkgs()  # packages from the minimal installation
 cat('\nBase packages are:', sort(x0), '\n\n')
 
+render = function(..., FUN = rmarkdown::render) {
+  xfun::Rscript_call(FUN, list(...))
+}
+
 xfun::pkg_load2('bookdown')
 # render some Rmd files to automatically install LaTeX packages to TinyTeX
-rmarkdown::render('test-basic.Rmd', 'pdf_document', quiet = TRUE)
+render('test-basic.Rmd', 'pdf_document', quiet = TRUE)
 bookdown:::bookdown_skeleton('book')
-xfun::in_dir('book', for (i in c('pdflatex', 'xelatex', 'lualatex')) {
-  bookdown::render_book(
-    'index.Rmd', 'bookdown::pdf_book', output_options = list(latex_engine = i),
-    quiet = TRUE, clean_envir = FALSE
-  )
-})
+xfun::in_dir('book', for (i in c('pdflatex', 'xelatex', 'lualatex')) render(
+  FUN = bookdown::render_book, 'index.Rmd', 'bookdown::pdf_book',
+  output_options = list(latex_engine = i), quiet = TRUE
+))
 
 # report the size of TeX Live after installing the above packages
 system('du -sh texlive')
@@ -40,8 +42,8 @@ if (!identical(x1, x2)) stop(
 tinytex::tlmgr_install(readLines('pkgs-yihui.txt'))
 x3 = tinytex::tl_pkgs()
 build_more = function() {
-  rmarkdown::render('test-basic.Rmd', 'beamer_presentation', quiet = TRUE)
-  rmarkdown::render('test-kableExtra.Rmd', quiet = TRUE)
+  render('test-basic.Rmd', 'beamer_presentation', quiet = TRUE)
+  render('test-kableExtra.Rmd', quiet = TRUE)
 }
 # do not automatically install missing LaTeX packages; if the compilation
 # fails, try to install packages and compile again; if it succeeds, output the
@@ -56,5 +58,7 @@ tryCatch(build_more(), error = function(e) {
     'pkgs-yihui.txt needs to include:\n', paste(x5, collapse = '\n')
   )
 })
+options(opts)
 
+unlink('texlive', recursive = TRUE)
 setwd(owd)
