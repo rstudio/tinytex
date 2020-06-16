@@ -12,7 +12,6 @@ before_install:
   - Rscript -e 'if (!require("covr")) install.packages("covr")'
 
 before_script:
-  - R CMD INSTALL .
   - Rscript tools/test-packages.R
 
 after_success:

@@ -1,5 +1,7 @@
 # make sure the default installation includes all LaTeX packages required to
 # compile basic R Markdown documents and bookdown books to PDF
+
+xfun::in_dir('..', xfun::install_dir('tinytex'))
 owd = setwd('tools')
 
 system('sh install-base.sh && ./texlive/bin/*/tlmgr path add')
@@ -52,5 +54,4 @@ if (length(x5 <- setdiff(x4, x3))) stop(
   'pkgs-yihui.txt needs to include:\n', paste(x5, collapse = '\n')
 )
 
-unlink('texlive', recursive = TRUE)
 setwd(owd)
