@@ -55,6 +55,7 @@ pdflscape
 pdfpages
 pgf
 picinpar
+polyglossia
 preprint
 preview
 psnfss
