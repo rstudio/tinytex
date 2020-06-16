@@ -17,6 +17,7 @@ comment
 courier
 eepic
 enumitem
+environ
 eso-pic
 eurosym
 extsizes
@@ -32,6 +33,7 @@ lipsum
 listings
 ltxkeys
 ly1
+makecell
 mathalpha
 mathpazo
 mathtools
@@ -49,6 +51,7 @@ ntgclass
 palatino
 parskip
 pbox
+pdflscape
 pdfpages
 pgf
 picinpar
@@ -69,9 +72,11 @@ symbol
 tabu
 textcase
 threeparttable
+threeparttablex
 thumbpdf
 titlesec
 translator
+trimspaces
 tufte-latex
 ucs
 ulem
