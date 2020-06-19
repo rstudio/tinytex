@@ -7,6 +7,7 @@ all_files = function() {
   list.files(tinytex::tinytex_root(), full.names = TRUE, recursive = TRUE)
 }
 files_old = all_files()
+pkgs_old  = tinytex::tl_pkgs()
 
 # make sure a basic Rmd document compiles with TinyTeX
 options(tinytex.verbose = TRUE)
@@ -17,6 +18,8 @@ for (i in c('pdflatex', 'xelatex', 'lualatex')) {
   }
 }
 
+pkgs_new = setdiff(tinytex::tl_pkgs(), pkgs_old)
+
 if (length(files_new <- setdiff(all_files(), files_old))) {
   message(
     'Deleting files created during LaTeX compilation...\n',
@@ -24,3 +27,6 @@ if (length(files_new <- setdiff(all_files(), files_old))) {
   )
   file.remove(files_new)
 }
+
+# in case some packages are cleaned up in the previous step, reinstall them
+tinytex::tlmgr_install(pkgs_new)
