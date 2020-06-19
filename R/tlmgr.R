@@ -123,12 +123,14 @@ tlmgr_install = function(pkgs = character(), usermode = FALSE, path = !usermode 
 # found from PATH is a symlink that links to another symlink (typically under
 # TinyTeX/bin/platform/tlmgr, which is typically a symlink to tlmgr.pl)
 need_add_path = function() {
-  (p <- Sys.which('tlmgr')) != '' && is_writable(p) &&
+  is_writable(p <- Sys.which('tlmgr')) &&
     (p2 <- Sys.readlink(p)) != '' && basename(Sys.readlink(p2)) == 'tlmgr.pl' &&
     basename(dirname(dirname(p2))) == 'bin'
 }
 
 is_writable = function(p) file.access(p, 2) == 0
+
+tlmgr_writable = function() is_writable(Sys.which('tlmgr'))
 
 # check of certain LaTeX packages are installed: if installed, `tlmgr info pkgs`
 # should return `pkgs`

@@ -68,7 +68,7 @@
 latexmk = function(
   file, engine = c('pdflatex', 'xelatex', 'lualatex', 'latex'),
   bib_engine = c('bibtex', 'biber'), engine_args = NULL, emulation = TRUE,
-  min_times = 1, max_times = 10, install_packages = emulation && tlmgr_available(),
+  min_times = 1, max_times = 10, install_packages = emulation && tlmgr_writable(),
   pdf_file = gsub('tex$', 'pdf', file), clean = TRUE
 ) {
   if (!grepl('[.]tex$', file))
@@ -188,7 +188,7 @@ latexmk_emu = function(
             pkgs_last <<- pkgs
             return(run_engine())
           }
-        } else if (is_writable(Sys.which('tlmgr'))) {
+        } else if (tlmgr_writable()) {
           # chances are you are the sysadmin, and don't need ~/.TinyTeX
           if (delete_texmf_user()) return(run_engine())
         }

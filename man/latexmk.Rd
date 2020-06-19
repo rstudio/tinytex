@@ -15,7 +15,7 @@ latexmk(
   emulation = TRUE,
   min_times = 1,
   max_times = 10,
-  install_packages = emulation && tlmgr_available(),
+  install_packages = emulation && tlmgr_writable(),
   pdf_file = gsub("tex$", "pdf", file),
   clean = TRUE
 )
