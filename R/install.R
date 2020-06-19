@@ -131,7 +131,7 @@ install_tinytex = function(
         )
       ))
       if (res != 0) stop('Failed to install TinyTeX', call. = FALSE)
-      target = normalizePath(default_inst)
+      target = normalizePath(default_inst())
       if (!dir_exists(target)) stop('Failed to install TinyTeX.')
       if (!user_dir %in% c('', target)) {
         dir.create(dirname(user_dir), showWarnings = FALSE, recursive = TRUE)
@@ -212,11 +212,11 @@ win_app_dir = function(..., error = TRUE) {
 
 os_index = if (is_windows()) 1 else if (is_linux()) 2 else if (is_macos()) 3
 
-default_inst = c(
-  win_app_dir('TinyTeX', error = FALSE), '~/.TinyTeX', '~/Library/TinyTeX'
-)[os_index]
+default_inst = function() switch(
+  os_index, win_app_dir('TinyTeX'), '~/.TinyTeX', '~/Library/TinyTeX'
+)
 
-find_tlmgr = function(dir = default_inst) {
+find_tlmgr = function(dir = default_inst()) {
   bin = file.path(list.files(file.path(dir, 'bin'), full.names = TRUE), 'tlmgr')
   if (is_windows()) bin = paste0(bin, '.bat')
   bin[file_test('-x', bin)][1]
@@ -350,7 +350,7 @@ install_prebuilt = function(path) {
   if (missing(path)) path = paste0('TinyTeX.', c('zip', 'tar.gz', 'tgz')[os_index])
   if (!file.exists(path)) download_installer(path)
   extract = if (grepl('[.]zip$', path)) unzip else untar
-  extract(path, exdir = path.expand(dirname(default_inst)))
+  extract(path, exdir = path.expand(dirname(default_inst())))
   if (os_index == 2) {
     dir.create('~/bin', FALSE, TRUE)
     tlmgr(c('option', 'sys_bin', '~/bin'))
