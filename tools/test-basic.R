@@ -29,4 +29,5 @@ if (length(files_new <- setdiff(all_files(), files_old))) {
 }
 
 # in case some packages are cleaned up in the previous step, reinstall them
+tinytex::tlmgr_remove(pkgs_new)
 tinytex::tlmgr_install(pkgs_new)
