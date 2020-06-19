@@ -23,7 +23,7 @@ xfun::in_dir('book', for (i in c('pdflatex', 'xelatex', 'lualatex')) render(
 ))
 
 # report the size of TeX Live after installing the above packages
-system('du -sh texlive')
+system('du -sh ../../texlive')
 
 # now see which packages are required to compile the above Rmd files
 x1 = sort(unique(c(
