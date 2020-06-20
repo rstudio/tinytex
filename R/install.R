@@ -210,7 +210,7 @@ win_app_dir = function(..., error = TRUE) {
   file.path(d, ...)
 }
 
-os_index = if (is_windows()) 1 else if (is_linux()) 2 else if (is_macos()) 3
+os_index = if (is_windows()) 1 else if (is_linux()) 2 else if (is_macos()) 3 else 0
 
 default_inst = function() switch(
   os_index, win_app_dir('TinyTeX'), '~/.TinyTeX', '~/Library/TinyTeX'
@@ -347,6 +347,10 @@ install_yihui_pkgs = function() {
 
 # install a prebuilt version of TinyTeX
 install_prebuilt = function(path) {
+  if (os_index == 0) stop(
+    'There is no prebuilt version of TinyTeX for this platform: ',
+    .Platform$OS.type, '.'
+  )
   if (missing(path)) path = paste0('TinyTeX.', c('zip', 'tar.gz', 'tgz')[os_index])
   if (!file.exists(path)) download_installer(path)
   extract = if (grepl('[.]zip$', path)) unzip else untar

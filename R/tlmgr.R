@@ -56,7 +56,7 @@ tweak_path = function() {
   # check tlmgr exists under the default installation dir of TinyTeX, or the
   # global option tinytex.tlmgr.path
   f = getOption('tinytex.tlmgr.path', find_tlmgr())
-  if (!file_test('-x', f)) return()
+  if (length(f) == 0 || !file_test('-x', f)) return()
   bin = normalizePath(dirname(f))
   # if the pdftex from TinyTeX is already on PATH, no need to adjust the PATH
   if ((p <- Sys.which('pdftex')) != '') {
