@@ -515,7 +515,7 @@ detect_files = function(text) {
     ".* File `(.+eps-converted-to.pdf)'.*",
     ".*xdvipdfmx:fatal: pdf_ref_obj.*",
 
-    '.* (tikzlibrary[^.]+[.]code[.]tex).*',
+    '.* (tikzlibrary[^ ]+?[.]code[.]tex).*',
 
     ".*! LaTeX Error: File `([^']+)' not found.*",
     ".* file ['`]?([^' ]+)'? not found.*",
