@@ -210,7 +210,7 @@ win_app_dir = function(..., error = TRUE) {
   file.path(d, ...)
 }
 
-os_index = if (is_windows()) 1 else if (is_linux()) 2 else if (is_macos()) 3 else 0
+os_index = if (is_windows()) 1 else if (is_macos()) 3 else if (is_unix()) 2 else 0
 
 default_inst = function() switch(
   os_index, win_app_dir('TinyTeX'), '~/.TinyTeX', '~/Library/TinyTeX'
