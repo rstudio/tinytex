@@ -29,6 +29,7 @@ tlmgr_update(
   more_args = character(),
   usermode = FALSE,
   run_fmtutil = TRUE,
+  delete_tlpdb = getOption("tinytex.delete_tlpdb", FALSE),
   ...
 )
 
@@ -83,6 +84,10 @@ command \command{tlmgr update} or \command{tlmgr conf}.}
 
 \item{run_fmtutil}{Whether to run \command{fmtutil-sys --all} to (re)create
 format and hyphenation files after updating \pkg{tlmgr}.}
+
+\item{delete_tlpdb}{Whether to delete the \file{texlive.tlpdb.HASH} files
+(where \verb{HASH} is an MD5 hash) under the \file{tlpkg} directory of the
+root directory of TeX Live after updating.}
 
 \item{action}{On Unix, add/remove symlinks of binaries to/from the system's
 \code{PATH}. On Windows, add/remove the path to the TeXLive binary

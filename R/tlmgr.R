@@ -155,6 +155,9 @@ tlmgr_remove = function(pkgs = character(), usermode = FALSE) {
 #'   command \command{tlmgr update} or \command{tlmgr conf}.
 #' @param run_fmtutil Whether to run \command{fmtutil-sys --all} to (re)create
 #'   format and hyphenation files after updating \pkg{tlmgr}.
+#' @param delete_tlpdb Whether to delete the \file{texlive.tlpdb.HASH} files
+#'   (where \verb{HASH} is an MD5 hash) under the \file{tlpkg} directory of the
+#'   root directory of TeX Live after updating.
 #' @rdname tlmgr
 #' @export
 tlmgr_update = function(
