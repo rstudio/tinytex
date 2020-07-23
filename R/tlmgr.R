@@ -159,7 +159,7 @@ tlmgr_remove = function(pkgs = character(), usermode = FALSE) {
 #' @export
 tlmgr_update = function(
   all = TRUE, self = TRUE, more_args = character(), usermode = FALSE,
-  run_fmtutil = TRUE, ...
+  run_fmtutil = TRUE, delete_tlpdb = getOption('tinytex.delete_tlpdb', FALSE), ...
 ) {
   # if unable to update due to a new release of TeX Live, skip the update
   if (isTRUE(.global$update_noted)) return(invisible(NULL))
@@ -169,6 +169,8 @@ tlmgr_update = function(
   ))
   check_tl_version(res)
   if (run_fmtutil) fmtutil(usermode, stdout = FALSE)
+  if (delete_tlpdb) delete_tlpdb_files()
+  invisible()
 }
 
 # check if a new version of TeX Live has been released and give instructions on
@@ -189,6 +191,12 @@ check_tl_version = function(x) {
     )
   )
   .global$update_noted = TRUE
+}
+
+delete_tlpdb_files = function() {
+  if ((root <- tinytex_root(FALSE)) != '') file.remove(list.files(
+    file.path(root, 'tlpkg'), '^texlive[.]tlpdb[.][0-9a-f]{32}$', full.names = TRUE
+  ))
 }
 
 #' @param action On Unix, add/remove symlinks of binaries to/from the system's
