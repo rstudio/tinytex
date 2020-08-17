@@ -1,29 +1,23 @@
-# This is a basic workflow to help you get started with Actions
-
 name: Get Latest Version And Publish
 
-# Controls when the action will run. Triggers the workflow on push or pull request
-# events but only for the master branch
 on:
   push:
-    branches: [ master ]
+    branches:
+    - main
+    - choco
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  build:
-    # The type of runner that the job will run on
+  check:
     runs-on: windows-latest
 
     steps:
-    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
     - name: Test TinyTex Choco Package
       run: |
         cd "tools\choco\tinytex"
         choco pack
         choco install tinytex -source "'.;https://chocolatey.org/api/v2/'"  
-    # Runs a set of commands using the runners shell
+
     - name: Upload Logs if failes
       uses: actions/upload-artifact@v2
       if: ${{ failure() }}
