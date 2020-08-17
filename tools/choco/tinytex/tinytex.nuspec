@@ -4,13 +4,16 @@
   <metadata>
     <id>tinytex</id>
     <version>0.25</version>
+    <packageSourceUrl>https://github.com/yihui/tinytex/tree/master/tools/choco/tinytex</packageSourceUrl>
+    <owners>__REPLACE_YOUR_NAME__</owners>
+    <!-- Owner is one who publishes the package to chocolatey. -->
     <title>Tinytex (Install)</title>
-    <authors>__REPLACE_AUTHORS_OF_SOFTWARE_COMMA_SEPARATED__</authors>
+    <authors>Yihui Xie</authors>
     <projectUrl>https://yihui.org/tinytex/</projectUrl>
     <iconUrl>https://yihui.org/images/logo-tinytex.png</iconUrl>
     <copyright>2017-2020 Yihui Xie and RStudio, PBC</copyright>
     <licenseUrl>https://github.com/yihui/tinytex/blob/master/LICENSE</licenseUrl>
-    <requireLicenseAcceptance>true</requireLicenseAcceptance>-->
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <projectSourceUrl>https://github.com/yihui/tinytex/</projectSourceUrl>
     <docsUrl>https://yihui.org/tinytex/</docsUrl>
     <bugTrackerUrl>https://github.com/yihui/tinytex/issues</bugTrackerUrl>
