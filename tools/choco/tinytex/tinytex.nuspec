@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- Do not remove this test for UTF-8: if “Ω” doesn’t appear as greek uppercase omega letter enclosed in quotation marks, you should use an editor that supports UTF-8, not this one. -->
+<package xmlns="http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd">
+  <metadata>
+    <id>tinytex</id>
+    <version>0.25</version>
+    <title>Tinytex (Install)</title>
+    <authors>__REPLACE_AUTHORS_OF_SOFTWARE_COMMA_SEPARATED__</authors>
+    <projectUrl>https://yihui.org/tinytex/</projectUrl>
+    <iconUrl>https://yihui.org/images/logo-tinytex.png</iconUrl>
+    <copyright>2017-2020 Yihui Xie and RStudio, PBC</copyright>
+    <licenseUrl>https://github.com/yihui/tinytex/blob/master/LICENSE</licenseUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>-->
+    <projectSourceUrl>https://github.com/yihui/tinytex/</projectSourceUrl>
+    <docsUrl>https://yihui.org/tinytex/</docsUrl>
+    <bugTrackerUrl>https://github.com/yihui/tinytex/issues</bugTrackerUrl>
+    <tags>tinytex tex tiny</tags>
+    <summary>Tiny Install of Latex</summary>
+    <description>__REPLACE__MarkDown_Okay </description>
+    <releaseNotes>https://github.com/yihui/tinytex/releases</releaseNotes>
+  </metadata>
+  <files>
+    <file src="tools\**" target="tools" />
+  </files>
+</package>
