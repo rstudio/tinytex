@@ -24,3 +24,8 @@ jobs:
       with:
         name: chocologs
         path: C:\ProgramData\chocolatey\logs\chocolatey.log
+    - name: Upload Logs if Sucess
+      uses: actions/upload-artifact@v2
+      with:
+        name: chocologs
+        path: C:\ProgramData\chocolatey\logs\chocolatey.log
