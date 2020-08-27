@@ -23,7 +23,7 @@ Get-WebFile `
 -FileName "$toolsDir\\tinytex\\tinytex.profile" `
 -Url $profileUrl
 
-(gc "$toolsDir\\tinytex\\tinytex.profile") -replace '\./', "$toolsDir\main\TinyTex\" | Out-File -encoding ASCII "$toolsDir\\tinytex\\tinytex.profile"
+(gc "$toolsDir\\tinytex\\tinytex.profile") -replace '\./', './TinyTex/' | Out-File -encoding ASCII "$toolsDir\\tinytex\\tinytex.profile"
 
 Add-Content -Path "$toolsDir\\tinytex\\tinytex.profile" -Value 'TEXMFCONFIG $TEXMFSYSCONFIG'
 Add-Content -Path "$toolsDir\\tinytex\\tinytex.profile" -Value 'TEXMFHOME $TEXMFLOCAL'
@@ -61,7 +61,7 @@ cd "install-tl-*"
 #Start-Process -FilePath "cmd.exe" -ArgumentList "/C `"$($PWD)\install-tl-windows.bat -no-gui -profile=`"$($toolsDir)\tinytex\tinytex.profile`"`"" -WorkingDirectory "$($PWD)" -NoNewWindow -Wait
 Start-Process -FilePath "$($PWD)\install-tl-windows.bat" -ArgumentList "-no-gui -profile=`"$($toolsDir)\tinytex\tinytex.profile`"" -WorkingDirectory "$($PWD)" -NoNewWindow -Wait
 
-Move-Item "$toolsDir\main\TinyTex" "$($env:APPDATA)\TinyTex"
+Move-Item "$($PWD)\TinyTex" "$($env:APPDATA)\TinyTex"
 $appPath = "$($env:APPDATA)"
 cd "$toolsDirActual"
 #remove temp directory from path and edelete it
