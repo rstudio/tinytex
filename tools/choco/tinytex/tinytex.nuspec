@@ -5,10 +5,9 @@
     <id>tinytex</id>
     <version>0.25</version>
     <packageSourceUrl>https://github.com/yihui/tinytex/tree/master/tools/choco/tinytex</packageSourceUrl>
-    <owners>__REPLACE_YOUR_NAME__</owners>
-    <!-- Owner is one who publishes the package to chocolatey. -->
-    <title>Tinytex (Install)</title>
-    <authors>Yihui Xie</authors>
+    <owners>naveen521kk</owners>
+    <title>TinyTex (Install)</title>
+    <authors>Naveen M K,Yihui Xie</authors>
     <projectUrl>https://yihui.org/tinytex/</projectUrl>
     <iconUrl>https://yihui.org/images/logo-tinytex.png</iconUrl>
     <copyright>2017-2020 Yihui Xie and RStudio, PBC</copyright>
@@ -17,9 +16,22 @@
     <projectSourceUrl>https://github.com/yihui/tinytex/</projectSourceUrl>
     <docsUrl>https://yihui.org/tinytex/</docsUrl>
     <bugTrackerUrl>https://github.com/yihui/tinytex/issues</bugTrackerUrl>
-    <tags>tinytex tex tiny</tags>
-    <summary>Tiny Install of Latex</summary>
-    <description>__REPLACE__MarkDown_Okay </description>
+    <tags>tinytex tex LaTeX TeXLive tiny</tags>
+    <summary>Tiny Install of TeX Live</summary>
+    <description>
+# TinyTeX
+
+The installation and maintenance of LaTeX have bothered me for several years. Yes, there are MiKTeX, MacTeX, and TeX Live, but the common problems are:
+
+1. You have to either install a basic version that is relatively small (several hundred MB) but basically doesn't work, because it is very likely that certain frequently used LaTeX packages are missing; or you install the full version that is several GB, but in your whole life, you probably will only use 1% of the packages.
+
+2. The documentation for installation and maintenance is often way too long for beginners. For example, I doubt if anyone has the courage or patience to read [the `tlmgr` manual](https://www.tug.org/texlive/doc/tlmgr.html) (yes, it is very useful).
+
+I believe these problems can be solved by TinyTeX, a custom LaTeX distribution based on TeX Live that is small in size (about 150Mb) but still functions well in most cases. Even if you run into the problem of missing LaTeX packages, it should be super clear to you what you need to do. The manual should be at most two pages long. In fact, if you are an R Markdown user, there is nothing you need to do, because missing packages will just be installed automatically. You may not even know the existence of LaTeX at all since it should rarely bother you.
+
+Please see the full documentation at https://yihui.org/tinytex/.
+
+	</description>
     <releaseNotes>https://github.com/yihui/tinytex/releases</releaseNotes>
   </metadata>
   <files>
