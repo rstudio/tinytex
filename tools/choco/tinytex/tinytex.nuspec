@@ -10,14 +10,14 @@
     <authors>Naveen M K,Yihui Xie</authors>
     <projectUrl>https://yihui.org/tinytex/</projectUrl>
     <iconUrl>https://yihui.org/images/logo-tinytex.png</iconUrl>
-    <copyright>2017-2020 Yihui Xie and RStudio, PBC</copyright>
-    <licenseUrl>https://github.com/yihui/tinytex/blob/master/LICENSE</licenseUrl>
+    <copyright>Copyright 2020 Naveen M K,Yihui Xie</copyright>
+    <licenseUrl>https://github.com/yihui/tinytex/blob/master/tools/choco/tinytex/LICENSE</licenseUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <projectSourceUrl>https://github.com/yihui/tinytex/</projectSourceUrl>
     <docsUrl>https://yihui.org/tinytex/</docsUrl>
     <bugTrackerUrl>https://github.com/yihui/tinytex/issues</bugTrackerUrl>
     <tags>tinytex tex LaTeX TeXLive tiny</tags>
-    <summary>Tiny Install of TeX Live</summary>
+    <summary>A lightweight, cross-platform, portable, and easy-to-maintain LaTeX distribution based on TeX Live </summary>
     <description>
 # TinyTeX
 

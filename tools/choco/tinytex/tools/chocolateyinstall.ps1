@@ -58,12 +58,12 @@ Set-Location "$($toolsDir)\tinytex\install-tl-*"
 cd "$($toolsDir)\tinytex"
 cd "install-tl-*"
 
-#Start-Process -FilePath "cmd.exe" -ArgumentList "/C `"$($PWD)\install-tl-windows.bat -no-gui -profile=`"$($toolsDir)\tinytex\tinytex.profile`"`"" -WorkingDirectory "$($PWD)" -NoNewWindow -Wait
 Start-Process -FilePath "$($PWD)\install-tl-windows.bat" -ArgumentList "-no-gui -profile=`"$($toolsDir)\tinytex\tinytex.profile`"" -WorkingDirectory "$($PWD)" -NoNewWindow -Wait
 
 Move-Item "$($PWD)\TinyTex" "$($env:APPDATA)\TinyTex"
 $appPath = "$($env:APPDATA)"
 cd "$toolsDirActual"
+
 #remove temp directory from path and edelete it
 Remove-Item "$toolsDir\" -Recurse
 
