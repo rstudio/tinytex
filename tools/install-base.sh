@@ -41,6 +41,7 @@ TEXLIVE_INSTALL_ENV_NOCHECK=true TEXLIVE_INSTALL_NO_WELCOME=true ../install-tl-*
 rm -r ../install-tl-* ../tinytex.profile install-tl.log
 
 alias tlmgr='./bin/*/tlmgr'
+rm -f bin/man bin/*/man
 
 tlmgr option repository "$TLREPO"
 
