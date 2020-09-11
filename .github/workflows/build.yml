@@ -1,0 +1,60 @@
+name: Build Executables For TinyTeX
+on:
+  workflow_dispatch:
+  push:
+    branches: 
+      - master
+    # Sequence of patterns matched against refs/tags
+    tags:
+    - 'v*'
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [windows-latest]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Run the Batch File
+      run: |
+        cd tools
+        Start-Process "$($PWD)\install-windows.bat" -NoNewWindow -Wait
+        echo "$env:APPDATA"
+    - name: Copy Directory and Output Release
+      run: |
+        cd tools
+        Copy-Item -Path "C:\Users\runneradmin\AppData\Roaming\TinyTeX" -Destination "$($PWD)\TinyTeX" -Recurse
+        7z a -sfx "D:\windows-tinytex.exe" "C:\Users\runneradmin\AppData\Roaming\TinyTeX"
+        dir
+        #Copy-Item -Path "$($PWD)\choco\tinytex\LICENSE" -Destination "$($PWD)"
+        #makensis build.nsi
+        #I am ignoring this for now 
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Windows Executable Release
+        body: |
+            This contains the Executable of TinyTeX for Windows
+        draft: true
+        prerelease: false
+    - name: Upload Release Asset
+      id: upload-release-asset 
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+        asset_path: D:\windows-tinytex.exe
+        asset_name: windows-tinytex.exe
+        asset_content_type: application/exe
+    
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: TinyTex
+        path: D:\windows-tinytex.exe
