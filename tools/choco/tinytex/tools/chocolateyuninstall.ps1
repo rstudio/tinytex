@@ -1,3 +1,3 @@
-$appPath = "$($env:APPDATA)"
-Start-Process -ArgumentList "path remove" -FilePath "$($appPath)\TinyTex\bin\win32\tlmgr.bat" -NoNewWindow -Wait
-Remove-Item "$($appPath)\TinyTex" -Recurse
+$toolsDir=Get-ToolsLocation
+$statementsToRun = "/C `"$toolsDir\TinyTeX\bin\win32\tlmgr.bat path remove`""
+Start-ChocolateyProcessAsAdmin $statementsToRun "cmd.exe"

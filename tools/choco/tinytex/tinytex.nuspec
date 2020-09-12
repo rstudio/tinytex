@@ -11,7 +11,7 @@
     <projectUrl>https://yihui.org/tinytex/</projectUrl>
     <iconUrl>https://yihui.org/images/logo-tinytex.png</iconUrl>
     <copyright>Copyright 2020 Naveen M K,Yihui Xie</copyright>
-    <licenseUrl>https://github.com/yihui/tinytex/blob/master/tools/choco/tinytex/LICENSE</licenseUrl>
+    <licenseUrl>https://github.com/yihui/tinytex/blob/master/LICENSE</licenseUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <projectSourceUrl>https://github.com/yihui/tinytex/</projectSourceUrl>
     <docsUrl>https://yihui.org/tinytex/</docsUrl>
