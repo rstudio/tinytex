@@ -1,5 +1,5 @@
-﻿$ErrorActionPreference = 'Stop'; # stop on all errors
-$toolsDir   = "$(Split-Path -parent $MyInvocation.MyCommand.Definition)"
+﻿$ErrorActionPreference = 'Stop';
+$toolsDir=Get-ToolsLocation
 $url        = 'https://yihui.org/tinytex/TinyTeX.zip'
 $packageArgs = @{
   packageName   = $env:ChocolateyPackageName
@@ -17,5 +17,9 @@ Start-ChocolateyProcessAsAdmin $statementsToRun "cmd.exe"
 
 $files = get-childitem $installDir -include *.exe -recurse
 foreach ($file in $files) {
-    New-Item "$file.ignore" -type file -force | Out-Null #We are directly adding it to path so no need to generate shims
+  #We are directly adding it to path so no need to generate shims
+  New-Item "$file.ignore" -type file -force | Out-Null
 }
+
+#create a shim for tlmgr.bat https://chocolatey.org/docs/helpers-install-bin-file
+Install-BinFile -Name tlmgr -Path "$toolsDir\TinyTeX\bin\win32\tlmgr.bat"
