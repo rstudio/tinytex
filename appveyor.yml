@@ -128,7 +128,7 @@ for:
 
 deploy:
   provider: GitHub
-  repository: yihui/tinytex-windows
+  repository: yihui/tinytex-releases
   tag: $(TINYTEX_TAG)
   release: TinyTeX $(TINYTEX_TAG)
   description: >
@@ -136,7 +136,7 @@ deploy:
     packages. `TinyTeX-1` contains enough LaTeX packages to compile R Markdown
     documents. `TinyTeX` contains even more LaTeX packages. The `zip` packages
     are for Windows. The `tgz` packages are for macOS. The `tar.gz` packages are
-    for Linux. Please see https://github.com/yihui/tinytex-windows for more info.
+    for Linux. Please see https://github.com/yihui/tinytex-releases for more info.
   auth_token:
     secure: 7J9/ZS/EeHhAuxS+mtlT7mPKyLSEmXHRXK1fhBGSptLTmcIFqTbdRHRcTcgEB89n
   on:

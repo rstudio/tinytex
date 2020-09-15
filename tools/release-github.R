@@ -22,11 +22,11 @@ v = format(Sys.Date(), '%Y.%m')  # version number of the format YEAR.MONTH
 set_env('TINYTEX_TAG', v2 <- paste0('v', v))
 
 system(sprintf(
-  'git clone https://%s@github.com/yihui/tinytex-windows.git',
+  'git clone https://%s@github.com/yihui/tinytex-releases.git',
   Sys.getenv('GH_TOKEN')
 ))
 
-xfun::in_dir('tinytex-windows', if (xfun::is_windows()) {
+xfun::in_dir('tinytex-releases', if (xfun::is_windows()) {
   m = tools::md5sum('../TinyTeX-1.zip')
   f = function(x, r, val) {
     if (length(i <- grep(r, x)) != 1) stop('There must be a line that matches ', r)
