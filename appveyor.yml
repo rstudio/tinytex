@@ -3,9 +3,6 @@ image:
   - macOS
   - Ubuntu
 
-matrix:
-  fast_finish: true
-
 for:
 -
   matrix:
@@ -44,8 +41,6 @@ for:
     - ps: Compress-Archive $Env:APPDATA\\TinyTeX TinyTeX.zip
     - travis-tool.sh run_tests
     - Rscript -e "tinytex::install_tinytex(force = TRUE)"
-    - Rscript "tools/release-github.R"
-    - call tools\env-appveyor.bat
 
   artifacts:
     - path: TinyTeX-0.zip
@@ -80,8 +75,6 @@ for:
   test_script:
     - Rscript "tools/test-basic.R"
     - tar zcf TinyTeX.tgz -C ~/Library TinyTeX
-    - Rscript "tools/release-github.R"
-    - sh tools/env-appveyor.bat
 
   artifacts:
     - path: TinyTeX-0.tgz
@@ -115,8 +108,6 @@ for:
     - export PATH="$HOME/bin:$PATH"
     - Rscript "tools/test-basic.R"
     - tar zcf TinyTeX.tar.gz -C ~ .TinyTeX
-    - Rscript "tools/release-github.R"
-    - sh tools/env-appveyor.bat
 
   artifacts:
     - path: TinyTeX-0.tar.gz
@@ -125,20 +116,3 @@ for:
       name: TinyTeX (rmarkdown)
     - path: TinyTeX.tar.gz
       name: TinyTeX
-
-deploy:
-  provider: GitHub
-  repository: yihui/tinytex-releases
-  tag: $(TINYTEX_TAG)
-  release: TinyTeX $(TINYTEX_TAG)
-  description: >
-    `TinyTeX-0` contains the `infraonly` scheme of TeX Live, without any LaTeX
-    packages. `TinyTeX-1` contains enough LaTeX packages to compile R Markdown
-    documents. `TinyTeX` contains even more LaTeX packages. The `zip` packages
-    are for Windows. The `tgz` packages are for macOS. The `tar.gz` packages are
-    for Linux. Please see https://github.com/yihui/tinytex-releases for more info.
-  auth_token:
-    secure: 7J9/ZS/EeHhAuxS+mtlT7mPKyLSEmXHRXK1fhBGSptLTmcIFqTbdRHRcTcgEB89n
-  on:
-    branch: master
-    TINYTEX_RELEASE_DATE: true
