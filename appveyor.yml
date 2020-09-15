@@ -1,7 +1,7 @@
 image:
+  - Visual Studio 2019
   - macOS
   - Ubuntu
-  - Visual Studio 2019
 
 for:
 -
@@ -10,7 +10,7 @@ for:
       - image: Visual Studio 2019
 
   init:
-    ps: |
+    - ps: |
           $ErrorActionPreference = "Stop"
           Invoke-WebRequest http://raw.github.com/krlmlr/r-appveyor/master/scripts/appveyor-tool.ps1 -OutFile "..\appveyor-tool.ps1"
           Import-Module '..\appveyor-tool.ps1'
@@ -23,7 +23,6 @@ for:
 
   build_script:
     - set PATH=%PATH:C:\MinGW\msys\1.0\bin;=%
-    - echo | tools\install-windows.bat
     - Rscript -e "update.packages(ask = FALSE, checkBuilt = TRUE, repos = 'https://cran.rstudio.com')"
 
   before_test:
@@ -32,16 +31,39 @@ for:
 
   test_script:
     - set PATH=%APPDATA%\TinyTeX\bin\win32;%PATH%
+    - Rscript "tools/install-windows-base.R"  # the infraonly scheme
+    - ps: Compress-Archive $Env:APPDATA\\TinyTeX TinyTeX-0.zip
     - travis-tool.sh install_deps
     - R CMD INSTALL .
-    - Rscript "tools/test-basic.R"
+    - Rscript "tools/install-windows-more.R"  # extra packages for compiling R Markdown
+    - ps: Compress-Archive $Env:APPDATA\\TinyTeX TinyTeX-1.zip
+    - Rscript "tools/test-basic.R"  # even more LaTeX packages
     - ps: Compress-Archive $Env:APPDATA\\TinyTeX TinyTeX.zip
     - travis-tool.sh run_tests
     - Rscript -e "tinytex::install_tinytex(force = TRUE)"
+    - Rscript "tools/release-github.R"
+    - call tools\env-appveyor.bat
 
   artifacts:
+    - path: TinyTeX-0.zip
+      name: TinyTeX (infraonly)
+    - path: TinyTeX-1.zip
+      name: TinyTeX (rmarkdown)
     - path: TinyTeX.zip
       name: TinyTeX
+
+  deploy:
+    provider: GitHub
+    repository: yihui/chocolatey-tinytex
+    tag: $(TINYTEX_TAG)
+    release: TinyTeX $(TINYTEX_TAG)
+    description: '`TinyTeX-0.zip` contains the `infraonly` scheme of TeX Live, without any LaTeX packages. `TinyTeX-1.zip` contains enough LaTeX packages to compile R Markdown documents. Please see https://github.com/yihui/chocolatey-tinytex for more info.'
+    auth_token:
+      secure: 7J9/ZS/EeHhAuxS+mtlT7mPKyLSEmXHRXK1fhBGSptLTmcIFqTbdRHRcTcgEB89n
+    artifact: TinyTeX-0.zip, TinyTeX-1.zip
+    on:
+      branch: master
+      TINYTEX_RELEASE_DATE: true
 
 -
   matrix:
