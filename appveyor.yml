@@ -57,10 +57,9 @@ for:
     repository: yihui/chocolatey-tinytex
     tag: $(TINYTEX_TAG)
     release: TinyTeX $(TINYTEX_TAG)
-    description: '`TinyTeX-0.zip` contains the `infraonly` scheme of TeX Live, without any LaTeX packages. `TinyTeX-1.zip` contains enough LaTeX packages to compile R Markdown documents. Please see https://github.com/yihui/chocolatey-tinytex for more info.'
+    description: '`TinyTeX-0.zip` contains the `infraonly` scheme of TeX Live, without any LaTeX packages. `TinyTeX-1.zip` contains enough LaTeX packages to compile R Markdown documents. `TinyTeX.zip` contains even more LaTeX packages. Please see https://github.com/yihui/chocolatey-tinytex for more info.'
     auth_token:
       secure: 7J9/ZS/EeHhAuxS+mtlT7mPKyLSEmXHRXK1fhBGSptLTmcIFqTbdRHRcTcgEB89n
-    artifact: TinyTeX-0.zip, TinyTeX-1.zip
     on:
       branch: master
       TINYTEX_RELEASE_DATE: true
