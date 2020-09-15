@@ -83,13 +83,19 @@ for:
     - R CMD INSTALL .
 
   build_script:
+    - "sed -i '' 's|# finished base install|tar zcf TinyTeX-0.tgz -C ~/Library TinyTeX|' tools/install-unx.sh"
     - ./tools/install-unx.sh
+    - tar zcf TinyTeX-1.tgz -C ~/Library TinyTeX
 
   test_script:
     - Rscript "tools/test-basic.R"
     - tar zcf TinyTeX.tgz -C ~/Library TinyTeX
 
   artifacts:
+    - path: TinyTeX-0.tgz
+      name: TinyTeX (infraonly)
+    - path: TinyTeX-1.tgz
+      name: TinyTeX (rmarkdown)
     - path: TinyTeX.tgz
       name: TinyTeX
 
@@ -109,7 +115,9 @@ for:
     - R CMD INSTALL .
 
   build_script:
+    - "sed -i 's|# finished base install|tar zcf TinyTeX-0.tar.gz -C ~ .TinyTeX|' tools/install-unx.sh"
     - ./tools/install-unx.sh
+    - tar zcf TinyTeX-1.tgz -C ~/Library TinyTeX
 
   test_script:
     - export PATH="$HOME/bin:$PATH"
@@ -117,5 +125,9 @@ for:
     - tar zcf TinyTeX.tar.gz -C ~ .TinyTeX
 
   artifacts:
+    - path: TinyTeX-0.tar.gz
+      name: TinyTeX (infraonly)
+    - path: TinyTeX-1.tar.gz
+      name: TinyTeX (rmarkdown)
     - path: TinyTeX.tar.gz
       name: TinyTeX
