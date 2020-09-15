@@ -16,7 +16,7 @@ rm -rf $TEXDIR
 mkdir -p $TEXDIR
 mv texlive/* $TEXDIR
 rm -r texlive
-# finished base install
+# finished base
 
 $TEXDIR/bin/*/tlmgr install $(download https://yihui.org/gh/tinytex/tools/pkgs-custom.txt | tr '\n' ' ')
 

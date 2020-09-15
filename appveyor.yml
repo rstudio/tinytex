@@ -54,10 +54,14 @@ for:
 
   deploy:
     provider: GitHub
-    repository: yihui/chocolatey-tinytex
+    repository: yihui/tinytex-windows
     tag: $(TINYTEX_TAG)
     release: TinyTeX $(TINYTEX_TAG)
-    description: '`TinyTeX-0.zip` contains the `infraonly` scheme of TeX Live, without any LaTeX packages. `TinyTeX-1.zip` contains enough LaTeX packages to compile R Markdown documents. `TinyTeX.zip` contains even more LaTeX packages. Please see https://github.com/yihui/chocolatey-tinytex for more info.'
+    description: >
+      `TinyTeX-0.zip` contains the `infraonly` scheme of TeX Live, without any
+      LaTeX packages. `TinyTeX-1.zip` contains enough LaTeX packages to compile
+      R Markdown documents. `TinyTeX.zip` contains even more LaTeX packages.
+      Please see https://github.com/yihui/tinytex-windows for more info.
     auth_token:
       secure: 7J9/ZS/EeHhAuxS+mtlT7mPKyLSEmXHRXK1fhBGSptLTmcIFqTbdRHRcTcgEB89n
     on:
@@ -82,7 +86,7 @@ for:
     - R CMD INSTALL .
 
   build_script:
-    - "sed -i '' 's|# finished base install|tar zcf TinyTeX-0.tgz -C ~/Library TinyTeX|' tools/install-unx.sh"
+    - sed -i '' 's|# finished base|tar zcf ${APPVEYOR_BUILD_FOLDER}/TinyTeX-0.tgz -C ~/Library TinyTeX|' tools/install-unx.sh
     - ./tools/install-unx.sh
     - tar zcf TinyTeX-1.tgz -C ~/Library TinyTeX
 
@@ -114,9 +118,9 @@ for:
     - R CMD INSTALL .
 
   build_script:
-    - "sed -i 's|# finished base install|tar zcf TinyTeX-0.tar.gz -C ~ .TinyTeX|' tools/install-unx.sh"
+    - sed -i 's|# finished base|tar zcf ${APPVEYOR_BUILD_FOLDER}/TinyTeX-0.tar.gz -C ~ .TinyTeX|' tools/install-unx.sh
     - ./tools/install-unx.sh
-    - tar zcf TinyTeX-1.tgz -C ~/Library TinyTeX
+    - tar zcf TinyTeX-1.tar.gz -C ~ .TinyTeX
 
   test_script:
     - export PATH="$HOME/bin:$PATH"

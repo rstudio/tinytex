@@ -12,10 +12,10 @@ process_file = function(file, FUN = identity, x = xfun::read_utf8(file)) {
 }
 
 system(sprintf(
-  'git clone https://%s@github.com/yihui/chocolatey-tinytex.git',
+  'git clone https://%s@github.com/yihui/tinytex-windows.git',
   Sys.getenv('GH_TOKEN')
 ))
-xfun::in_dir('chocolatey-tinytex', {
+xfun::in_dir('tinytex-windows', {
   m = tools::md5sum('../TinyTeX-1.zip')
   f = function(x, r, val) {
     if (length(i <- grep(r, x)) != 1) stop('There must be a line that matches ', r)
