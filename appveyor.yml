@@ -3,6 +3,9 @@ image:
   - macOS
   - Ubuntu
 
+matrix:
+  fast_finish: true
+
 for:
 -
   matrix:
