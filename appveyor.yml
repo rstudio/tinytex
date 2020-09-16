@@ -3,6 +3,14 @@ image:
   - macOS
   - Ubuntu
 
+artifacts:
+  - path: TinyTeX-0.*
+    name: TinyTeX (infraonly)
+  - path: TinyTeX-1.*
+    name: TinyTeX (rmarkdown)
+  - path: TinyTeX.*
+    name: TinyTeX
+
 for:
 -
   matrix:
@@ -42,14 +50,6 @@ for:
     - travis-tool.sh run_tests
     - Rscript -e "tinytex::install_tinytex(force = TRUE)"
 
-  artifacts:
-    - path: TinyTeX-0.zip
-      name: TinyTeX (infraonly)
-    - path: TinyTeX-1.zip
-      name: TinyTeX (rmarkdown)
-    - path: TinyTeX.zip
-      name: TinyTeX
-
 -
   matrix:
     only:
@@ -77,14 +77,6 @@ for:
     - Rscript "tools/test-basic.R"
     - tar zcf TinyTeX.tgz -C ~/Library TinyTeX
 
-  artifacts:
-    - path: TinyTeX-0.tgz
-      name: TinyTeX (infraonly)
-    - path: TinyTeX-1.tgz
-      name: TinyTeX (rmarkdown)
-    - path: TinyTeX.tgz
-      name: TinyTeX
-
 -
   matrix:
     only:
@@ -110,11 +102,3 @@ for:
     - export PATH="$HOME/bin:$PATH"
     - Rscript "tools/test-basic.R"
     - tar zcf TinyTeX.tar.gz -C ~ .TinyTeX
-
-  artifacts:
-    - path: TinyTeX-0.tar.gz
-      name: TinyTeX (infraonly)
-    - path: TinyTeX-1.tar.gz
-      name: TinyTeX (rmarkdown)
-    - path: TinyTeX.tar.gz
-      name: TinyTeX
