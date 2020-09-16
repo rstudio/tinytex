@@ -3,6 +3,10 @@ image:
   - macOS
   - Ubuntu
 
+after_test:
+  - sh: rm *.Rproj
+  - cmd: del *.Rproj
+
 artifacts:
   - path: TinyTeX-0.*
     name: TinyTeX (infraonly)
