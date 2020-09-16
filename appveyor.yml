@@ -68,8 +68,9 @@ for:
     - R CMD INSTALL .
 
   build_script:
-    - sed -i '' 's|# finished base|tar zcf ${APPVEYOR_BUILD_FOLDER}/TinyTeX-0.tgz -C ~/Library TinyTeX|' tools/install-unx.sh
+    - sed -i '' 's|# finished base|Rscript "${APPVEYOR_BUILD_FOLDER}/tools/clean-tlpdb.R"; tar zcf "${APPVEYOR_BUILD_FOLDER}/TinyTeX-0.tgz" -C ~/Library TinyTeX|' tools/install-unx.sh
     - ./tools/install-unx.sh
+    - Rscript "tools/clean-tlpdb.R"
     - tar zcf TinyTeX-1.tgz -C ~/Library TinyTeX
 
   test_script:
@@ -100,8 +101,9 @@ for:
     - R CMD INSTALL .
 
   build_script:
-    - sed -i 's|# finished base|tar zcf ${APPVEYOR_BUILD_FOLDER}/TinyTeX-0.tar.gz -C ~ .TinyTeX|' tools/install-unx.sh
+    - sed -i 's|# finished base|Rscript "${APPVEYOR_BUILD_FOLDER}/tools/clean-tlpdb.R"; tar zcf ${APPVEYOR_BUILD_FOLDER}/TinyTeX-0.tar.gz -C ~ .TinyTeX|' tools/install-unx.sh
     - ./tools/install-unx.sh
+    - Rscript "tools/clean-tlpdb.R"
     - tar zcf TinyTeX-1.tar.gz -C ~ .TinyTeX
 
   test_script:

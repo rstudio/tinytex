@@ -11,3 +11,5 @@ x = x[x != 'pause']  # do not pause
 writeLines(x, f)
 shell('install-windows.bat')
 setwd(owd)
+
+sys.source('tools/clean-tlpdb.R')
