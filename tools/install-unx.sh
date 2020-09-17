@@ -1,5 +1,6 @@
 #!/bin/sh
 
+PREVWD=${PWD}
 cd ${TMPDIR:-/tmp}
 
 if [ $(uname) = 'Darwin' ]; then
@@ -17,7 +18,11 @@ rm -rf $TEXDIR
 mkdir -p $TEXDIR
 mv texlive/* $TEXDIR
 rm -r texlive
+cd $PREVWD
 # finished base
+
+cd $OLDPWD
+rm -r install-tl-*
 
 $TEXDIR/bin/*/tlmgr install $(download https://yihui.org/gh/tinytex/tools/pkgs-custom.txt | tr '\n' ' ')
 

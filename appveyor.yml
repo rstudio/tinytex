@@ -14,6 +14,8 @@ artifacts:
     name: TinyTeX (rmarkdown)
   - path: TinyTeX.*
     name: TinyTeX
+  - path: tinytex-installer*
+    name: TinyTeX installer
 
 for:
 -
@@ -97,7 +99,7 @@ for:
     - R CMD INSTALL .
 
   build_script:
-    - sed -i 's|# finished base|Rscript "${APPVEYOR_BUILD_FOLDER}/tools/clean-tlpdb.R"; tar zcf ${APPVEYOR_BUILD_FOLDER}/TinyTeX-0.tar.gz -C ~ .TinyTeX|' tools/install-unx.sh
+    - sed -i 's|# finished base|cp $OLDPWD/install-tl-unx.tar.gz tools/; Rscript tools/clean-tlpdb.R; tar zcf TinyTeX-0.tar.gz -C ~ .TinyTeX|' tools/install-unx.sh
     - ./tools/install-unx.sh
     - Rscript "tools/clean-tlpdb.R"
     - tar zcf TinyTeX-1.tar.gz -C ~ .TinyTeX
@@ -106,3 +108,6 @@ for:
     - export PATH="$HOME/bin:$PATH"
     - Rscript "tools/test-basic.R"
     - tar zcf TinyTeX.tar.gz -C ~ .TinyTeX
+    - cd tools
+    - echo "tlmgr install $(cat pkgs-custom.txt | tr '\n' ' ')" >> install-base.sh
+    - tar zcf ../tinytex-installer-unix.tar.gz install-tl-unx.tar.gz tinytex.profile install-base.sh
