@@ -109,5 +109,7 @@ for:
     - Rscript "tools/test-basic.R"
     - tar zcf TinyTeX.tar.gz -C ~ .TinyTeX
     - cd tools
-    - echo "tlmgr install $(cat pkgs-custom.txt | tr '\n' ' ')" >> install-base.sh
-    - tar zcf ../tinytex-installer-unix.tar.gz install-tl-unx.tar.gz tinytex.profile install-base.sh
+    - cp install-base.sh install.sh
+    - echo "tlmgr install $(cat pkgs-custom.txt | tr '\n' ' ')" >> install.sh
+    - tar zcf ../tinytex-installer-unix.tar.gz install-tl-unx.tar.gz tinytex.profile install.sh
+    - cd ..
