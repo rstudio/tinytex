@@ -55,3 +55,9 @@ if (length(x5 <- setdiff(x4, x3))) stop(
 )
 
 setwd(owd)
+
+if (!identical(p1 <- tinytex:::tl_platforms(), p2 <- tinytex:::.tl_platforms)) stop(
+  'tl_platforms() returned: ', paste(p1, collapse = ', '),
+  '\n.tl_platforms returned ', paste(p2, collapse = ', '),
+  '\nThe latter needs to be updated in the tinytex package.'
+)

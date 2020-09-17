@@ -330,3 +330,11 @@ tl_names = function(x, platform = tl_platform()) {
     '[.](', paste(setdiff(.tl_platforms, platform), collapse = '|'), ')$'
   ), '', x))
 }
+
+# get the names of packages that are not relocatable
+tl_unrelocatable = function() {
+  x = tl_list(NULL, 'name,relocatable', FALSE, stdout = TRUE, .quiet = TRUE)
+  x = grep(',0$', x, value = TRUE)
+  x = gsub(',0$', '', x)  # TODO: use xfun::grep_sub() here
+  tl_names(x)
+}
