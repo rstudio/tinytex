@@ -1,44 +1,44 @@
 #!/bin/sh
 
-rm -f install-tl-unx.tar.gz tinytex.profile
-echo "Downloading install-tl-unx.tar.gz to ${PWD} ..."
 TLREPO=${CTAN_REPO:-http://mirror.ctan.org/systems/texlive/tlnet}
-TLURL="${TLREPO}/install-tl-unx.tar.gz"
-PRURL="https://yihui.org/gh/tinytex/tools/tinytex.profile"
+TLINST="install-tl-unx.tar.gz"
+TLURL=$TLREPO/$TLINST
+PRNAME="tinytex.profile"
+PRURL="https://yihui.org/gh/tinytex/tools"
 if [ $(uname) = 'Darwin' ]; then
-  curl -LO $TLURL
-  curl -LO $PRURL
+  [ -e $TLINST ] || curl -LO $TLURL
+  [ -e $PRNAME ] || curl -LO $PRURL/$PRNAME
 else
-  wget $TLURL
-  wget $PRURL
+  [ -e $TLINST ] || wget $TLURL
+  [ -e $PRNAME ] || wget $PRURL/$PRNAME
   # ask `tlmgr path add` to add binaries to ~/bin instead of the default
   # /usr/local/bin unless this script is invoked with the argument '--admin'
   # (e.g., users want to make LaTeX binaries available system-wide), in which
   # case we personalize texmf variables
   if [ "$1" = '--admin' ]; then
-    echo 'TEXMFCONFIG $HOME/.TinyTeX/texmf-config' >> tinytex.profile
-    echo 'TEXMFHOME $HOME/.TinyTeX/texmf-home' >> tinytex.profile
-    echo 'TEXMFVAR $HOME/.TinyTeX/texmf-var' >> tinytex.profile
+    echo 'TEXMFCONFIG $HOME/.TinyTeX/texmf-config' >> $PRNAME
+    echo 'TEXMFHOME $HOME/.TinyTeX/texmf-home' >> $PRNAME
+    echo 'TEXMFVAR $HOME/.TinyTeX/texmf-var' >> $PRNAME
   else
     mkdir -p $HOME/bin
-    echo "tlpdbopt_sys_bin ${HOME}/bin" >> tinytex.profile
+    echo "tlpdbopt_sys_bin $HOME/bin" >> $PRNAME
   fi
 fi
 
 # no need to personalize texmf variables if not installed by admin
 if [ "$1" != '--admin' ]; then
-  echo 'TEXMFCONFIG $TEXMFSYSCONFIG' >> tinytex.profile
-  echo 'TEXMFHOME $TEXMFLOCAL' >> tinytex.profile
-  echo 'TEXMFVAR $TEXMFSYSVAR' >> tinytex.profile
+  echo 'TEXMFCONFIG $TEXMFSYSCONFIG' >> $PRNAME
+  echo 'TEXMFHOME $TEXMFLOCAL' >> $PRNAME
+  echo 'TEXMFVAR $TEXMFSYSVAR' >> $PRNAME
 fi
 
-tar -xzf install-tl-unx.tar.gz
-rm install-tl-unx.tar.gz
+tar -xzf $TLINST
+rm $TLINST
 
 mkdir texlive
 cd texlive
-TEXLIVE_INSTALL_ENV_NOCHECK=true TEXLIVE_INSTALL_NO_WELCOME=true ../install-tl-*/install-tl -no-gui -profile=../tinytex.profile -repository $TLREPO
-rm -r ../install-tl-* ../tinytex.profile install-tl.log
+TEXLIVE_INSTALL_ENV_NOCHECK=true TEXLIVE_INSTALL_NO_WELCOME=true ../install-tl-*/install-tl -no-gui -profile=../$PRNAME -repository $TLREPO
+rm -r ../install-tl-* ../$PRNAME install-tl.log
 
 alias tlmgr='./bin/*/tlmgr'
 rm -f bin/man bin/*/man

@@ -10,6 +10,7 @@ else
   alias download='wget -qO-'
 fi
 
+rm -f install-tl-unx.tar.gz tinytex.profile
 download https://yihui.org/gh/tinytex/tools/install-base.sh | sh -s - "$@"
 
 rm -rf $TEXDIR
