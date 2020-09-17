@@ -6,9 +6,11 @@ TLURL=$TLREPO/$TLINST
 PRNAME="tinytex.profile"
 PRURL="https://yihui.org/gh/tinytex/tools"
 if [ $(uname) = 'Darwin' ]; then
+  alias sedi="sed -i ''"
   [ -e $TLINST ] || curl -LO $TLURL
   [ -e $PRNAME ] || curl -LO $PRURL/$PRNAME
 else
+  alias sedi="sed -i"
   [ -e $TLINST ] || wget $TLURL
   [ -e $PRNAME ] || wget $PRURL/$PRNAME
   # ask `tlmgr path add` to add binaries to ~/bin instead of the default
@@ -41,6 +43,11 @@ rm -r ../install-tl-*/ ../$PRNAME install-tl.log
 
 alias tlmgr='./bin/*/tlmgr'
 rm -f bin/man bin/*/man
+
+# TODO: delete the patch below to deal with a bug in `tlmgr info --list --data relocatable`
+if [ -e texmf-dist/scripts/texlive/tlmgr.pl ]; then
+  sedi 's/$tlp->relocatable/$tlp->relocated/' texmf-dist/scripts/texlive/tlmgr.pl
+fi
 
 tlmgr option repository "$TLREPO"
 
