@@ -14,7 +14,7 @@ artifacts:
     name: TinyTeX (rmarkdown)
   - path: TinyTeX.*
     name: TinyTeX
-  - path: tinytex-installer*
+  - path: installer*
     name: TinyTeX installer
 
 for:
@@ -111,5 +111,5 @@ for:
     - cd tools
     - cp install-base.sh install.sh
     - echo "tlmgr install $(cat pkgs-custom.txt | tr '\n' ' ')" >> install.sh
-    - tar zcf ../tinytex-installer-unix.tar.gz install-tl-unx.tar.gz tinytex.profile install.sh
+    - tar zcf ../installer-unix.tar.gz install-tl-unx.tar.gz tinytex.profile install.sh
     - cd ..
