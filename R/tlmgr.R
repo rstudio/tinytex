@@ -258,20 +258,29 @@ r_texmf_path = function() {
 
 #' Sizes of LaTeX packages in TeX Live
 #'
-#' Use the command \command{tlmgr info --list --only-installed} to obtain the
-#' sizes of installed LaTeX packages.
+#' Use the command \command{tlmgr info --list} to obtain the sizes of LaTeX
+#' packages.
 #' @param show_total Whether to show the total size.
+#' @param pkgs A character vector of package names (by default, all packages).
+#' @param field A character vector of field names in the package information.
+#'   See \url{https://www.tug.org/texlive/doc/tlmgr.html#info} for more info.
+#' @inheritParams tl_pkgs
 #' @export
-#' @return A data frame of three columns: \code{package} is the package names,
-#'   \code{size} is the sizes in bytes, and \code{size_h} is the human-readable
-#'   version of sizes.
-tl_sizes = function(show_total = TRUE) {
-  info = tl_list(NULL, 'name,size', stdout = TRUE)
-  info = read.table(sep = ',', text = info, stringsAsFactors = FALSE, col.names = c('package', 'size'))
-  info = info[order(info[, 'size'], decreasing = TRUE), , drop = FALSE]
-  info$size_h = sapply(info[, 'size'], auto_size)
+#' @return By default, a data frame of three columns: \code{package} is the
+#'   package names, \code{size} is the sizes in bytes, and \code{size_h} is the
+#'   human-readable version of sizes. If different field names are provided in
+#'   the \code{field} argument, the returned data frame will contain these
+#'   columns.
+tl_sizes = function(show_total = TRUE, pkgs = NULL, only_installed = TRUE, field = 'size') {
+  info = tl_list(pkgs, paste(c('name', field), collapse = ','), only_installed, stdout = TRUE)
+  info = read.table(sep = ',', text = info, stringsAsFactors = FALSE, col.names = c('package', field))
+  info = subset(info, package %in% tl_names(package))
+  if ('size' %in% names(info)) {
+    info = info[order(info[, 'size'], decreasing = TRUE), , drop = FALSE]
+    info$size_h = sapply(info[, 'size'], auto_size)
+    if (show_total) message('The total size is ', auto_size(sum(info$size)))
+  }
   rownames(info) = NULL
-  if (show_total) message('The total size is ', auto_size(sum(info$size)))
   info
 }
 
@@ -280,19 +289,44 @@ auto_size = function(bytes) format(structure(bytes, class = 'object_size'), 'aut
 
 #' List the names of installed TeX Live packages
 #'
-#' Calls \command{tlmgr info --list --only-installed --data name} to obtain the
-#' names of all installed TeX Live packages. Platform-specific strings in
-#' package names are removed, e.g., \code{"tex"} is returned for the package
+#' Calls \command{tlmgr info --list --data name} to obtain the names of all
+#' (installed) TeX Live packages. Platform-specific strings in package names are
+#' removed, e.g., \code{"tex"} is returned for the package
 #' \pkg{tex.x86_64-darwin}.
+#' @param only_installed Whether to list installed packages only.
 #' @export
 #' @return A character vector of package names.
-tl_pkgs = function() {
-  x = tl_list(stdout = TRUE, .quiet = TRUE)
-  unique(sub(paste0('.', tl_platform()), '', x))
+tl_pkgs = function(only_installed = TRUE) {
+  x = tl_list(NULL, 'name', only_installed, stdout = TRUE, .quiet = TRUE)
+  tl_names(x, NULL)
 }
 
-tl_list = function(pkgs = NULL, field = 'name', ...) {
-  tlmgr(c('info', '--list', '--only-installed', '--data', field, pkgs), ...)
+tl_list = function(pkgs = NULL, field = 'name', only_installed = TRUE, ...) {
+  tlmgr(c('info', '--list', if (only_installed) '--only-installed', '--data', field, pkgs), ...)
 }
 
 tl_platform = function() tlmgr('print-platform', stdout = TRUE, .quiet = TRUE)
+
+# get all supported platforms (this needs Internet connection since the info is
+# fetched from CTAN)
+tl_platforms = function() {
+  x = tlmgr(c('platform', 'list'), stdout = TRUE, .quiet = TRUE)
+  x = sub('^\\(i)', '   ', x)
+  trimws(grep('^    ', x, value = TRUE))
+}
+
+# a copy of the returned result from tl_platform() is saved here because
+# tl_platform() is a little slow and requires Internet connection
+.tl_platforms = c(
+  'aarch64-linux', 'amd64-freebsd', 'amd64-netbsd', 'armhf-linux', 'i386-cygwin',
+  'i386-freebsd', 'i386-linux', 'i386-netbsd', 'i386-solaris', 'win32', 'x86_64-cygwin',
+  'x86_64-darwin', 'x86_64-darwinlegacy', 'x86_64-linux', 'x86_64-linuxmusl', 'x86_64-solaris'
+)
+
+# remove the platform suffixes from texlive package names, and optionally keep
+# the suffixes for certain platforms
+tl_names = function(x, platform = tl_platform()) {
+  unique(sub(paste0(
+    '[.](', paste(setdiff(.tl_platforms, platform), collapse = '|'), ')$'
+  ), '', x))
+}
