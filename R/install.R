@@ -42,11 +42,13 @@ install_tinytex = function(
   }
   tweak_path()
   msg = if (tlmgr_available()) {
-    system2('tlmgr', '--version')
-    c(
-      'Detected an existing tlmgr at ', Sys.which('tlmgr'), '. ',
-      'It seems TeX Live has been installed (check tinytex::tinytex_root()). '
-    )
+    if (!is_tinytex()) {
+      system2('tlmgr', '--version')
+      c(
+        'Detected an existing tlmgr at ', Sys.which('tlmgr'), '. ',
+        'It seems TeX Live has been installed (check tinytex::tinytex_root()). '
+      )
+    }
   } else if (Sys.which('pdftex') != '') {
     system2('pdftex', '--version')
     c(
