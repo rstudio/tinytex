@@ -86,7 +86,7 @@ install_tinytex = function(
       ), add = TRUE)
     },
     'windows' = {},
-    stop('Sorry, but tinytex::install_tinytex() does not support this platform.')
+    stop('Sorry, but tinytex::install_tinytex() does not support this platform: ', os)
   )
 
   install = function(...) {
