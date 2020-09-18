@@ -34,7 +34,7 @@ install_tinytex = function(
   }
   if (missing(dir)) dir = ''
   user_dir = ''
-  if (dir == '') {
+  if (dir != '') {
     dir = gsub('[/\\]+$', '', dir)  # remove trailing slashes
     check_dir(dir)
     unlink(dir, recursive = TRUE)
