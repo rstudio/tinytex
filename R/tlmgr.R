@@ -274,7 +274,7 @@ r_texmf_path = function() {
 tl_sizes = function(show_total = TRUE, pkgs = NULL, only_installed = TRUE, field = 'size') {
   info = tl_list(pkgs, paste(c('name', field), collapse = ','), only_installed, stdout = TRUE)
   info = read.table(sep = ',', text = info, stringsAsFactors = FALSE, col.names = c('package', field))
-  info = subset(info, package %in% tl_names(package))
+  info = info[info$package %in% tl_names(info$package), , drop = FALSE]
   if ('size' %in% names(info)) {
     info = info[order(info[, 'size'], decreasing = TRUE), , drop = FALSE]
     info$size_h = sapply(info[, 'size'], auto_size)
