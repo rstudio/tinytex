@@ -98,11 +98,8 @@ install_tinytex = function(
   }
   user_dir = install(user_dir, add_path, extra_packages)
 
-  p = Sys.which('tlmgr')
-  if (p == '') {
-    opts = options(tinytex.tlmgr.path = find_tlmgr(user_dir))
-    on.exit(options(opts), add = TRUE)
-  }
+  opts = options(tinytex.tlmgr.path = find_tlmgr(user_dir))
+  on.exit(options(opts), add = TRUE)
 
   if (not_ctan) {
     # install tlgpg for Windows and macOS users if an HTTPS repo is preferred
@@ -115,16 +112,6 @@ install_tinytex = function(
       tlmgr(c('option', 'repository', 'ctan'))
     }
   }
-
-  if (os == 'windows') message(
-    'Please quit and reopen your R session and IDE (if you are using one, such ',
-    'as RStudio or Emacs) and check if tinytex:::is_tinytex() is TRUE.'
-  ) else if (!is_tinytex()) warning(
-    'TinyTeX was not successfully installed or configured.',
-    if (p != '') c(' tlmgr was found at ', p) else {
-      c('Your PATH variable is ', Sys.getenv('PATH'))
-    }, '. See https://yihui.org/tinytex/faq/ for more information.'
-  )
 
   invisible(user_dir)
 }
