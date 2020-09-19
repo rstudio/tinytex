@@ -32,6 +32,7 @@ kvdefinekeys
 kvoptions
 kvsetkeys
 latex-amsmath-dev
+latex-bin
 latex-tools-dev
 latexmk
 letltxmacro
@@ -55,6 +56,7 @@ unicode-math
 uniquecounter
 url
 xcolor
+xetex
 xkeyval
 xunicode
 zapfding

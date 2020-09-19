@@ -48,6 +48,6 @@ for /F %%a in (pkgs-custom.txt) do set "pkgs=!pkgs! %%a"
 del pkgs-custom.txt
 
 call "%APPDATA%\TinyTeX\bin\win32\tlmgr" path add
-call "%APPDATA%\TinyTeX\bin\win32\tlmgr" install latex-bin xetex %pkgs%
+call "%APPDATA%\TinyTeX\bin\win32\tlmgr" install %pkgs%
 
 pause

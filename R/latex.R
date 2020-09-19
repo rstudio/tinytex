@@ -178,6 +178,13 @@ latexmk_emu = function(
   pkgs_last = character()
   filep = sub('.log$', if (engine == 'latex') '.dvi' else '.pdf', logfile)
   verbose = getOption('tinytex.verbose', FALSE)
+
+  # install commands like pdflatex, bibtex, biber, and makeindex if necessary
+  install_cmd = function(cmd) {
+    if (install_packages && Sys.which(cmd) == '') parse_install(file = cmd)
+  }
+  install_cmd(engine)
+
   run_engine = function() {
     on_error  = function() {
       if (install_packages && file.exists(logfile)) {
@@ -209,11 +216,6 @@ latexmk_emu = function(
   }
   run_engine()
   if (install_packages) check_babel(logfile)
-
-  # install commands like bibtex, biber, and makeindex if necessary
-  install_cmd = function(cmd) {
-    if (install_packages && Sys.which(cmd) == '') parse_install(file = cmd)
-  }
 
   # generate index
   if (file.exists(idx <- aux_files['idx'])) {
