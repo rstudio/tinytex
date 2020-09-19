@@ -2,6 +2,12 @@
 
 cd ${TMPDIR:-/tmp}
 
+[ -z $(which tlmgr) ] || TL_INSTALLED_PKGS=$(tlmgr info --list --only-installed --data name | tr '\n' ' ')
+[ -z "$TL_INSTALLED_PKGS" ] ||
+  echo "If you want to reinstall currently installed packages, use this command after the TinyTeX installation is done:
+
+    tlmgr install $TL_INSTALLED_PKGS"
+
 OSNAME=$(uname)
 [ -z $OSNAME ] && echo "This operating system is not supported." && exit 1
 
