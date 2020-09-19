@@ -3,7 +3,7 @@
 owd = setwd('tools')
 f = 'install-windows.bat'
 x = readLines(f)
-i = x == r"(call "%APPDATA%\TinyTeX\bin\win32\tlmgr" install latex-bin xetex %pkgs%)"
+i = x == r"(call "%APPDATA%\TinyTeX\bin\win32\tlmgr" install %pkgs%)"
 if (sum(i) != 1)
   stop('The script ', f, ' should contain a line to install extra LaTeX packages.')
 x = x[!i]
