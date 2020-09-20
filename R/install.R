@@ -8,6 +8,9 @@
 #' @param force Whether to force to install (override) or uninstall TinyTeX.
 #' @param dir The directory to install or uninstall TinyTeX (should not exist
 #'   unless \code{force = TRUE}).
+#' @param version The version of TinyTeX, e.g., \code{"2020.09"} (see all
+#'   available versions at \url{https://github.com/yihui/tinytex-releases}). By
+#'   default, it installs the latest daily build of TinyTeX.
 #' @param repository The CTAN repository to set. You can find available
 #'   repositories at \code{https://ctan.org/mirrors}), e.g.,
 #'   \code{'http://mirrors.tuna.tsinghua.edu.cn/CTAN/'}, or
@@ -22,7 +25,7 @@
 #'   for the default installation directories on different platforms.
 #' @export
 install_tinytex = function(
-  force = FALSE, dir = 'auto', repository = 'ctan', extra_packages = NULL,
+  force = FALSE, dir = 'auto', version = '', repository = 'ctan', extra_packages = NULL,
   add_path = TRUE
 ) {
   if (!is.logical(force)) stop('The argument "force" must take a logical value.')
@@ -96,7 +99,7 @@ install_tinytex = function(
       install_prebuilt('TinyTeX-1', ...)
     }
   }
-  user_dir = install(user_dir, add_path, extra_packages)
+  user_dir = install(user_dir, version, add_path, extra_packages)
 
   opts = options(tinytex.tlmgr.path = find_tlmgr(user_dir))
   on.exit(options(opts), add = TRUE)
@@ -141,7 +144,11 @@ check_local_bin = function() {
   )
 }
 
-install_tinytex_source = function(repo = '', dir, add_path, extra_packages) {
+install_tinytex_source = function(repo = '', dir, version, add_path, extra_packages) {
+  if (version != '') stop(
+    'tinytex::install_tinytex() does not support installing a specific version of ',
+    'TinyTeX for your platform. Please use the argument version = "".'
+  )
   if (repo != 'ctan') {
     Sys.setenv(CTAN_REPO = repo)
     on.exit(Sys.unsetenv('CTAN_REPO'), add = TRUE)
@@ -309,7 +316,7 @@ install_yihui_pkgs = function() {
 
 # install a prebuilt version of TinyTeX
 install_prebuilt = function(
-  pkg = '', dir = '', add_path = TRUE, extra_packages = NULL, hash = FALSE, cache = NA
+  pkg = '', dir = '', version = '', add_path = TRUE, extra_packages = NULL, hash = FALSE, cache = NA
 ) {
   if (os_index == 0) stop(
     'There is no prebuilt version of TinyTeX for this platform: ',
@@ -323,15 +330,19 @@ install_prebuilt = function(
   dir2 = file.path(target, b)  # path to (.)TinyTeX/ after extraction
 
   if (xfun::file_ext(pkg) == '') {
-    if (pkg == '') pkg = 'TinyTeX'
-    pkg = paste0(pkg, '.', c('zip', 'tar.gz', 'tgz')[os_index])
+    installer = if (pkg == '') 'TinyTeX' else pkg
+    # e.g., TinyTeX-0.zip, TinyTeX-1-v2020.10.tar.gz, ...
+    pkg = paste0(
+      installer, if (version != '') paste0('-v', version), '.',
+      c('zip', 'tar.gz', 'tgz')[os_index]
+    )
     if (file.exists(pkg) && is.na(cache)) {
       # invalidate cache (if unspecified) when the installer is more than one day old
       if (as.numeric(difftime(Sys.time(), file.mtime(pkg), units = 'days')) > 1)
         cache = FALSE
     }
     if (xfun::isFALSE(cache)) file.remove(pkg)
-    if (!file.exists(pkg)) download_installer(pkg)
+    if (!file.exists(pkg)) download_installer(pkg, version)
   }
 
   # installation dir shouldn't be a file but a directory
@@ -362,8 +373,11 @@ post_install_config = function(add_path, extra_packages, hash = FALSE) {
   }
 }
 
-download_installer = function(file) {
-  download_file(paste0('https://yihui.org/tinytex/', file), file)
+download_installer = function(file, version) {
+  url = if (version != '') sprintf(
+    'https://github.com/yihui/tinytex-releases/releases/download/v%s/%s', version, file
+  ) else paste0('https://yihui.org/tinytex/', file)
+  download_file(url, file)
 }
 
 #' Copy TinyTeX to another location and use it in another system
