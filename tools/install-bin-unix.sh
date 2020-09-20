@@ -14,9 +14,9 @@ OSNAME=$(uname)
 TINYTEX_INSTALLER=${TINYTEX_INSTALLER:-"TinyTeX-1"}
 
 if [ $OSNAME = 'Darwin' ]; then
-  TEXDIR=${TINYTEX_DIR:-"~/Library"}/TinyTeX
+  TEXDIR=${TINYTEX_DIR:-~/Library}/TinyTeX
 else
-  TEXDIR=${TINYTEX_DIR:-"~"}/.TinyTeX
+  TEXDIR=${TINYTEX_DIR:-~}/.TinyTeX
   if [ $OSNAME != 'Linux']; then
     TINYTEX_INSTALLER="intaller-unix"
   fi
@@ -32,14 +32,14 @@ fi
 
 case $OSNAME in
   "Darwin")
-    curl -LO ${TINYTEX_URL}.tgz
-    tar xzf ${TINYTEX_INSTALLER}.tgz -C $(dirname $TEXDIR)
-    rm ${TINYTEX_INSTALLER}.tgz
+    curl -L ${TINYTEX_URL}.tgz -o TinyTeX.tgz
+    tar xzf TinyTeX.tgz -C $(dirname $TEXDIR)
+    rm TinyTeX.tgz
     ;;
   "Linux")
-    wget --progress=dot:giga ${TINYTEX_URL}.tar.gz
-    tar xzf ${TINYTEX_INSTALLER}.tar.gz -C $(dirname $TEXDIR)
-    rm ${TINYTEX_INSTALLER}.tar.gz
+    wget --progress=dot:giga -O TinyTeX.tar.gz ${TINYTEX_URL}.tar.gz
+    tar xzf TinyTeX.tar.gz -C $(dirname $TEXDIR)
+    rm TinyTeX.tar.gz
     ;;
   *)
     echo "We do not have a prebuilt TinyTeX package for the operating system $(uname)."
