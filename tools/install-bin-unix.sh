@@ -33,13 +33,13 @@ fi
 case $OSNAME in
   "Darwin")
     curl -LO ${TINYTEX_URL}.tgz
-    tar xzf TinyTeX-1.tgz -C $(dirname $TEXDIR)
-    rm TinyTeX-1.tgz
+    tar xzf ${TINYTEX_INSTALLER}.tgz -C $(dirname $TEXDIR)
+    rm ${TINYTEX_INSTALLER}.tgz
     ;;
   "Linux")
     wget --progress=dot:giga ${TINYTEX_URL}.tar.gz
-    tar xzf TinyTeX-1.tar.gz -C $(dirname $TEXDIR)
-    rm TinyTeX-1.tar.gz
+    tar xzf ${TINYTEX_INSTALLER}.tar.gz -C $(dirname $TEXDIR)
+    rm ${TINYTEX_INSTALLER}.tar.gz
     ;;
   *)
     echo "We do not have a prebuilt TinyTeX package for the operating system $(uname)."
