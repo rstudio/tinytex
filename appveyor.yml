@@ -54,7 +54,8 @@ for:
     - Rscript "tools/test-basic.R"  # even more LaTeX packages
     - ps: Compress-Archive $Env:APPDATA\\TinyTeX TinyTeX.zip
     - travis-tool.sh run_tests
-    - Rscript -e "tinytex::install_tinytex(force = TRUE)"
+    - set TINYTEX_INSTALLER=TinTeX-0
+    - call tools\install-bin-windows.bat
 
 -
   matrix:
@@ -82,6 +83,7 @@ for:
   test_script:
     - Rscript "tools/test-basic.R"
     - tar zcf TinyTeX.tgz -C ~/Library TinyTeX
+    - TINYTEX_INSTALLER=TinTeX-0 ./tools-install-bin-unix.sh
 
 -
   matrix:
