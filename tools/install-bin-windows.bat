@@ -16,7 +16,7 @@ if not defined TINYTEX_VERSION (
 )
 
 rem download the zip package and unzip it
-powershell -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest $Env:TINYTEX_URL.zip -OutFile install.zip"
+powershell -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest $($Env:TINYTEX_URL).zip -OutFile install.zip"
 powershell -Command "& { Add-Type -A 'System.IO.Compression.FileSystem'; [IO.Compression.ZipFile]::ExtractToDirectory('install.zip', '.'); }"
 del install.zip
 

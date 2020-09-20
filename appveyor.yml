@@ -55,7 +55,7 @@ for:
     - ps: Compress-Archive $Env:APPDATA\\TinyTeX TinyTeX.zip
     - travis-tool.sh run_tests
     - set TINYTEX_INSTALLER=TinTeX-0
-    - call tools\install-bin-windows.bat
+    - echo | tools\install-bin-windows.bat
 
 -
   matrix:
