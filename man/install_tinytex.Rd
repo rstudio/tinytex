@@ -12,7 +12,7 @@ install_tinytex(
   dir = "auto",
   version = "",
   repository = "ctan",
-  extra_packages = NULL,
+  extra_packages = if (is_tinytex()) tl_pkgs(),
   add_path = TRUE
 )
 
@@ -40,7 +40,9 @@ argument should end with the path \file{/systems/texlive/tlnet}, and if it
 does not, the path will be automatically appended.}
 
 \item{extra_packages}{A character vector of extra LaTeX packages to be
-installed.}
+installed. By default, a vector of all currently installed LaTeX packages
+if an existing installation of TinyTeX is found. If you want a fresh
+installation, you may use \code{extra_packages = NULL}.}
 
 \item{add_path}{Whether to run the command \command{tlmgr path add} to add
 the bin path of TeX Live to the system environment variable \var{PATH}.}

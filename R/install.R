@@ -18,15 +18,17 @@
 #'   argument should end with the path \file{/systems/texlive/tlnet}, and if it
 #'   does not, the path will be automatically appended.
 #' @param extra_packages A character vector of extra LaTeX packages to be
-#'   installed.
+#'   installed. By default, a vector of all currently installed LaTeX packages
+#'   if an existing installation of TinyTeX is found. If you want a fresh
+#'   installation, you may use \code{extra_packages = NULL}.
 #' @param add_path Whether to run the command \command{tlmgr path add} to add
 #'   the bin path of TeX Live to the system environment variable \var{PATH}.
 #' @references See the TinyTeX documentation (\url{https://yihui.org/tinytex/})
 #'   for the default installation directories on different platforms.
 #' @export
 install_tinytex = function(
-  force = FALSE, dir = 'auto', version = '', repository = 'ctan', extra_packages = NULL,
-  add_path = TRUE
+  force = FALSE, dir = 'auto', version = '', repository = 'ctan',
+  extra_packages = if (is_tinytex()) tl_pkgs(), add_path = TRUE
 ) {
   if (!is.logical(force)) stop('The argument "force" must take a logical value.')
   check_dir = function(dir) {
@@ -99,6 +101,7 @@ install_tinytex = function(
       install_prebuilt('TinyTeX-1', ...)
     }
   }
+  force(extra_packages)  # evaluate it before installing another version of TinyTeX
   user_dir = install(user_dir, version, add_path, extra_packages)
 
   opts = options(tinytex.tlmgr.path = find_tlmgr(user_dir))
@@ -367,7 +370,7 @@ post_install_config = function(add_path, extra_packages, hash = FALSE) {
   }
   if (add_path) tlmgr_path()
   r_texmf()
-  tlmgr_install(extra_packages)
+  tlmgr_install(setdiff(extra_packages, tl_pkgs()))
   if (hash) {
     texhash(); fmtutil(stdout = FALSE); updmap(); fc_cache()
   }
