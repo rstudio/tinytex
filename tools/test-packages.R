@@ -4,7 +4,8 @@
 xfun::in_dir('..', xfun::install_dir('tinytex'))
 owd = setwd('tools')
 
-system('sh install-base.sh && mv texlive ../../ && ../../texlive/bin/*/tlmgr path add')
+res = system('sh install-base.sh && mv texlive ../../ && ../../texlive/bin/*/tlmgr path add')
+if (res != 0) stop('Failed to install base TinyTeX.')
 unlink(normalizePath('~/texlive'), recursive = TRUE)
 x0 = tinytex::tl_pkgs()  # packages from the minimal installation
 cat('\nBase packages are:', sort(x0), '\n\n')

@@ -46,6 +46,9 @@ rm -f bin/man bin/*/man
 
 # TODO: delete the patch below to deal with a bug in `tlmgr info --list --data relocatable`
 if [ -e texmf-dist/scripts/texlive/tlmgr.pl ]; then
+  if [ "$TRAVIS_REPO_SLUG" = "yihui/tinytex" ]; then
+    grep '\->relocatable' texmf-dist/scripts/texlive/tlmgr.pl || (echo "Need to remove the patch in install-base.sh now." && exit 1)
+  fi
   sedi 's/$tlp->relocatable/$tlp->relocated/' texmf-dist/scripts/texlive/tlmgr.pl
 fi
 
