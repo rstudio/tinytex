@@ -19,8 +19,8 @@ if [ $OSNAME = 'Darwin' ]; then
   TEXDIR=${TINYTEX_DIR:-~/Library}/TinyTeX
 else
   TEXDIR=${TINYTEX_DIR:-~}/.TinyTeX
-  if [ $OSNAME != 'Linux']; then
-    TINYTEX_INSTALLER="intaller-unix"
+  if [ $OSNAME != 'Linux' ]; then
+    TINYTEX_INSTALLER="installer-unix"
   fi
 fi
 
