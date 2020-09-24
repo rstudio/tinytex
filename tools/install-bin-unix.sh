@@ -44,7 +44,7 @@ case $OSNAME in
     rm TinyTeX.tar.gz
     ;;
   *)
-    echo "We do not have a prebuilt TinyTeX package for the operating system $(uname)."
+    echo "We do not have a prebuilt TinyTeX package for the operating system ${OSNAME}."
     echo "I will try to install from source for you instead."
     wget ${TINYTEX_URL}.tar.gz
     tar xzf ${TINYTEX_INSTALLER}.tar.gz
