@@ -506,6 +506,7 @@ detect_files = function(text) {
   # ! Package tikz Error: I did not find the tikz library 'hobby'... named tikzlibraryhobby.code.tex
   # support file `supp-pdf.mkii' (supp-pdf.tex) is missing
   # ! I can't find file `hyph-de-1901.ec.tex'.
+  # ! Package fontspec Error: The font "TeXGyrePagella" cannot be found.
   r = c(
     ".*! Font [^=]+=([^ ]+).+ not loadable.*",
     '.*! .*The font "([^"]+)" cannot be found.*',
@@ -565,7 +566,7 @@ miss_font = function() {
 
 font_ext = function(x) {
   i = !grepl('[.]', x)
-  x[i] = paste0(x[i], '[.](tfm|afm|mf|otf)')
+  x[i] = paste0(x[i], '([.]|-Regular.)(tfm|afm|mf|otf|fontspec)')
   x
 }
 
