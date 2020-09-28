@@ -228,35 +228,36 @@ latexmk_emu = function(
   # generate bibliography
   bib_engine = match.arg(bib_engine)
   install_cmd(bib_engine)
+  pkgs_last = character()
   aux = aux_files[if ((biber <- bib_engine == 'biber')) 'bcf' else 'aux']
   if (file.exists(aux)) {
     if (biber || require_bibtex(aux)) {
       blg = aux_files['blg']  # bibliography log file
       build_bib = function() system2_quiet(bib_engine, shQuote(aux), error = {
-        stop("Failed to build the bibliography via ", bib_engine, call. = FALSE)
+        check_blg = function() {
+          if (!file.exists(blg)) return(TRUE)
+          x = readLines(blg)
+          if (length(grep('error message', x)) == 0) return(TRUE)
+          warn = function() {
+            warning(
+              bib_engine, ' seems to have failed:\n\n', paste(x, collapse = '\n'),
+              call. = FALSE
+            )
+            TRUE
+          }
+          if (!tlmgr_available() || !install_packages) return(warn())
+          # install the possibly missing .bst package and rebuild bib
+          r = '.* open style file ([^ ]+).*'
+          pkgs = parse_packages(files = xfun::grep_sub(r, '\\1', x), quiet = !verbose)
+          if (length(pkgs) == 0 || identical(pkgs, pkgs_last)) return(warn())
+          pkgs_last <<- pkgs
+          tlmgr_install(pkgs); build_bib()
+          FALSE
+        }
+        if (check_blg())
+          stop("Failed to build the bibliography via ", bib_engine, call. = FALSE)
       })
       build_bib()
-      check_blg = function() {
-        if (!file.exists(blg)) return(TRUE)
-        x = readLines(blg)
-        if (length(grep('error message', x)) == 0) return(TRUE)
-        warn = function() {
-          warning(
-            bib_engine, ' seems to have failed:\n\n', paste(x, collapse = '\n'),
-            call. = FALSE
-          )
-          TRUE
-        }
-        if (!tlmgr_available() || !install_packages) return(warn())
-        # install the possibly missing .bst package and rebuild bib
-        r = '.* open style file ([^ ]+).*'
-        pkgs = parse_packages(files = gsub(r, '\\1', grep(r, x, value = TRUE)))
-        if (length(pkgs) == 0) return(warn())
-        tlmgr_install(pkgs); build_bib()
-        FALSE
-      }
-      # check .blg at most 3 times for missing packages
-      for (i in 1:3) if (check_blg()) break
     }
   }
   for (i in seq_len(max_times)) {
