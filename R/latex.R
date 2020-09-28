@@ -248,7 +248,7 @@ latexmk_emu = function(
           if (!tlmgr_available() || !install_packages) return(warn())
           # install the possibly missing .bst package and rebuild bib
           r = '.* open style file ([^ ]+).*'
-          pkgs = parse_packages(files = xfun::grep_sub(r, '\\1', x), quiet = !verbose)
+          pkgs = parse_packages(files = grep_sub(r, '\\1', x), quiet = !verbose)
           if (length(pkgs) == 0 || identical(pkgs, pkgs_last)) return(warn())
           pkgs_last <<- pkgs
           tlmgr_install(pkgs); build_bib()
@@ -396,17 +396,17 @@ check_babel = function(file) {
   if (length(m <- latex_warning(file)) == 0 || length(grep('^Package babel Warning:', m)) == 0)
     return()
   r = "^\\(babel).* language `([[:alpha:]]+)'.*$"
-  if (length(i <- grep(r, m)) == 0) return()
-  tlmgr_install(paste0('hyphen-', tolower(gsub(r, '\\1', m[i]))))
+  if (length(m <- grep_sub(r, '\\1', m)) == 0) return()
+  tlmgr_install(paste0('hyphen-', tolower(m)))
 }
 
 # check the version of latexmk
 check_latexmk_version = function() {
   out = system2('latexmk', '-v', stdout = TRUE)
   reg = '^.*Version (\\d+[.]\\d+).*$'
-  out = grep(reg, out, value = TRUE)
+  out = grep_sub(reg, '\\1', out)
   if (length(out) == 0) return()
-  ver = as.numeric_version(gsub(reg, '\\1', out[1]))
+  ver = as.numeric_version(out[1])
   if (ver >= '4.43') return()
   system2('latexmk', '-v')
   warning(
@@ -531,8 +531,7 @@ detect_files = function(text) {
   )
   x = grep(paste(r, collapse = '|'), text, value = TRUE)
   if (length(x) > 0) unique(unlist(lapply(r, function(p) {
-    z = grep(p, x, value = TRUE)
-    v = gsub(p, '\\1', z)
+    v = grep_sub(p, '\\1', x)
     if (length(v) == 0) return(v)
     if (p == r[8] && length(grep('! Package tikz Error:', text)) == 0) return()
     if (!(p %in% r[1:5])) return(if (p %in% r[6:7]) 'epstopdf' else v)
