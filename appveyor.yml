@@ -37,7 +37,6 @@ for:
 
   build_script:
     - set PATH=%PATH:C:\MinGW\msys\1.0\bin;=%
-    - Rscript -e "update.packages(ask = FALSE, checkBuilt = TRUE, repos = 'https://cran.rstudio.com')"
 
   before_test:
     - choco install pandoc --version 2.7.3
@@ -47,7 +46,9 @@ for:
     - set PATH=%APPDATA%\TinyTeX\bin\win32;%PATH%
     - Rscript "tools/install-windows-base.R"  # the infraonly scheme
     - ps: Compress-Archive $Env:APPDATA\\TinyTeX TinyTeX-0.zip
+    - Rscript tools/config.R
     - travis-tool.sh install_deps
+    - Rscript tools/update.R
     - R CMD INSTALL .
     - Rscript "tools/install-windows-more.R"  # extra packages for compiling R Markdown
     - ps: Compress-Archive $Env:APPDATA\\TinyTeX TinyTeX-1.zip
@@ -72,6 +73,7 @@ for:
     - brew cask install r
     - Rscript tools/config.R
     - Rscript -e "install.packages('tinytex', dependencies = TRUE)"
+    - Rscript tools/update.R
     - R CMD INSTALL .
 
   build_script:
@@ -98,6 +100,7 @@ for:
     - sudo apt -qq -y install r-base-dev pandoc pandoc-citeproc > /dev/null
     - Rscript tools/config.R
     - Rscript -e "install.packages('tinytex', dependencies = TRUE)"
+    - Rscript tools/update.R
     - R CMD INSTALL .
 
   build_script:
