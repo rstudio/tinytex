@@ -1,1 +1,1 @@
-update.packages(ask = FALSE, checkBuilt = TRUE)
+try(update.packages(ask = FALSE, checkBuilt = TRUE))
