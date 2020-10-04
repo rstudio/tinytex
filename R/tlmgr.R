@@ -208,7 +208,8 @@ delete_tlpdb_files = function() {
 #' @rdname tlmgr
 #' @export
 tlmgr_path = function(action = c('add', 'remove')) {
-  do = function(...) tlmgr(c('path', match.arg(action)), .quiet = TRUE, ...)
+  a = match.arg(action)
+  do = function(...) tlmgr(c('path', a), .quiet = TRUE, ...)
   if (!is_windows()) return(do())
   # remove the false alarm 'Use of uninitialized value' on Windows
   tryCatch(error = identity, {
