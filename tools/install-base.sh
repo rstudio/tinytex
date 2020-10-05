@@ -40,6 +40,7 @@ mkdir texlive
 cd texlive
 TEXLIVE_INSTALL_ENV_NOCHECK=true TEXLIVE_INSTALL_NO_WELCOME=true ../install-tl-*/install-tl -no-gui -profile=../$PRNAME -repository $TLREPO
 rm -r ../install-tl-*/ ../$PRNAME install-tl.log
+rm -f install-tl
 
 alias tlmgr='./bin/*/tlmgr'
 rm -f bin/man bin/*/man
