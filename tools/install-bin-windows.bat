@@ -21,6 +21,7 @@ powershell -Command "& { Add-Type -A 'System.IO.Compression.FileSystem'; [IO.Com
 del install.zip
 
 rd /s /q "%APPDATA%\TinyTeX"
+rd /s /q "%APPDATA%\TinyTeX"
 move /y TinyTeX "%APPDATA%"
 
 pause
