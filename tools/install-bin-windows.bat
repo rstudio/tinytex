@@ -24,4 +24,6 @@ rd /s /q "%APPDATA%\TinyTeX"
 rd /s /q "%APPDATA%\TinyTeX"
 move /y TinyTeX "%APPDATA%"
 
+call "%APPDATA%\TinyTeX\bin\win32\tlmgr" path add
+
 pause
