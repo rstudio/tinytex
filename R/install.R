@@ -196,7 +196,7 @@ uninstall_tinytex = function(force = FALSE, dir = tinytex_root()) {
     'Detected TeX Live at "', dir, '", but it appears to be TeX Live instead of TinyTeX. ',
     'To uninstall TeX Live, use the argument force = TRUE.'
   )
-  r_texmf('remove')
+  r_texmf('remove', .quiet = TRUE)
   tlmgr_path('remove')
   delete_texmf_user()
   unlink(dir, recursive = TRUE)
@@ -369,7 +369,7 @@ post_install_config = function(add_path, extra_packages, hash = FALSE) {
     tlmgr(c('option', 'sys_bin', '~/bin'))
   }
   if (add_path) tlmgr_path()
-  r_texmf()
+  r_texmf(.quiet = TRUE)
   tlmgr_install(setdiff(extra_packages, tl_pkgs()))
   if (hash) {
     texhash(); fmtutil(stdout = FALSE); updmap(); fc_cache()
