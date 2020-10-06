@@ -4,10 +4,12 @@
 \alias{r_texmf}
 \title{Add/remove R's texmf tree to/from TeX Live}
 \usage{
-r_texmf(action = c("add", "remove"))
+r_texmf(action = c("add", "remove"), ...)
 }
 \arguments{
 \item{action}{Add/remove R's texmf tree to/from TeX Live.}
+
+\item{...}{Arguments passed to \code{\link{tlmgr}()}.}
 }
 \description{
 R ships a custom texmf tree containing a few LaTeX style and class files,

@@ -35,7 +35,7 @@ tlmgr_update(
 
 tlmgr_path(action = c("add", "remove"))
 
-tlmgr_conf(more_args = character())
+tlmgr_conf(more_args = character(), ...)
 }
 \arguments{
 \item{args}{A character vector of arguments to be passed to the command

@@ -212,8 +212,8 @@ tlmgr_path = function(action = c('add', 'remove'))
 
 #' @rdname tlmgr
 #' @export
-tlmgr_conf = function(more_args = character()) {
-  tlmgr(c('conf', more_args))
+tlmgr_conf = function(more_args = character(), ...) {
+  tlmgr(c('conf', more_args), ...)
 }
 
 
@@ -226,6 +226,7 @@ tlmgr_conf = function(more_args = character()) {
 #' used to add/remove R's texmf tree to/from TeX Live via
 #' \code{\link{tlmgr_conf}('auxtrees')}.
 #' @param action Add/remove R's texmf tree to/from TeX Live.
+#' @param ... Arguments passed to \code{\link{tlmgr}()}.
 #' @references See the \pkg{tlmgr} manual for detailed information about
 #'   \command{tlmgr conf auxtrees}. Check out
 #'   \url{https://tex.stackexchange.com/q/77720/9128} if you don't know what
@@ -240,8 +241,8 @@ tlmgr_conf = function(more_args = character()) {
 #'
 #' # all files under R's texmf tree
 #' list.files(file.path(R.home('share'), 'texmf'), recursive = TRUE, full.names = TRUE)
-r_texmf = function(action = c('add', 'remove')) {
-  tlmgr_conf(c('auxtrees', match.arg(action), shQuote(r_texmf_path())))
+r_texmf = function(action = c('add', 'remove'), ...) {
+  tlmgr_conf(c('auxtrees', match.arg(action), shQuote(r_texmf_path())), ...)
 }
 
 r_texmf_path = function() {
