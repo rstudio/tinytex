@@ -207,21 +207,8 @@ delete_tlpdb_files = function() {
 #'   directory to/from the system environment variable \code{PATH}.
 #' @rdname tlmgr
 #' @export
-tlmgr_path = function(action = c('add', 'remove')) {
-  a = match.arg(action)
-  do = function(...) tlmgr(c('path', a), .quiet = TRUE, ...)
-  if (!is_windows()) return(do())
-  # remove the false alarm 'Use of uninitialized value' on Windows
-  tryCatch(error = identity, {
-    m = do(stderr = TRUE)
-    i = grep('Use of uninitialized value in bitwise or', m)
-    if (length(i) == 1 && length(m) >= i + 1) {
-      if (grep('tlmgr[.]pl', m[i + 1])) i = c(i, i + 1)
-      m = m[-i]
-      if (length(m)) message(paste(m, collapse = '\n'))
-    }
-  })
-}
+tlmgr_path = function(action = c('add', 'remove'))
+  tlmgr(c('path', match.arg(action)), .quiet = TRUE)
 
 #' @rdname tlmgr
 #' @export
