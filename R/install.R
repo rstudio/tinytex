@@ -68,10 +68,8 @@ install_tinytex = function(
   )
 
   https = grepl('^https://', repository)
-  repository = sub('/+$', '', repository)
-  if ((not_ctan <- repository != 'ctan') && !grepl('/tlnet$', repository)) {
-    repository = paste0(repository, '/systems/texlive/tlnet')
-  }
+  repository = normalize_repo(repository)
+  not_ctan = repository != 'ctan'
 
   owd = setwd(tempdir()); on.exit(setwd(owd), add = TRUE)
 
@@ -112,7 +110,7 @@ install_tinytex = function(
     if (os_index %in% c(1, 3) && https) {
       tlmgr(c('--repository', 'http://www.preining.info/tlgpg/', 'install', 'tlgpg'))
     }
-    tlmgr(c('option', 'repository', shQuote(repository)))
+    tlmgr_repo(repository)
     if (tlmgr(c('update', '--list')) != 0) {
       warning('The repository ', repository, ' does not seem to be accessible. Reverting to the default CTAN mirror.')
       tlmgr(c('option', 'repository', 'ctan'))
@@ -120,6 +118,15 @@ install_tinytex = function(
   }
 
   invisible(user_dir)
+}
+
+# append /systems/texlive/tlnet to the repo url if necessary
+normalize_repo = function(url) {
+  # don't normalize the url if users passes I(url) or 'ctan' or NULL
+  if (is.null(url) || url == 'ctan' || inherits(url, 'AsIs')) return(url)
+  url = sub('/+$', '', url)
+  if (!grepl('/tlnet$', url)) url = paste0(url, '/systems/texlive/tlnet')
+  url
 }
 
 win_app_dir = function(..., error = TRUE) {

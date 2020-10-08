@@ -5,7 +5,11 @@
 #'
 #' The \code{tlmgr()} function is a wrapper of \code{system2('tlmgr')}. All
 #' other \code{tlmgr_*()} functions are based on \code{tlmgr} for specific
-#' tasks. Please consult the \pkg{tlmgr} manual for full details.
+#' tasks. For example, \code{tlmgr_install()} runs the command \command{tlmgr
+#' install} to install LaTeX packages, and \code{tlmgr_update} runs the command
+#' \command{tlmgr update}, etc. Note that \code{tlmgr_repo} runs \command{tlmgr
+#' options repository} to query or set the CTAN repository. Please consult the
+#' \pkg{tlmgr} manual for full details.
 #' @param args A character vector of arguments to be passed to the command
 #'   \command{tlmgr}.
 #' @param usermode (For expert users only) Whether to use TeX Live's
@@ -216,6 +220,13 @@ tlmgr_conf = function(more_args = character(), ...) {
   tlmgr(c('conf', more_args), ...)
 }
 
+#' @param url The URL of the CTAN mirror. If \code{NULL}, show the current
+#'   repository, otherwise set the repository.
+#' @rdname tlmgr
+#' @export
+tlmgr_repo = function(url = NULL, ...) {
+  tlmgr(c('option', 'repository', shQuote(normalize_repo(url))), ...)
+}
 
 #' Add/remove R's texmf tree to/from TeX Live
 #'
