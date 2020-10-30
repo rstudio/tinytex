@@ -1,5 +1,5 @@
 #' @import stats utils tools
-#' @importFrom xfun grep_sub
+#' @importFrom xfun grep_sub dir_exists in_dir
 NULL
 
 os = .Platform$OS.type

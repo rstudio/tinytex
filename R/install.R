@@ -296,13 +296,6 @@ is_tinytex = function() tryCatch({
   )))
 }, error = function(e) FALSE)
 
-in_dir = function(dir, expr) {
-  owd = setwd(dir); on.exit(setwd(owd), add = TRUE)
-  expr
-}
-
-dir_exists = function(path) file_test('-d', path)
-
 dir_rename = function(from, to) {
   # cannot rename '/foo' to '/bar' because of 'Invalid cross-device link'
   suppressWarnings(file.rename(from, to)) || dir_copy(from, to)
