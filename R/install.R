@@ -93,7 +93,7 @@ install_tinytex = function(
   )
 
   install = function(...) {
-    if (os_index == 0) {
+    if (need_source_install()) {
       install_tinytex_source(repository, ...)
     } else {
       install_prebuilt('TinyTeX-1', ...)
@@ -118,6 +118,12 @@ install_tinytex = function(
   }
 
   invisible(user_dir)
+}
+
+# TinyTeX has to be installed from source for OSes that are not Linux or
+# non-x86_64 Linux machines
+need_source_install = function() {
+  os_index == 0 || (os_index == 2 && !identical(Sys.info()[['machine']], 'x86_64'))
 }
 
 # append /systems/texlive/tlnet to the repo url if necessary
@@ -321,9 +327,9 @@ install_yihui_pkgs = function() {
 install_prebuilt = function(
   pkg = '', dir = '', version = '', add_path = TRUE, extra_packages = NULL, hash = FALSE, cache = NA
 ) {
-  if (os_index == 0) stop(
+  if (need_source_install()) stop(
     'There is no prebuilt version of TinyTeX for this platform: ',
-    .Platform$OS.type, '.'
+    paste(Sys.info()[c('sysname', 'machine')], collapse = ' '), '.'
   )
   dir0 = default_inst(); b = basename(dir0)
   dir1 = xfun::normalize_path(dir)  # expected installation dir
