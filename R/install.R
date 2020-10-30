@@ -83,7 +83,7 @@ install_tinytex = function(
     os,
     'unix' = {
       check_local_bin()
-      if (os_index != 2 && dir_exists('~/bin')) on.exit(message(
+      if (os_index != 3 && !dir_exists('~/bin')) on.exit(message(
         'You may have to restart your system after installing TinyTeX to make sure ',
         '~/bin appears in your PATH variable (https://github.com/yihui/tinytex/issues/16).'
       ), add = TRUE)
