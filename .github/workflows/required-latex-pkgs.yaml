@@ -48,8 +48,8 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ${{ env.R_LIBS_USER }}
-          key: ${{ hashFiles('.github/R-version') }}-${{ hasFiles('tools/test-packages.R') }}-1-${{ hashFiles('.github/depends.Rds') }}
-          restore-keys: ${{ hashFiles('.github/R-version') }}-${{ hasFiles('tools/test-packages.R') }}-1-
+          key: ${{ hashFiles('.github/R-version') }}-${{ hashFiles('tools/test-packages.R') }}-1-${{ hashFiles('.github/depends.Rds') }}
+          restore-keys: ${{ hashFiles('.github/R-version') }}-${{ hashFiles('tools/test-packages.R') }}-1-
 
       - name: Install system dependencies
         if: runner.os == 'Linux'
