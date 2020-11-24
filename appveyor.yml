@@ -67,7 +67,7 @@ for:
     - $HOME/R
 
   init:
-    - brew install pandoc pandoc-citeproc p7zip > /dev/null
+    - brew install pandoc p7zip > /dev/null
 
   install:
     - brew cask install r
@@ -97,7 +97,7 @@ for:
 
   install:
     - sudo apt -qq update > /dev/null
-    - sudo apt -qq -y install r-base-dev pandoc pandoc-citeproc > /dev/null
+    - sudo apt -qq -y install r-base-dev pandoc > /dev/null
     - Rscript tools/config.R
     - Rscript -e "install.packages('tinytex', dependencies = TRUE)"
     - Rscript tools/update.R
