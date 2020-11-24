@@ -13,6 +13,9 @@
 #' engine a number of times (the maximum is 10 by default) to resolve all
 #' cross-references.
 #'
+#' By default, LaTeX warnings will be converted to R warnings. To suppress these
+#' warnings, set \code{options(tinytex.latexmk.warning = FALSE)}.
+#'
 #' If \code{emulation = FALSE}, you need to make sure the executable
 #' \command{latexmk} is available in your system, otherwise \code{latexmk()}
 #' will fall back to \code{emulation = TRUE}. You can set the global option
@@ -170,7 +173,7 @@ latexmk_emu = function(
   on.exit({
     files2 = exist_files(aux_files)
     files3 = setdiff(files2, files1)
-    if (keep_log || length(latex_warning(logfile, TRUE))) files3 = setdiff(files3, logfile)
+    if (keep_log || length(latex_warning(logfile))) files3 = setdiff(files3, logfile)
     if (clean) unlink(files3)
     .global$update_noted = NULL
   }, add = TRUE)
@@ -373,7 +376,7 @@ check_unicode = function(x) {
 }
 
 # whether a LaTeX log file contains LaTeX or package (e.g. babel) warnings
-latex_warning = function(file, show = FALSE) {
+latex_warning = function(file, show = getOption('tinytex.latexmk.warning', TRUE)) {
   if (!file.exists(file)) return()
   x = readLines(file, warn = FALSE)
   if (length(i <- grep('^(LaTeX|Package [[:alnum:]]+) Warning:', x)) == 0) return()
@@ -393,7 +396,7 @@ latex_warning = function(file, show = FALSE) {
 
 # check if any babel packages are missing
 check_babel = function(file) {
-  if (length(m <- latex_warning(file)) == 0 || length(grep('^Package babel Warning:', m)) == 0)
+  if (length(m <- latex_warning(file, FALSE)) == 0 || length(grep('^Package babel Warning:', m)) == 0)
     return()
   r = "^\\(babel).* language `([[:alpha:]]+)'.*$"
   if (length(m <- grep_sub(r, '\\1', m)) == 0) return()

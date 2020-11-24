@@ -82,6 +82,9 @@ necessary (the \file{*.idx} file exists), run the bibliography engine
 engine a number of times (the maximum is 10 by default) to resolve all
 cross-references.
 
+By default, LaTeX warnings will be converted to R warnings. To suppress these
+warnings, set \code{options(tinytex.latexmk.warning = FALSE)}.
+
 If \code{emulation = FALSE}, you need to make sure the executable
 \command{latexmk} is available in your system, otherwise \code{latexmk()}
 will fall back to \code{emulation = TRUE}. You can set the global option
