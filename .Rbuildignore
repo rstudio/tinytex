@@ -6,4 +6,4 @@
 ^appveyor\.yml$
 ^codecov\.yml$
 ^TinyTeX.*\.zip$
-^.github$
+^\.github$

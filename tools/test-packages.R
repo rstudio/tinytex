@@ -2,11 +2,10 @@
 # compile basic R Markdown documents and bookdown books to PDF
 
 xfun::in_dir('..', xfun::install_dir('tinytex'))
+if (!tinytex:::tlmgr_available()) stop("tlmgr not available")
+
 owd = setwd('tools')
 
-res = system('sh install-base.sh && mv texlive ../../ && ../../texlive/bin/*/tlmgr path add')
-if (res != 0) stop('Failed to install base TinyTeX.')
-unlink(normalizePath('~/texlive'), recursive = TRUE)
 x0 = tinytex::tl_pkgs()  # packages from the minimal installation
 cat('\nBase packages are:', sort(x0), '\n\n')
 
@@ -24,7 +23,7 @@ xfun::in_dir('book', for (i in c('pdflatex', 'xelatex', 'lualatex')) render(
 ))
 
 # report the size of TeX Live after installing the above packages
-system('du -sh ../../texlive')
+system(sprintf('du -sh %s', tinytex::tinytex_root()))
 
 # now see which packages are required to compile the above Rmd files
 x1 = sort(unique(c(
