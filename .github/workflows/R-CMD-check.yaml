@@ -10,7 +10,7 @@ on:
       - main
       - master
 
-name: R-CMD-check
+name: Check & Coverage
 
 jobs:
   R-CMD-check:
@@ -48,7 +48,7 @@ jobs:
       - uses: r-lib/actions/setup-tinytex@5f1c134
         env:
           # install full prebuilt version
-          TINYTEX_INSTALLER: TinyTeX
+          TINYTEX_INSTALLER: TinyTeX-0
 
       - name: Query dependencies
         run: |
@@ -91,6 +91,11 @@ jobs:
         env:
           _R_CHECK_CRAN_INCOMING_REMOTE_: false
         run: rcmdcheck::rcmdcheck(args = c("--no-manual", "--as-cran"), error_on = "warning", check_dir = "check")
+        shell: Rscript {0}
+
+      - name: Test coverage
+        if: success() && runner.os == 'Linux' && matrix.config.r == 'release'
+        run: covr::codecov()
         shell: Rscript {0}
 
       - name: Upload check results

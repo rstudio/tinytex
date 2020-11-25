@@ -13,10 +13,10 @@ on:
 name: check required LateX packages
 
 jobs:
-  R-CMD-check:
+  LateX-Packages:
     runs-on: ubuntu-18.04
 
-    name: Ubuntu (release)
+    name: Ubuntu 18-04 (release)
 
     env:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
