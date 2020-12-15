@@ -593,6 +593,11 @@ fc_cache = function(args = c('-v', '-r')) {
   system2('fc-cache', args)
 }
 
+# refresh/update/regenerate everything
+refresh_all = function(...) {
+  fc_cache(); fmtutil(...); updmap(...); texhash()
+}
+
 # look up files in the Kpathsea library, e.g., kpsewhich('Sweave.sty')
 kpsewhich = function(filename, options = character()) {
   tweak_path()
