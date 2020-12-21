@@ -18,6 +18,7 @@ etex
 etexcmds
 etoolbox
 euenc
+everyshi
 fancyvrb
 filehook
 firstaid
@@ -66,7 +67,6 @@ luatex
 mdwtools
 metafont
 mfware
-ms
 natbib
 pdfescape
 pdftex
