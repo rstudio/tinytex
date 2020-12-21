@@ -70,7 +70,7 @@ for:
     - brew install pandoc p7zip > /dev/null
 
   install:
-    - brew cask install r
+    - brew install --cask r
     - Rscript tools/config.R
     - Rscript -e "install.packages('tinytex', dependencies = TRUE)"
     - Rscript tools/update.R
