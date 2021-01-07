@@ -66,10 +66,8 @@ for:
   cache:
     - $HOME/R
 
-  init:
-    - brew install pandoc p7zip > /dev/null
-
   install:
+    - brew install pandoc > /dev/null
     - brew install --cask r
     - Rscript tools/config.R
     - Rscript -e "install.packages('tinytex', dependencies = TRUE)"
