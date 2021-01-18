@@ -7,11 +7,11 @@ assert('detect_files() can detect filenames from LaTeX log', {
 
   (detect_files("/usr/local/bin/mktexpk: line 123: mf: command not found") %==% 'mf')
 
-  (grepl('^psyr\\[\\.\\]', detect_files("! Font U/psy/m/n/10=psyr at 10.0pt not loadable: Metric (TFM) file not found")))
+  (detect_files("! Font U/psy/m/n/10=psyr at 10.0pt not loadable: Metric (TFM) file not found") %==% font_ext("psyr"))
 
-  (grepl('^FandolSong-Regular\\[\\.\\]', detect_files('! The font "FandolSong-Regular" cannot be found.')))
+  (detect_files('! The font "FandolSong-Regular" cannot be found.') %==% font_ext("FandolSong-Regular"))
 
-  (grepl('^tcrm0700\\[\\.\\]', detect_files('!pdfTeX error: /usr/local/bin/pdflatex (file tcrm0700): Font tcrm0700 at 600 not found')))
+  (detect_files('!pdfTeX error: /usr/local/bin/pdflatex (file tcrm0700): Font tcrm0700 at 600 not found') %==% font_ext('tcrm0700'))
 
   (detect_files("or the language definition file ngerman.ldf was not found") %==% 'ngerman.ldf')
 
