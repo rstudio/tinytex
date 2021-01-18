@@ -568,7 +568,7 @@ miss_font = function() {
 
 font_ext = function(x) {
   i = !grepl('[.]', x)
-  x[i] = paste0(x[i], '[.](tfm|afm|mf|otf)')
+  x[i] = paste0(x[i], '(-(Bold|Italic|Regular).*)?[.](tfm|afm|mf|otf|ttf)')
   x
 }
 
