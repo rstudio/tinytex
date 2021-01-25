@@ -1,33 +1,119 @@
-environment:
-  PATH: "%APPDATA%\\TinyTeX\\bin\\win32;%PATH%"
+image:
+  - Visual Studio 2019
+  - macOS
+  - Ubuntu
 
-init:
-  ps: |
-        $ErrorActionPreference = "Stop"
-        Invoke-WebRequest http://raw.github.com/krlmlr/r-appveyor/master/scripts/appveyor-tool.ps1 -OutFile "..\appveyor-tool.ps1"
-        Import-Module '..\appveyor-tool.ps1'
-
-install:
-  ps: Bootstrap
-
-cache:
-  - C:\RLibrary
-
-build_script:
-  - set PATH=%PATH:C:\MinGW\msys\1.0\bin;=%
-  - echo | tools\install-windows.bat
-  - Rscript -e "update.packages(ask = FALSE, checkBuilt = TRUE, repos = 'https://cran.rstudio.com')"
-
-test_script:
-  - tlmgr --version
-  - pdflatex --version
-  - xelatex --version
-  - 7z a TinyTeX.zip %APPDATA%\\TinyTeX
-  - travis-tool.sh install_deps
-  - travis-tool.sh run_tests
-  - R CMD INSTALL .
-  - Rscript -e "tinytex::install_tinytex(force = TRUE)"
+after_test:
+  - sh: rm *.Rproj
+  - cmd: del *.Rproj
 
 artifacts:
-  - path: TinyTeX.zip
+  - path: TinyTeX-0.*
+    name: TinyTeX (infraonly)
+  - path: TinyTeX-1.*
+    name: TinyTeX (rmarkdown)
+  - path: TinyTeX.*
     name: TinyTeX
+  - path: installer*
+    name: TinyTeX installer
+
+for:
+-
+  matrix:
+    only:
+      - image: Visual Studio 2019
+
+  init:
+    - ps: |
+          $ErrorActionPreference = "Stop"
+          Invoke-WebRequest http://raw.github.com/krlmlr/r-appveyor/master/scripts/appveyor-tool.ps1 -OutFile "..\appveyor-tool.ps1"
+          Import-Module '..\appveyor-tool.ps1'
+
+  install:
+    ps: Bootstrap
+
+  cache:
+    - C:\RLibrary
+
+  build_script:
+    - set PATH=%PATH:C:\MinGW\msys\1.0\bin;=%
+
+  before_test:
+    - choco install pandoc --version 2.7.3
+    - pandoc -v
+
+  test_script:
+    - set PATH=%APPDATA%\TinyTeX\bin\win32;%PATH%
+    - Rscript "tools/install-windows-base.R"  # the infraonly scheme
+    - ps: Compress-Archive $Env:APPDATA\\TinyTeX TinyTeX-0.zip
+    - Rscript tools/config.R
+    - travis-tool.sh install_deps
+    - Rscript tools/update.R
+    - R CMD INSTALL .
+    - Rscript "tools/install-windows-more.R"  # extra packages for compiling R Markdown
+    - ps: Compress-Archive $Env:APPDATA\\TinyTeX TinyTeX-1.zip
+    - Rscript "tools/test-basic.R"  # even more LaTeX packages
+    - ps: Compress-Archive $Env:APPDATA\\TinyTeX TinyTeX.zip
+    - travis-tool.sh run_tests
+    - set TINYTEX_INSTALLER=TinyTeX-0
+    - echo | tools\install-bin-windows.bat
+
+-
+  matrix:
+    only:
+      - image: macOS
+
+  cache:
+    - $HOME/R
+
+  install:
+    - brew install pandoc > /dev/null
+    - brew install --cask r
+    - Rscript tools/config.R
+    - Rscript -e "install.packages('tinytex', dependencies = TRUE)"
+    - Rscript tools/update.R
+    - R CMD INSTALL .
+
+  build_script:
+    - sed -i '' 's|# finished base|Rscript "${APPVEYOR_BUILD_FOLDER}/tools/clean-tlpdb.R"; tar zcf "${APPVEYOR_BUILD_FOLDER}/TinyTeX-0.tgz" -C ~/Library TinyTeX|' tools/install-unx.sh
+    - ./tools/install-unx.sh
+    - Rscript "tools/clean-tlpdb.R"
+    - tar zcf TinyTeX-1.tgz -C ~/Library TinyTeX
+
+  test_script:
+    - Rscript "tools/test-basic.R"
+    - tar zcf TinyTeX.tgz -C ~/Library TinyTeX
+    - TINYTEX_INSTALLER=TinyTeX-0 ./tools/install-bin-unix.sh
+
+-
+  matrix:
+    only:
+      - image: Ubuntu
+
+  cache:
+    - $HOME/R
+
+  install:
+    - sudo apt -qq update > /dev/null
+    - sudo apt -qq -y install r-base-dev pandoc > /dev/null
+    - Rscript tools/config.R
+    - Rscript -e "install.packages('tinytex', dependencies = TRUE)"
+    - Rscript tools/update.R
+    - R CMD INSTALL .
+
+  build_script:
+    - sed -i 's|# finished base|cp $OLDPWD/install-tl-unx.tar.gz tools/; Rscript tools/clean-tlpdb.R; tar zcf TinyTeX-0.tar.gz -C ~ .TinyTeX|' tools/install-unx.sh
+    - ./tools/install-unx.sh
+    - Rscript "tools/clean-tlpdb.R"
+    - tar zcf TinyTeX-1.tar.gz -C ~ .TinyTeX
+
+  test_script:
+    - export PATH="$HOME/bin:$PATH"
+    - Rscript "tools/test-basic.R"
+    - tar zcf TinyTeX.tar.gz -C ~ .TinyTeX
+    - cd tools
+    - cp install-base.sh install.sh
+    - echo "tlmgr install $(cat pkgs-custom.txt | tr '\n' ' ')" >> install.sh
+    - tar zcf ../installer-unix.tar.gz install-tl-unx.tar.gz tinytex.profile install.sh
+    - cd ..
+    - TINYTEX_INSTALLER=TinyTeX-0 ./tools/install-bin-unix.sh

@@ -1,11 +1,13 @@
 a4wide
 ae
 algorithms
+amscls
 appendix
 babel-english
 bbm-macros
 beamer
 breakurl
+caption
 catoptions
 charter
 cite
@@ -15,6 +17,7 @@ comment
 courier
 eepic
 enumitem
+environ
 eso-pic
 eurosym
 extsizes
@@ -30,12 +33,13 @@ lipsum
 listings
 ltxkeys
 ly1
+makecell
 mathalpha
 mathpazo
 mathtools
 mdframed
-mdwtools
 microtype
+modes
 morefloats
 ms
 multirow
@@ -47,9 +51,11 @@ ntgclass
 palatino
 parskip
 pbox
+pdflscape
 pdfpages
 pgf
 picinpar
+polyglossia
 preprint
 preview
 psnfss
@@ -67,8 +73,11 @@ symbol
 tabu
 textcase
 threeparttable
+threeparttablex
 thumbpdf
 titlesec
+translator
+trimspaces
 tufte-latex
 ucs
 ulem
@@ -78,6 +87,5 @@ vmargin
 wallpaper
 wrapfig
 xargs
-xcolor
 xstring
 xwatermark

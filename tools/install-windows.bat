@@ -28,6 +28,8 @@ cd install-tl-*
 @echo | install-tl-windows.bat -no-gui -profile=../tinytex.profile
 
 del TinyTeX\install-tl.log ..\tinytex.profile
+if exist instal-tl del install-tl
+if exist instal-tl-windows.bat del install-tl-windows.bat
 
 rem TeXLive installed to ./TinyTeX; move it to APPDATA
 rd /s /q "%APPDATA%\TinyTeX"
@@ -48,6 +50,6 @@ for /F %%a in (pkgs-custom.txt) do set "pkgs=!pkgs! %%a"
 del pkgs-custom.txt
 
 call "%APPDATA%\TinyTeX\bin\win32\tlmgr" path add
-call "%APPDATA%\TinyTeX\bin\win32\tlmgr" install latex-bin xetex %pkgs%
+call "%APPDATA%\TinyTeX\bin\win32\tlmgr" install %pkgs%
 
 pause

@@ -15,7 +15,7 @@ latexmk(
   emulation = TRUE,
   min_times = 1,
   max_times = 10,
-  install_packages = emulation && tlmgr_available(),
+  install_packages = emulation && tlmgr_writable(),
   pdf_file = gsub("tex$", "pdf", file),
   clean = TRUE
 )
@@ -48,7 +48,9 @@ the LaTeX engine when using emulation. You can set the global options
 
 \item{install_packages}{Whether to automatically install missing LaTeX
 packages found by \code{\link{parse_packages}()} from the LaTeX log. This
-argument is only for the emulation mode and TeX Live.}
+argument is only for the emulation mode and TeX Live. Its value can also be
+set via the global option \code{tinytex.install_packages}, e.g.,
+\code{options(tinytex.install_packages = FALSE)}.}
 
 \item{pdf_file}{Path to the PDF output file. By default, it is under the same
 directory as the input \code{file} and also has the same base name. When
@@ -79,6 +81,9 @@ necessary (the \file{*.idx} file exists), run the bibliography engine
 (the \file{*.aux} or \file{*.bcf} file exists), and finally run the LaTeX
 engine a number of times (the maximum is 10 by default) to resolve all
 cross-references.
+
+By default, LaTeX warnings will be converted to R warnings. To suppress these
+warnings, set \code{options(tinytex.latexmk.warning = FALSE)}.
 
 If \code{emulation = FALSE}, you need to make sure the executable
 \command{latexmk} is available in your system, otherwise \code{latexmk()}

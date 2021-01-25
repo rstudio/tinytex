@@ -5,5 +5,5 @@
 ^\.travis\.yml$
 ^appveyor\.yml$
 ^codecov\.yml$
-^TinyTeX\.zip$
-^.github$
+^TinyTeX.*\.zip$
+^\.github$

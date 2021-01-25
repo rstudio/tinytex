@@ -4,10 +4,12 @@
 \alias{r_texmf}
 \title{Add/remove R's texmf tree to/from TeX Live}
 \usage{
-r_texmf(action = c("add", "remove"))
+r_texmf(action = c("add", "remove"), ...)
 }
 \arguments{
 \item{action}{Add/remove R's texmf tree to/from TeX Live.}
+
+\item{...}{Arguments passed to \code{\link{tlmgr}()}.}
 }
 \description{
 R ships a custom texmf tree containing a few LaTeX style and class files,
@@ -18,8 +20,11 @@ used to add/remove R's texmf tree to/from TeX Live via
 \code{\link{tlmgr_conf}('auxtrees')}.
 }
 \examples{
-r_texmf('remove')
-r_texmf('add')
+# running the code below will modify your texmf tree; please do not run
+# unless you know what it means
+
+# r_texmf('remove')
+# r_texmf('add')
 
 # all files under R's texmf tree
 list.files(file.path(R.home('share'), 'texmf'), recursive = TRUE, full.names = TRUE)

@@ -4,17 +4,26 @@
 \alias{tl_sizes}
 \title{Sizes of LaTeX packages in TeX Live}
 \usage{
-tl_sizes(show_total = TRUE)
+tl_sizes(show_total = TRUE, pkgs = NULL, only_installed = TRUE, field = "size")
 }
 \arguments{
 \item{show_total}{Whether to show the total size.}
+
+\item{pkgs}{A character vector of package names (by default, all packages).}
+
+\item{only_installed}{Whether to list installed packages only.}
+
+\item{field}{A character vector of field names in the package information.
+See \url{https://www.tug.org/texlive/doc/tlmgr.html#info} for more info.}
 }
 \value{
-A data frame of three columns: \code{package} is the package names,
-  \code{size} is the sizes in bytes, and \code{size_h} is the human-readable
-  version of sizes.
+By default, a data frame of three columns: \code{package} is the
+  package names, \code{size} is the sizes in bytes, and \code{size_h} is the
+  human-readable version of sizes. If different field names are provided in
+  the \code{field} argument, the returned data frame will contain these
+  columns.
 }
 \description{
-Use the command \command{tlmgr info --list --only-installed} to obtain the
-sizes of installed LaTeX packages.
+Use the command \command{tlmgr info --list} to obtain the sizes of LaTeX
+packages.
 }

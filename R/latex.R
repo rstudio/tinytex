@@ -13,6 +13,9 @@
 #' engine a number of times (the maximum is 10 by default) to resolve all
 #' cross-references.
 #'
+#' By default, LaTeX warnings will be converted to R warnings. To suppress these
+#' warnings, set \code{options(tinytex.latexmk.warning = FALSE)}.
+#'
 #' If \code{emulation = FALSE}, you need to make sure the executable
 #' \command{latexmk} is available in your system, otherwise \code{latexmk()}
 #' will fall back to \code{emulation = TRUE}. You can set the global option
@@ -53,7 +56,9 @@
 #'   \code{options(tinytex.compile.max_times = 3)}.
 #' @param install_packages Whether to automatically install missing LaTeX
 #'   packages found by \code{\link{parse_packages}()} from the LaTeX log. This
-#'   argument is only for the emulation mode and TeX Live.
+#'   argument is only for the emulation mode and TeX Live. Its value can also be
+#'   set via the global option \code{tinytex.install_packages}, e.g.,
+#'   \code{options(tinytex.install_packages = FALSE)}.
 #' @param pdf_file Path to the PDF output file. By default, it is under the same
 #'   directory as the input \code{file} and also has the same base name. When
 #'   \code{engine == 'latex'}, this will be a DVI file.
@@ -66,7 +71,7 @@
 latexmk = function(
   file, engine = c('pdflatex', 'xelatex', 'lualatex', 'latex'),
   bib_engine = c('bibtex', 'biber'), engine_args = NULL, emulation = TRUE,
-  min_times = 1, max_times = 10, install_packages = emulation && tlmgr_available(),
+  min_times = 1, max_times = 10, install_packages = emulation && tlmgr_writable(),
   pdf_file = gsub('tex$', 'pdf', file), clean = TRUE
 ) {
   if (!grepl('[.]tex$', file))
@@ -89,6 +94,8 @@ latexmk = function(
   }
   if (missing(min_times)) min_times = getOption('tinytex.compile.min_times', min_times)
   if (missing(max_times)) max_times = getOption('tinytex.compile.max_times', max_times)
+  if (missing(install_packages))
+    install_packages = getOption('tinytex.install_packages', install_packages)
   if (missing(bib_engine)) bib_engine = getOption('tinytex.bib_engine', bib_engine)
   if (missing(engine_args)) engine_args = getOption('tinytex.engine_args', engine_args)
   if (missing(clean)) clean = getOption('tinytex.clean', TRUE)
@@ -166,7 +173,7 @@ latexmk_emu = function(
   on.exit({
     files2 = exist_files(aux_files)
     files3 = setdiff(files2, files1)
-    if (keep_log || length(latex_warning(logfile, TRUE))) files3 = setdiff(files3, logfile)
+    if (keep_log || length(latex_warning(logfile))) files3 = setdiff(files3, logfile)
     if (clean) unlink(files3)
     .global$update_noted = NULL
   }, add = TRUE)
@@ -174,6 +181,13 @@ latexmk_emu = function(
   pkgs_last = character()
   filep = sub('.log$', if (engine == 'latex') '.dvi' else '.pdf', logfile)
   verbose = getOption('tinytex.verbose', FALSE)
+
+  # install commands like pdflatex, bibtex, biber, and makeindex if necessary
+  install_cmd = function(cmd) {
+    if (install_packages && Sys.which(cmd) == '') parse_install(file = cmd)
+  }
+  install_cmd(engine)
+
   run_engine = function() {
     on_error  = function() {
       if (install_packages && file.exists(logfile)) {
@@ -184,7 +198,7 @@ latexmk_emu = function(
             pkgs_last <<- pkgs
             return(run_engine())
           }
-        } else if (file.access(Sys.which('tlmgr'), 2) == 0) {
+        } else if (tlmgr_writable()) {
           # chances are you are the sysadmin, and don't need ~/.TinyTeX
           if (delete_texmf_user()) return(run_engine())
         }
@@ -205,46 +219,48 @@ latexmk_emu = function(
   }
   run_engine()
   if (install_packages) check_babel(logfile)
+
   # generate index
   if (file.exists(idx <- aux_files['idx'])) {
     idx_engine = getOption('tinytex.makeindex', 'makeindex')
+    install_cmd(idx_engine)
     system2_quiet(idx_engine, c(getOption('tinytex.makeindex.args'), shQuote(idx)), error = {
       stop("Failed to build the index via ", idx_engine, call. = FALSE)
     })
   }
   # generate bibliography
   bib_engine = match.arg(bib_engine)
-  if (install_packages && bib_engine == 'biber' && Sys.which('biber') == '')
-    tlmgr_install('biber')
+  install_cmd(bib_engine)
+  pkgs_last = character()
   aux = aux_files[if ((biber <- bib_engine == 'biber')) 'bcf' else 'aux']
   if (file.exists(aux)) {
     if (biber || require_bibtex(aux)) {
       blg = aux_files['blg']  # bibliography log file
       build_bib = function() system2_quiet(bib_engine, shQuote(aux), error = {
-        stop("Failed to build the bibliography via ", bib_engine, call. = FALSE)
+        check_blg = function() {
+          if (!file.exists(blg)) return(TRUE)
+          x = readLines(blg)
+          if (length(grep('error message', x)) == 0) return(TRUE)
+          warn = function() {
+            warning(
+              bib_engine, ' seems to have failed:\n\n', paste(x, collapse = '\n'),
+              call. = FALSE
+            )
+            TRUE
+          }
+          if (!tlmgr_available() || !install_packages) return(warn())
+          # install the possibly missing .bst package and rebuild bib
+          r = '.* open style file ([^ ]+).*'
+          pkgs = parse_packages(files = grep_sub(r, '\\1', x), quiet = !verbose)
+          if (length(pkgs) == 0 || identical(pkgs, pkgs_last)) return(warn())
+          pkgs_last <<- pkgs
+          tlmgr_install(pkgs); build_bib()
+          FALSE
+        }
+        if (check_blg())
+          stop("Failed to build the bibliography via ", bib_engine, call. = FALSE)
       })
       build_bib()
-      check_blg = function() {
-        if (!file.exists(blg)) return(TRUE)
-        x = readLines(blg)
-        if (length(grep('error message', x)) == 0) return(TRUE)
-        warn = function() {
-          warning(
-            bib_engine, ' seems to have failed:\n\n', paste(x, collapse = '\n'),
-            call. = FALSE
-          )
-          TRUE
-        }
-        if (!tlmgr_available() || !install_packages) return(warn())
-        # install the possibly missing .bst package and rebuild bib
-        r = '.* open style file ([^ ]+).*'
-        pkgs = parse_packages(files = gsub(r, '\\1', grep(r, x, value = TRUE)))
-        if (length(pkgs) == 0) return(warn())
-        tlmgr_install(pkgs); build_bib()
-        FALSE
-      }
-      # check .blg at most 3 times for missing packages
-      for (i in 1:3) if (check_blg()) break
     }
   }
   for (i in seq_len(max_times)) {
@@ -342,7 +358,7 @@ check_inline_math = function(x, f) {
   r = 'l[.][0-9]+\\s*|\\s*[0-9.]+\\\\times.*'
   if (!any('! Missing $ inserted.' == x) || !length(i <- grep(r, x))) return()
   m = gsub(r, '', x[i]); m = m[m != '']
-  s = xfun::with_ext(f, 'Rmd')
+  s = with_ext(f, 'Rmd')
   if (file.exists(s)) message(
     if (length(m)) c('Try to find the following text in ', s, ':\n', paste(' ', m, '\n'), '\n'),
     'You may need to add $ $ around a certain inline R expression `r ` in ', s,
@@ -360,7 +376,7 @@ check_unicode = function(x) {
 }
 
 # whether a LaTeX log file contains LaTeX or package (e.g. babel) warnings
-latex_warning = function(file, show = FALSE) {
+latex_warning = function(file, show = getOption('tinytex.latexmk.warning', TRUE)) {
   if (!file.exists(file)) return()
   x = readLines(file, warn = FALSE)
   if (length(i <- grep('^(LaTeX|Package [[:alnum:]]+) Warning:', x)) == 0) return()
@@ -380,20 +396,20 @@ latex_warning = function(file, show = FALSE) {
 
 # check if any babel packages are missing
 check_babel = function(file) {
-  if (length(m <- latex_warning(file)) == 0 || length(grep('^Package babel Warning:', m)) == 0)
+  if (length(m <- latex_warning(file, FALSE)) == 0 || length(grep('^Package babel Warning:', m)) == 0)
     return()
   r = "^\\(babel).* language `([[:alpha:]]+)'.*$"
-  if (length(i <- grep(r, m)) == 0) return()
-  tlmgr_install(paste0('hyphen-', tolower(gsub(r, '\\1', m[i]))))
+  if (length(m <- grep_sub(r, '\\1', m)) == 0) return()
+  tlmgr_install(paste0('hyphen-', tolower(m)))
 }
 
 # check the version of latexmk
 check_latexmk_version = function() {
   out = system2('latexmk', '-v', stdout = TRUE)
   reg = '^.*Version (\\d+[.]\\d+).*$'
-  out = grep(reg, out, value = TRUE)
+  out = grep_sub(reg, '\\1', out)
   if (length(out) == 0) return()
-  ver = as.numeric_version(gsub(reg, '\\1', out[1]))
+  ver = as.numeric_version(out[1])
   if (ver >= '4.43') return()
   system2('latexmk', '-v')
   warning(
@@ -505,7 +521,7 @@ detect_files = function(text) {
     ".* File `(.+eps-converted-to.pdf)'.*",
     ".*xdvipdfmx:fatal: pdf_ref_obj.*",
 
-    '.* (tikzlibrary[^.]+[.]code[.]tex).*',
+    '.* (tikzlibrary[^ ]+?[.]code[.]tex).*',
 
     ".*! LaTeX Error: File `([^']+)' not found.*",
     ".* file ['`]?([^' ]+)'? not found.*",
@@ -518,8 +534,7 @@ detect_files = function(text) {
   )
   x = grep(paste(r, collapse = '|'), text, value = TRUE)
   if (length(x) > 0) unique(unlist(lapply(r, function(p) {
-    z = grep(p, x, value = TRUE)
-    v = gsub(p, '\\1', z)
+    v = grep_sub(p, '\\1', x)
     if (length(v) == 0) return(v)
     if (p == r[8] && length(grep('! Package tikz Error:', text)) == 0) return()
     if (!(p %in% r[1:5])) return(if (p %in% r[6:7]) 'epstopdf' else v)
@@ -553,7 +568,7 @@ miss_font = function() {
 
 font_ext = function(x) {
   i = !grepl('[.]', x)
-  x[i] = paste0(x[i], '[.](tfm|afm|mf|otf)')
+  x[i] = paste0(x[i], '(-(Bold|Italic|Regular).*)?[.](tfm|afm|mf|otf|ttf)')
   x
 }
 
@@ -576,6 +591,11 @@ fmtutil = function(usermode = FALSE, ...) {
 fc_cache = function(args = c('-v', '-r')) {
   tweak_path()
   system2('fc-cache', args)
+}
+
+# refresh/update/regenerate everything
+refresh_all = function(...) {
+  fc_cache(); fmtutil(...); updmap(...); texhash()
 }
 
 # look up files in the Kpathsea library, e.g., kpsewhich('Sweave.sty')

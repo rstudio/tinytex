@@ -8,6 +8,7 @@
 \alias{tlmgr_update}
 \alias{tlmgr_path}
 \alias{tlmgr_conf}
+\alias{tlmgr_repo}
 \title{Run the TeX Live Manager}
 \usage{
 tlmgr(args = character(), usermode = FALSE, ..., .quiet = FALSE)
@@ -29,12 +30,15 @@ tlmgr_update(
   more_args = character(),
   usermode = FALSE,
   run_fmtutil = TRUE,
+  delete_tlpdb = getOption("tinytex.delete_tlpdb", FALSE),
   ...
 )
 
 tlmgr_path(action = c("add", "remove"))
 
-tlmgr_conf(more_args = character())
+tlmgr_conf(more_args = character(), ...)
+
+tlmgr_repo(url = NULL, ...)
 }
 \arguments{
 \item{args}{A character vector of arguments to be passed to the command
@@ -84,9 +88,16 @@ command \command{tlmgr update} or \command{tlmgr conf}.}
 \item{run_fmtutil}{Whether to run \command{fmtutil-sys --all} to (re)create
 format and hyphenation files after updating \pkg{tlmgr}.}
 
+\item{delete_tlpdb}{Whether to delete the \file{texlive.tlpdb.HASH} files
+(where \verb{HASH} is an MD5 hash) under the \file{tlpkg} directory of the
+root directory of TeX Live after updating.}
+
 \item{action}{On Unix, add/remove symlinks of binaries to/from the system's
 \code{PATH}. On Windows, add/remove the path to the TeXLive binary
 directory to/from the system environment variable \code{PATH}.}
+
+\item{url}{The URL of the CTAN mirror. If \code{NULL}, show the current
+repository, otherwise set the repository.}
 }
 \description{
 Execute the \command{tlmgr} command to search for LaTeX packages, install
@@ -95,7 +106,11 @@ packages, update packages, and so on.
 \details{
 The \code{tlmgr()} function is a wrapper of \code{system2('tlmgr')}. All
 other \code{tlmgr_*()} functions are based on \code{tlmgr} for specific
-tasks. Please consult the \pkg{tlmgr} manual for full details.
+tasks. For example, \code{tlmgr_install()} runs the command \command{tlmgr
+install} to install LaTeX packages, and \code{tlmgr_update} runs the command
+\command{tlmgr update}, etc. Note that \code{tlmgr_repo} runs \command{tlmgr
+options repository} to query or set the CTAN repository. Please consult the
+\pkg{tlmgr} manual for full details.
 }
 \examples{
 # search for a package that contains titling.sty
