@@ -33,6 +33,11 @@ if %retry% leq 5 (
 
 rem unzip it
 powershell -Command "& { Add-Type -A 'System.IO.Compression.FileSystem'; [IO.Compression.ZipFile]::ExtractToDirectory('install.zip', '.'); }"
+if errorlevel 1 (
+  if exist install.zip del install.zip
+  echo unzipping did not worked
+  goto exit
+)
 del install.zip
 
 rd /s /q "%APPDATA%\TinyTeX"
