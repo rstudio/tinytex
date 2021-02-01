@@ -17,13 +17,13 @@ if not defined TINYTEX_VERSION (
 
 rem download the zip package - method 1
 echo Download zip file... Method 1
-powershell -Command "& { try {Add-Type -A 'System.Net.Http'; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12;$response = (New-Object System.Net.Http.HttpClient).GetAsync($Env:TINYTEX_URL); $response.Wait(); $outputFileStream = [System.IO.FileStream]::new('install.zip', [System.IO.FileMode]::Create, [System.IO.FileAccess]::Write); $response.Result.Content.CopyToAsync($outputFileStream).Wait(); $outputFileStream.Close()} catch {throw $_}}"
-if ,not errorlevel 1 goto unzip
+powershell -Command "& { try {Add-Type -A 'System.Net.Http'; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; $response = (New-Object System.Net.Http.HttpClient).GetAsync($Env:TINYTEX_URL); $response.Wait(); $outputFileStream = [System.IO.FileStream]::new('install.zip', [System.IO.FileMode]::Create, [System.IO.FileAccess]::Write); $response.Result.Content.CopyToAsync($outputFileStream).Wait(); $outputFileStream.Close()} catch {throw $_}}"
+if not errorlevel 1 goto unzip
 
 rem Try another method if the first one failed
 echo Download zip file... Method 2
-powershell -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12;(New-Object System.Net.WebClient).DownloadFile($Env:TINYTEX_URL, 'install.zip')"
-if not errorlevel 1 goto :unzip
+powershell -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; (New-Object System.Net.WebClient).DownloadFile($Env:TINYTEX_URL, 'install.zip')"
+if not errorlevel 1 goto unzip
 
 rem Try last method
 echo Download zip file... Method 3
