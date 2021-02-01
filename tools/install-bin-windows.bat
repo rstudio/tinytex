@@ -32,13 +32,16 @@ if errorlevel 1 exit /b %ERRORLEVEL%
 
 :unzip
 rem unzip the downloaded file
+echo unzip TinyTeX
 powershell -Command "& { Add-Type -A 'System.IO.Compression.FileSystem'; [IO.Compression.ZipFile]::ExtractToDirectory('install.zip', '.'); }"
 del install.zip
 
+echo Move to APPDATA folder
 rd /s /q "%APPDATA%\TinyTeX"
 rd /s /q "%APPDATA%\TinyTeX"
 move /y TinyTeX "%APPDATA%"
 
+echo add tlmgr to PATH
 call "%APPDATA%\TinyTeX\bin\win32\tlmgr" path add
 
 exit /b %ERRORLEVEL%
