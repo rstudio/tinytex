@@ -77,7 +77,7 @@ jobs:
       - name: Session info
         run: |
           options(width = 100)
-          pkgs <- installed.packages()[, "Package"]
+          pkgs <- .packages(TRUE)
           pak::pkg_install("sessioninfo")
           sessioninfo::session_info(pkgs, include_base = TRUE)
         shell: Rscript {0}
