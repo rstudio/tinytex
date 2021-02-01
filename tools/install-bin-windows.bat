@@ -28,7 +28,7 @@ if %retry% leq 5 (
   echo Download succeeded
 ) else (
   echo TinyTeX zip installer not downloaded
-  goto :exit
+  goto exit
 )
 
 rem unzip it
