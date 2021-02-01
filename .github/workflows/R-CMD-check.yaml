@@ -91,7 +91,7 @@ jobs:
       - name: Test coverage
         if: success() && runner.os == 'Linux' && matrix.config.r == 'release'
         run: |
-          pak::pak_install('covr')
+          pak::pkg_install('covr')
           covr::codecov()
         shell: Rscript {0}
 
