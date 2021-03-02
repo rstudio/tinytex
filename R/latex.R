@@ -378,6 +378,8 @@ check_unicode = function(x) {
 # whether a LaTeX log file contains LaTeX or package (e.g. babel) warnings
 latex_warning = function(file, show = getOption('tinytex.latexmk.warning', TRUE)) {
   if (!file.exists(file)) return()
+  # if the option tinytex.latexmk.warning = FALSE, delete the log in latexmk_emu()
+  if (!show && missing(show)) return()
   x = readLines(file, warn = FALSE)
   if (length(i <- grep('^(LaTeX|Package [[:alnum:]]+) Warning:', x)) == 0) return()
   # these warnings may be okay (our Pandoc LaTeX template in rmarkdown may need an update)
