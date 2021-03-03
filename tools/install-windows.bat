@@ -14,10 +14,10 @@ del install-tl.zip
 
 rem download tinytex.profile and modify it (set texdir to ./TinyTeX)
 powershell -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest https://yihui.org/gh/tinytex/tools/tinytex.profile -OutFile tinytex.profile" || exit /b
-powershell -Command "(gc tinytex.profile) -replace '\./', './TinyTex/' | Out-File -encoding ASCII tinytex.profile"
+powershell -Command "(gc tinytex.profile) -replace '\./', './TinyTeX/' | Out-File -encoding ASCII tinytex.profile"
 
 echo TEXMFCONFIG $TEXMFSYSCONFIG>> tinytex.profile
-echo TEXMFHOME $TEXMFLOCAL>> tinytex.profile
+echo TEXMFHOME ./TinyTeX/texmf-home>> tinytex.profile
 echo TEXMFVAR $TEXMFSYSVAR>> tinytex.profile
 
 rem download the custom package list

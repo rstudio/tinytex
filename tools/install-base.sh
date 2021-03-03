@@ -30,7 +30,7 @@ fi
 # no need to personalize texmf variables if not installed by admin
 if [ "$1" != '--admin' ]; then
   echo 'TEXMFCONFIG $TEXMFSYSCONFIG' >> $PRNAME
-  echo 'TEXMFHOME $TEXMFLOCAL' >> $PRNAME
+  echo 'TEXMFHOME ./texmf-home' >> $PRNAME
   echo 'TEXMFVAR $TEXMFSYSVAR' >> $PRNAME
 fi
 
