@@ -45,27 +45,6 @@ install_tinytex = function(
     unlink(dir, recursive = TRUE)
     user_dir = normalizePath(dir, mustWork = FALSE)
   }
-  tweak_path()
-  msg = if (tlmgr_available()) {
-    if (!is_tinytex()) {
-      system2('tlmgr', '--version')
-      c(
-        'Detected an existing tlmgr at ', Sys.which('tlmgr'), '. ',
-        'It seems TeX Live has been installed (check tinytex::tinytex_root()). '
-      )
-    }
-  } else if (Sys.which('pdftex') != '') {
-    system2('pdftex', '--version')
-    c(
-      'Detected an existing LaTeX distribution (e.g., pdftex is at ',
-      Sys.which('pdftex'), '). '
-    )
-  }
-  if (length(msg)) warning(
-    msg, 'You are recommended to uninstall it, although TinyTeX should work well alongside ',
-    'another LaTeX distribution if a LaTeX document is compiled through tinytex::latexmk().',
-    call. = FALSE
-  )
 
   https = grepl('^https://', repository)
   repository = normalize_repo(repository)
