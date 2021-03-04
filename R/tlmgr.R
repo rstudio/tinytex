@@ -231,7 +231,8 @@ tlmgr_conf = function(more_args = character(), ...) {
 }
 
 #' @param url The URL of the CTAN mirror. If \code{NULL}, show the current
-#'   repository, otherwise set the repository.
+#'   repository, otherwise set the repository. See the \code{repository}
+#'   argument of \code{\link{install_tinytex}()} for examples.
 #' @rdname tlmgr
 #' @export
 tlmgr_repo = function(url = NULL, ...) {

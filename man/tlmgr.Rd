@@ -97,7 +97,8 @@ root directory of TeX Live after updating.}
 directory to/from the system environment variable \code{PATH}.}
 
 \item{url}{The URL of the CTAN mirror. If \code{NULL}, show the current
-repository, otherwise set the repository.}
+repository, otherwise set the repository. See the \code{repository}
+argument of \code{\link{install_tinytex}()} for examples.}
 }
 \description{
 Execute the \command{tlmgr} command to search for LaTeX packages, install
