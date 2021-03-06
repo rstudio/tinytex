@@ -2,6 +2,7 @@ a4wide
 achemso
 adjustbox
 ae
+algorithmicx
 algorithms
 ametsoc
 amscls
@@ -13,6 +14,7 @@ bbm-macros
 beamer
 biber
 biblatex
+bookmark
 breakurl
 caption
 carlisle
@@ -29,7 +31,9 @@ courier
 crop
 csquotes
 datetime
+dblfloatfix
 doclicense
+draftwatermark
 eepic
 endfloat
 endnotes
@@ -39,6 +43,7 @@ epsf
 epstopdf
 eso-pic
 esvect
+etex-pkg
 eurosym
 everysel
 expex
@@ -49,6 +54,7 @@ floatrow
 fmtcount
 fontaxes
 footmisc
+forarray
 hardwrap
 hyperxmp
 hyphen-french
@@ -77,9 +83,11 @@ memoir
 metalogo
 mhchem
 microtype
+minifp
 mnras
 modes
 morefloats
+moreverb
 ms
 multirow
 mweights
@@ -109,11 +117,13 @@ rsfs
 sectsty
 seqsplit
 setspace
+sidecap
 siunitx
 soul
 soulutf8
 srcltx
 standalone
+stix
 stmaryrd
 sttools
 subfig
@@ -137,9 +147,11 @@ tufte-latex
 ucs
 ulem
 units
+upquote
 urlbst
 varwidth
 vmargin
+vruler
 wallpaper
 wrapfig
 xargs
@@ -148,3 +160,4 @@ xstring
 xwatermark
 xypic
 zapfchan
+zref
