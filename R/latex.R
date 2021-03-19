@@ -290,9 +290,9 @@ tweak_aux = function(aux, x = readLines(aux)) {
   writeLines(x, aux)
 }
 
-needs_rerun = function(log) {
+needs_rerun = function(log, text = xfun::read_utf8(log)) {
   any(grepl(
-    '(Rerun to get |Please \\(re\\)run | Rerun LaTeX\\.)', readLines(log),
+    '(Rerun to get |Please \\(?re\\)?run | Rerun LaTeX\\.)', text,
     useBytes = TRUE
   ))
 }
