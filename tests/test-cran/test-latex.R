@@ -17,3 +17,11 @@ assert('detect_files() can detect filenames from LaTeX log', {
   (detect_files("! Package fontenc Error: Encoding file `t2aenc.def' not found.") %==% 't2aenc.def')
   (detect_files("! I can't find file `hyph-de-1901.ec.tex'.") %==% 'hyph-de-1901.ec.tex')
 })
+
+
+assert('rerun are correctly detected', {
+  (needs_rerun(text = "Package biblatex Warning: Please rerun LaTeX."))
+  (needs_rerun(text = "Please (re)run the file"))
+  (needs_rerun(text = "error: Rerun LaTeX."))
+  (needs_rerun(text = "Rerun to get the final file"))
+})
