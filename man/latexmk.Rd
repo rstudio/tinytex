@@ -9,7 +9,7 @@
 \usage{
 latexmk(
   file,
-  engine = c("pdflatex", "xelatex", "lualatex", "latex"),
+  engine = c("pdflatex", "xelatex", "lualatex", "latex", "tectonic"),
   bib_engine = c("bibtex", "biber"),
   engine_args = NULL,
   emulation = TRUE,

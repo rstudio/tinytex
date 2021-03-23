@@ -50,6 +50,7 @@
 #'   be set in the global option \code{tinytex.engine_args}, e.g.,
 #'   \code{options(tinytex.engine_args = '-shell-escape'}).
 #' @param emulation Whether to emulate the executable \command{latexmk} using R.
+#'   Note that this is unused when \code{engine == 'tectonic'}.
 #' @param min_times,max_times The minimum and maximum number of times to rerun
 #'   the LaTeX engine when using emulation. You can set the global options
 #'   \code{tinytex.compile.min_times} or \code{tinytex.compile.max_times}, e.g.,
@@ -69,7 +70,7 @@
 #' @return A character string of the path of the output file (i.e., the value of
 #'   the \code{pdf_file} argument).
 latexmk = function(
-  file, engine = c('pdflatex', 'xelatex', 'lualatex', 'latex'),
+  file, engine = c('pdflatex', 'xelatex', 'lualatex', 'latex', 'tectonic'),
   bib_engine = c('bibtex', 'biber'), engine_args = NULL, emulation = TRUE,
   min_times = 1, max_times = 10, install_packages = emulation && tlmgr_writable(),
   pdf_file = gsub('tex$', 'pdf', file), clean = TRUE
@@ -115,25 +116,30 @@ latexmk = function(
     file_rename(pdf, pdf_file)
     pdf_file
   }
-  if (emulation) {
-    latexmk_emu(
-      file, engine, bib_engine, engine_args, min_times, max_times,
-      install_packages, clean
-    )
+  if (engine != "tectonic") {
+    if (emulation) {
+      latexmk_emu(
+        file, engine, bib_engine, engine_args, min_times, max_times,
+        install_packages, clean
+      )
+      return(check_pdf())
+    }
+    system2_quiet('latexmk', c(
+      '-latexoption=-halt-on-error -interaction=batchmode',
+      if (is_latex) '-latex=latex' else paste0('-pdf -pdflatex=', engine),
+      engine_args, shQuote(file)
+    ), error = {
+      if (install_packages) warning(
+        'latexmk(install_packages = TRUE) does not work when emulation = FALSE'
+      )
+      check_latexmk_version()
+    })
+    if (clean) system2('latexmk', c('-c', engine_args), stdout = FALSE)
+    check_pdf()
+  } else {
+    system2_quiet('tectonic', c(engine_args, shQuote(file)))
     return(check_pdf())
   }
-  system2_quiet('latexmk', c(
-    '-latexoption=-halt-on-error -interaction=batchmode',
-    if (is_latex) '-latex=latex' else paste0('-pdf -pdflatex=', engine),
-    engine_args, shQuote(file)
-  ), error = {
-    if (install_packages) warning(
-      'latexmk(install_packages = TRUE) does not work when emulation = FALSE'
-    )
-    check_latexmk_version()
-  })
-  if (clean) system2('latexmk', c('-c', engine_args), stdout = FALSE)
-  check_pdf()
 }
 
 #' @param ... Arguments to be passed to \code{latexmk()} (other than
@@ -214,7 +220,7 @@ latexmk_emu = function(
         on_error()
       }, logfile = logfile, fail_rerun = verbose
     )
-    # PNAS you are the worst! Why don't you singal an error in case of missing packages?
+    # PNAS you are the worst! Why don't you signal an error in case of missing packages?
     if (res == 0 && !file.exists(filep)) on_error()
     invisible(res)
   }
