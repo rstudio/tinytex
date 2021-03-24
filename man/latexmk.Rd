@@ -9,7 +9,7 @@
 \usage{
 latexmk(
   file,
-  engine = c("pdflatex", "xelatex", "lualatex", "latex"),
+  engine = c("pdflatex", "xelatex", "lualatex", "latex", "tectonic"),
   bib_engine = c("bibtex", "biber"),
   engine_args = NULL,
   emulation = TRUE,
@@ -39,7 +39,8 @@ lualatex(...)
 be set in the global option \code{tinytex.engine_args}, e.g.,
 \code{options(tinytex.engine_args = '-shell-escape'}).}
 
-\item{emulation}{Whether to emulate the executable \command{latexmk} using R.}
+\item{emulation}{Whether to emulate the executable \command{latexmk} using R.
+Note that this is unused when \code{engine == 'tectonic'}.}
 
 \item{min_times, max_times}{The minimum and maximum number of times to rerun
 the LaTeX engine when using emulation. You can set the global options

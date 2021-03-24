@@ -50,6 +50,7 @@
 #'   be set in the global option \code{tinytex.engine_args}, e.g.,
 #'   \code{options(tinytex.engine_args = '-shell-escape'}).
 #' @param emulation Whether to emulate the executable \command{latexmk} using R.
+#'   Note that this is unused when \code{engine == 'tectonic'}.
 #' @param min_times,max_times The minimum and maximum number of times to rerun
 #'   the LaTeX engine when using emulation. You can set the global options
 #'   \code{tinytex.compile.min_times} or \code{tinytex.compile.max_times}, e.g.,
@@ -69,7 +70,7 @@
 #' @return A character string of the path of the output file (i.e., the value of
 #'   the \code{pdf_file} argument).
 latexmk = function(
-  file, engine = c('pdflatex', 'xelatex', 'lualatex', 'latex'),
+  file, engine = c('pdflatex', 'xelatex', 'lualatex', 'latex', 'tectonic'),
   bib_engine = c('bibtex', 'biber'), engine_args = NULL, emulation = TRUE,
   min_times = 1, max_times = 10, install_packages = emulation && tlmgr_writable(),
   pdf_file = gsub('tex$', 'pdf', file), clean = TRUE
@@ -114,6 +115,10 @@ latexmk = function(
     if (!file.exists(pdf)) show_latex_error(file, with_ext(pdf, 'log'), TRUE)
     file_rename(pdf, pdf_file)
     pdf_file
+  }
+  if (engine == 'tectonic') {
+    system2_quiet('tectonic', c(engine_args, shQuote(file)))
+    return(check_pdf())
   }
   if (emulation) {
     latexmk_emu(
@@ -214,7 +219,7 @@ latexmk_emu = function(
         on_error()
       }, logfile = logfile, fail_rerun = verbose
     )
-    # PNAS you are the worst! Why don't you singal an error in case of missing packages?
+    # PNAS you are the worst! Why don't you signal an error in case of missing packages?
     if (res == 0 && !file.exists(filep)) on_error()
     invisible(res)
   }
