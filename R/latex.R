@@ -116,30 +116,29 @@ latexmk = function(
     file_rename(pdf, pdf_file)
     pdf_file
   }
-  if (engine != "tectonic") {
-    if (emulation) {
-      latexmk_emu(
-        file, engine, bib_engine, engine_args, min_times, max_times,
-        install_packages, clean
-      )
-      return(check_pdf())
-    }
-    system2_quiet('latexmk', c(
-      '-latexoption=-halt-on-error -interaction=batchmode',
-      if (is_latex) '-latex=latex' else paste0('-pdf -pdflatex=', engine),
-      engine_args, shQuote(file)
-    ), error = {
-      if (install_packages) warning(
-        'latexmk(install_packages = TRUE) does not work when emulation = FALSE'
-      )
-      check_latexmk_version()
-    })
-    if (clean) system2('latexmk', c('-c', engine_args), stdout = FALSE)
-    check_pdf()
-  } else {
+  if (engine == 'tectonic') {
     system2_quiet('tectonic', c(engine_args, shQuote(file)))
     return(check_pdf())
   }
+  if (emulation) {
+    latexmk_emu(
+      file, engine, bib_engine, engine_args, min_times, max_times,
+      install_packages, clean
+    )
+    return(check_pdf())
+  }
+  system2_quiet('latexmk', c(
+    '-latexoption=-halt-on-error -interaction=batchmode',
+    if (is_latex) '-latex=latex' else paste0('-pdf -pdflatex=', engine),
+    engine_args, shQuote(file)
+  ), error = {
+    if (install_packages) warning(
+      'latexmk(install_packages = TRUE) does not work when emulation = FALSE'
+    )
+    check_latexmk_version()
+  })
+  if (clean) system2('latexmk', c('-c', engine_args), stdout = FALSE)
+  check_pdf()
 }
 
 #' @param ... Arguments to be passed to \code{latexmk()} (other than
