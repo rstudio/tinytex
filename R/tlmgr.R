@@ -106,9 +106,14 @@ tlmgr_search = function(what, file = TRUE, all = FALSE, global = TRUE, word = FA
 tlmgr_install = function(pkgs = character(), usermode = FALSE, path = !usermode && os != 'windows', ...) {
   if (length(pkgs) == 0) return(invisible(0L))
 
+  update_pkgs = function(...) tlmgr_update(..., usermode = usermode)
+
+  # if any packages have been installed, update packages first
+  if (any(check_installed(pkgs))) update_pkgs()
+
   res = tlmgr(c('install', pkgs), usermode, ...)
-  if (res != 0 || !check_installed(pkgs)) {
-    tlmgr_update(all = FALSE, usermode = usermode)
+  if (res != 0 || any(!check_installed(pkgs))) {
+    update_pkgs(all = FALSE)  # update tlmgr itself since it might be outdated
     res = tlmgr(c('install', pkgs), usermode, ...)
   }
   if ('epstopdf' %in% pkgs && is_unix() && Sys.which('gs') == '') {

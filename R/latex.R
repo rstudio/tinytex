@@ -531,6 +531,7 @@ detect_files = function(text) {
 
     '.* (tikzlibrary[^ ]+?[.]code[.]tex).*',
 
+    ".* Loading '([^']+)' aborted!",
     ".*! LaTeX Error: File `([^']+)' not found.*",
     ".* file ['`]?([^' ]+)'? not found.*",
     '.*the language definition file ([^ ]+) .*',
