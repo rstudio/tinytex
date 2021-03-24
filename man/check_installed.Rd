@@ -10,8 +10,8 @@ check_installed(pkgs)
 \item{pkgs}{A character vector of LaTeX package names.}
 }
 \value{
-A logical value indicating if all packages specified in \code{pkgs}
-  are installed (if any of them are not installed, it returns \code{FALSE}).
+A logical vector indicating if packages specified in \code{pkgs} are
+  installed.
 }
 \description{
 If a package has been installed in TinyTeX or TeX Live, the command

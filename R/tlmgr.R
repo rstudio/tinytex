@@ -142,8 +142,8 @@ tlmgr_writable = function() is_writable(Sys.which('tlmgr'))
 #' \command{tlmgr info PKG} should return \code{PKG} where \code{PKG} is the
 #' package name.
 #' @param pkgs A character vector of LaTeX package names.
-#' @return A logical value indicating if all packages specified in \code{pkgs}
-#'   are installed (if any of them are not installed, it returns \code{FALSE}).
+#' @return A logical vector indicating if packages specified in \code{pkgs} are
+#'   installed.
 #' @note This function only works with LaTeX distributions based on TeX Live,
 #'   such as TinyTeX.
 #' @export
@@ -154,7 +154,7 @@ check_installed = function(pkgs) {
     tl_list(pkgs, stdout = TRUE, stderr = FALSE, .quiet = TRUE),
     error = function(e) NULL, warning = function(e) NULL
   )
-  identical(res, pkgs)
+  pkgs %in% res
 }
 
 #' @rdname tlmgr
