@@ -3,6 +3,9 @@ image:
   - macOS
   - Ubuntu
 
+environment:
+  CTAN_REPO: https://ctan.math.illinois.edu/systems/texlive/tlnet
+
 after_test:
   - sh: rm *.Rproj
   - cmd: del *.Rproj
