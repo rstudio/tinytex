@@ -338,7 +338,9 @@ install_prebuilt = function(
       if (as.numeric(difftime(Sys.time(), file.mtime(pkg), units = 'days')) > 1)
         cache = FALSE
     }
-    if (xfun::isFALSE(cache)) file.remove(pkg)
+    if (xfun::isFALSE(cache)) {
+      file.remove(pkg); on.exit(file.remove(pkg), add = TRUE)
+    }
     if (!file.exists(pkg)) download_installer(pkg, version)
   }
 
