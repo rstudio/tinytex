@@ -335,18 +335,23 @@ tl_platform = function() tlmgr('print-platform', stdout = TRUE, .quiet = TRUE)
 
 # get all supported platforms (this needs Internet connection since the info is
 # fetched from CTAN)
-tl_platforms = function() {
+tl_platforms = function(print = FALSE) {
   x = tlmgr(c('platform', 'list'), stdout = TRUE, .quiet = TRUE)
   x = sub('^\\(i)', '   ', x)
-  trimws(grep('^    ', x, value = TRUE))
+  x = sort(trimws(grep('^    ', x, value = TRUE)))
+  if (print) {
+    cat(sprintf("'%s'", x), sep = ', ')
+    invisible(x)
+  } else x
 }
 
 # a copy of the returned result from tl_platform() is saved here because
 # tl_platform() is a little slow and requires Internet connection
 .tl_platforms = c(
   'aarch64-linux', 'amd64-freebsd', 'amd64-netbsd', 'armhf-linux', 'i386-cygwin',
-  'i386-freebsd', 'i386-linux', 'i386-netbsd', 'i386-solaris', 'win32', 'x86_64-cygwin',
-  'x86_64-darwin', 'x86_64-darwinlegacy', 'x86_64-linux', 'x86_64-linuxmusl', 'x86_64-solaris'
+  'i386-freebsd', 'i386-linux', 'i386-netbsd', 'i386-solaris', 'universal-darwin',
+  'win32', 'x86_64-cygwin', 'x86_64-darwinlegacy', 'x86_64-linux',
+  'x86_64-linuxmusl', 'x86_64-solaris'
 )
 
 # remove the platform suffixes from texlive package names, and optionally keep
