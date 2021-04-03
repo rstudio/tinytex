@@ -7,8 +7,15 @@ cd /d "%TEMP%"
 rem in case there is a leftover install-tl-* dir, delete it
 for /d %%G in ("install-tl-*") do rd /s /q "%%~G"
 
+if not defined CTAN_REPO (
+  set TLREPO=http://mirror.ctan.org/systems/texlive/tlnet
+) else (
+  set TLREPO=%CTAN_REPO%
+)
+set TLURL=%TLREPO%/install-tl.zip
+
 rem download install-tl.zip and unzip it
-powershell -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest http://mirror.ctan.org/systems/texlive/tlnet/install-tl.zip -OutFile install-tl.zip"
+powershell -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest $Env:TLURL -OutFile install-tl.zip"
 powershell -Command "& { Add-Type -A 'System.IO.Compression.FileSystem'; [IO.Compression.ZipFile]::ExtractToDirectory('install-tl.zip', '.'); }"
 del install-tl.zip
 
@@ -25,7 +32,7 @@ powershell -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.Security
 
 rem an automated installation of TeXLive (infrastructure only)
 cd install-tl-*
-@echo | install-tl-windows.bat -no-gui -profile=../tinytex.profile
+@echo | install-tl-windows.bat -no-gui -profile=../tinytex.profile -repository %TLREPO%
 
 del TinyTeX\install-tl.log ..\tinytex.profile
 if exist instal-tl del install-tl
