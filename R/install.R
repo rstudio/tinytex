@@ -75,7 +75,7 @@ install_tinytex = function(
     if (need_source_install()) {
       install_tinytex_source(repository, ...)
     } else {
-      install_prebuilt('TinyTeX-1', ...)
+      install_prebuilt('TinyTeX-1', ..., repo = repository)
     }
   }
   force(extra_packages)  # evaluate it before installing another version of TinyTeX
@@ -162,7 +162,7 @@ install_tinytex_source = function(repo = '', dir, version, add_path, extra_packa
   }
   opts = options(tinytex.tlmgr.path = find_tlmgr(target))
   on.exit(options(opts), add = TRUE)
-  post_install_config(add_path, extra_packages)
+  post_install_config(add_path, extra_packages, repo)
   unlink(c('install-unx.sh', 'install-tl.zip', 'pkgs-custom.txt', 'tinytex.profile'))
   target
 }
@@ -313,7 +313,8 @@ install_yihui_pkgs = function() {
 
 # install a prebuilt version of TinyTeX
 install_prebuilt = function(
-  pkg = '', dir = '', version = '', add_path = TRUE, extra_packages = NULL, hash = FALSE, cache = NA
+  pkg = '', dir = '', version = '', add_path = TRUE, extra_packages = NULL,
+  repo = 'ctan', hash = FALSE, cache = NA
 ) {
   if (need_source_install()) stop(
     'There is no prebuilt version of TinyTeX for this platform: ',
@@ -354,18 +355,19 @@ install_prebuilt = function(
     opts = options(tinytex.tlmgr.path = find_tlmgr(dir1))
     on.exit(options(opts), add = TRUE)
   }
-  post_install_config(add_path, extra_packages, hash)
+  post_install_config(add_path, extra_packages, repo, hash)
   invisible(dir1)
 }
 
 # post-install configurations
-post_install_config = function(add_path, extra_packages, hash = FALSE) {
+post_install_config = function(add_path, extra_packages, repo, hash = FALSE) {
   if (os_index == 2) {
     dir.create('~/bin', FALSE, TRUE)
     tlmgr(c('option', 'sys_bin', '~/bin'))
   }
   if (add_path) tlmgr_path()
   r_texmf(.quiet = TRUE)
+  if (repo != 'ctan') tlmgr_repo(repo)
   tlmgr_install(setdiff(extra_packages, tl_pkgs()))
   if (hash) {
     texhash(); fmtutil(stdout = FALSE); updmap(); fc_cache()
