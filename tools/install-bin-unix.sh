@@ -57,5 +57,5 @@ esac
 
 cd $TEXDIR/bin/*/
 [ $OSNAME != "Darwin" ] && ./tlmgr option sys_bin ~/bin
-[ $(tr "[:upper:]" "[:lower:]" <<<"$CI") != "true" ] && ./tlmgr option repository ctan
+[ $(echo $CI | tr "[:upper:]" "[:lower:]") != "true" ] && ./tlmgr option repository ctan
 ./tlmgr path add
