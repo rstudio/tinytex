@@ -36,7 +36,7 @@ else
   TINYTEX_URL="https://github.com/yihui/tinytex-releases/releases/download/v$TINYTEX_VERSION/$TINYTEX_INSTALLER-v$TINYTEX_VERSION"
 fi
 
-if [ $OSNAME = 'Darwin']; then
+if [ $OSNAME = 'Darwin' ]; then
     curl -L ${TINYTEX_URL}.tgz -o TinyTeX.tgz
     tar xzf TinyTeX.tgz -C $(dirname $TEXDIR)
     rm TinyTeX.tgz
