@@ -9,8 +9,11 @@
 #' @param dir The directory to install or uninstall TinyTeX (should not exist
 #'   unless \code{force = TRUE}).
 #' @param version The version of TinyTeX, e.g., \code{"2020.09"} (see all
-#'   available versions at \url{https://github.com/yihui/tinytex-releases}). By
-#'   default, it installs the latest daily build of TinyTeX.
+#'   available versions at \url{https://github.com/yihui/tinytex-releases}, or
+#'   the last few releases via
+#'   \code{xfun::github_releases('yihui/tinytex-releases')}). By default, it
+#'   installs the latest daily build of TinyTeX. If \code{version = 'latest'},
+#'   it installs the latest Github release of TinyTeX.
 #' @param repository The CTAN repository to set. You can find available
 #'   repositories at \code{https://ctan.org/mirrors}), e.g.,
 #'   \code{'http://mirrors.tuna.tsinghua.edu.cn/CTAN/'}, or
@@ -27,7 +30,7 @@
 #'   for the default installation directories on different platforms.
 #' @export
 install_tinytex = function(
-  force = FALSE, dir = 'auto', version = '', repository = 'ctan',
+  force = FALSE, dir = 'auto', version = 'daily', repository = 'ctan',
   extra_packages = if (is_tinytex()) tl_pkgs(), add_path = TRUE
 ) {
   if (!is.logical(force)) stop('The argument "force" must take a logical value.')
@@ -79,6 +82,7 @@ install_tinytex = function(
     }
   }
   force(extra_packages)  # evaluate it before installing another version of TinyTeX
+  if (version == 'daily') version = ''
   user_dir = install(user_dir, version, add_path, extra_packages)
 
   opts = options(tinytex.tlmgr.path = find_tlmgr(user_dir))
@@ -328,6 +332,10 @@ install_prebuilt = function(
   dir2 = file.path(target, b)  # path to (.)TinyTeX/ after extraction
 
   if (xfun::file_ext(pkg) == '') {
+    if (version == 'latest') {
+      version = xfun::github_releases('yihui/tinytex-releases', version)
+      version = gsub('^v', '', version)
+    }
     installer = if (pkg == '') 'TinyTeX' else pkg
     # e.g., TinyTeX-0.zip, TinyTeX-1-v2020.10.tar.gz, ...
     pkg = paste0(

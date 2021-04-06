@@ -10,7 +10,7 @@
 install_tinytex(
   force = FALSE,
   dir = "auto",
-  version = "",
+  version = "daily",
   repository = "ctan",
   extra_packages = if (is_tinytex()) tl_pkgs(),
   add_path = TRUE
@@ -29,8 +29,11 @@ tinytex_root(error = TRUE)
 unless \code{force = TRUE}).}
 
 \item{version}{The version of TinyTeX, e.g., \code{"2020.09"} (see all
-available versions at \url{https://github.com/yihui/tinytex-releases}). By
-default, it installs the latest daily build of TinyTeX.}
+available versions at \url{https://github.com/yihui/tinytex-releases}, or
+the last few releases via
+\code{xfun::github_releases('yihui/tinytex-releases')}). By default, it
+installs the latest daily build of TinyTeX. If \code{version = 'latest'},
+it installs the latest Github release of TinyTeX.}
 
 \item{repository}{The CTAN repository to set. You can find available
 repositories at \code{https://ctan.org/mirrors}), e.g.,
