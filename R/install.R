@@ -375,7 +375,8 @@ post_install_config = function(add_path, extra_packages, repo, hash = FALSE) {
   }
   if (add_path) tlmgr_path()
   r_texmf(.quiet = TRUE)
-  if (repo != 'ctan') tlmgr_repo(repo)
+  # don't use the default random ctan mirror when installing on CI servers
+  if (repo != 'ctan' || tolower(Sys.getenv('CI')) != 'true') tlmgr_repo(repo)
   tlmgr_install(setdiff(extra_packages, tl_pkgs()))
   if (hash) {
     texhash(); fmtutil(stdout = FALSE); updmap(); fc_cache()
