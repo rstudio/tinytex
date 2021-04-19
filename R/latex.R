@@ -518,6 +518,7 @@ detect_files = function(text) {
   # ! Package tikz Error: I did not find the tikz library 'hobby'... named tikzlibraryhobby.code.tex
   # support file `supp-pdf.mkii' (supp-pdf.tex) is missing
   # ! I can't find file `hyph-de-1901.ec.tex'.
+  # ! Package pdfx Error: No color profile sRGB_IEC61966-2-1_black_scaled.icc found
   r = list(
     font = c(
       # error messages about missing fonts (don't move the first item below, as
@@ -532,6 +533,9 @@ detect_files = function(text) {
       # possible errors when epstopdf is missing
       ".* File `(.+eps-converted-to.pdf)'.*",
       ".*xdvipdfmx:fatal: pdf_ref_obj.*"
+    ),
+    colorprofiles.sty = c(
+      '.* Package pdfx Error: No color profile ([^ ]+).*'
     ),
     tikz = c(
       # when a required tikz library is missing
@@ -555,7 +559,10 @@ detect_files = function(text) {
     v = grep_sub(p, '\\1', x)
     if (length(v) == 0) return(v)
     if (p == r$tikz && length(grep('! Package tikz Error:', text)) == 0) return()
-    if (!(p %in% r$font)) return(if (p %in% r$epstopdf) 'epstopdf' else v)
+    for (i in c('epstopdf', 'colorprofiles.sty')) {
+      if (p %in% r[[i]]) return(i)
+    }
+    if (!(p %in% r$font)) return(v)
     if (p == r$font[1]) paste0(v, '.sty') else font_ext(v)
   })))
 }
