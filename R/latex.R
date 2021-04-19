@@ -518,36 +518,45 @@ detect_files = function(text) {
   # ! Package tikz Error: I did not find the tikz library 'hobby'... named tikzlibraryhobby.code.tex
   # support file `supp-pdf.mkii' (supp-pdf.tex) is missing
   # ! I can't find file `hyph-de-1901.ec.tex'.
-  r = c(
-    ".*! Font [^=]+=([^ ]+).+ not loadable.*",
-    '.*! .*The font "([^"]+)" cannot be found.*',
-    '.*!.+ error:.+\\(file ([^)]+)\\): .*',
-    '.*Package widetext error: Install the ([^ ]+) package.*',
-    '.*Unable to find TFM file "([^"]+)".*',
-    # the above are messages about missing fonts; below are typically missing .sty or commands
-
-    ".* File `(.+eps-converted-to.pdf)'.*",
-    ".*xdvipdfmx:fatal: pdf_ref_obj.*",
-
-    '.* (tikzlibrary[^ ]+?[.]code[.]tex).*',
-
-    ".* Loading '([^']+)' aborted!",
-    ".*! LaTeX Error: File `([^']+)' not found.*",
-    ".* file ['`]?([^' ]+)'? not found.*",
-    '.*the language definition file ([^ ]+) .*',
-    '.* \\(file ([^)]+)\\): cannot open .*',
-    ".*file `([^']+)' .*is missing.*",
-    ".*! CTeX fontset `([^']+)' is unavailable.*",
-    ".*: ([^:]+): command not found.*",
-    ".*! I can't find file `([^']+)'.*"
+  r = list(
+    font = c(
+      # error messages about missing fonts (don't move the first item below, as
+      # it is special and emitted by widetext; the rest can be freely reordered)
+      '.*Package widetext error: Install the ([^ ]+) package.*',
+      ".*! Font [^=]+=([^ ]+).+ not loadable.*",
+      '.*! .*The font "([^"]+)" cannot be found.*',
+      '.*!.+ error:.+\\(file ([^)]+)\\): .*',
+      '.*Unable to find TFM file "([^"]+)".*'
+    ),
+    epstopdf = c(
+      # possible errors when epstopdf is missing
+      ".* File `(.+eps-converted-to.pdf)'.*",
+      ".*xdvipdfmx:fatal: pdf_ref_obj.*"
+    ),
+    tikz = c(
+      # when a required tikz library is missing
+      '.* (tikzlibrary[^ ]+?[.]code[.]tex).*'
+    ),
+    style = c(
+      # missing .sty or commands
+      ".* Loading '([^']+)' aborted!",
+      ".*! LaTeX Error: File `([^']+)' not found.*",
+      ".* file ['`]?([^' ]+)'? not found.*",
+      '.*the language definition file ([^ ]+) .*',
+      '.* \\(file ([^)]+)\\): cannot open .*',
+      ".*file `([^']+)' .*is missing.*",
+      ".*! CTeX fontset `([^']+)' is unavailable.*",
+      ".*: ([^:]+): command not found.*",
+      ".*! I can't find file `([^']+)'.*"
+    )
   )
-  x = grep(paste(r, collapse = '|'), text, value = TRUE)
-  if (length(x) > 0) unique(unlist(lapply(r, function(p) {
+  x = grep(paste(unlist(r), collapse = '|'), text, value = TRUE)
+  if (length(x) > 0) unique(unlist(lapply(unlist(r), function(p) {
     v = grep_sub(p, '\\1', x)
     if (length(v) == 0) return(v)
-    if (p == r[8] && length(grep('! Package tikz Error:', text)) == 0) return()
-    if (!(p %in% r[1:5])) return(if (p %in% r[6:7]) 'epstopdf' else v)
-    if (p == r[4]) paste0(v, '.sty') else font_ext(v)
+    if (p == r$tikz && length(grep('! Package tikz Error:', text)) == 0) return()
+    if (!(p %in% r$font)) return(if (p %in% r$epstopdf) 'epstopdf' else v)
+    if (p == r$font[1]) paste0(v, '.sty') else font_ext(v)
   })))
 }
 
