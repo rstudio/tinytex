@@ -519,6 +519,7 @@ detect_files = function(text) {
   # support file `supp-pdf.mkii' (supp-pdf.tex) is missing
   # ! I can't find file `hyph-de-1901.ec.tex'.
   # ! Package pdfx Error: No color profile sRGB_IEC61966-2-1_black_scaled.icc found
+  # No file LGRcmr.fd. ! LaTeX Error: This NFSS system isn't set up properly.
   r = list(
     font = c(
       # error messages about missing fonts (don't move the first item below, as
@@ -528,6 +529,10 @@ detect_files = function(text) {
       '.*! .*The font "([^"]+)" cannot be found.*',
       '.*!.+ error:.+\\(file ([^)]+)\\): .*',
       '.*Unable to find TFM file "([^"]+)".*'
+    ),
+    fd = c(
+      # font definition files
+      ".*No file ([^`'. ]+[.]fd)[.].*"
     ),
     epstopdf = c(
       # possible errors when epstopdf is missing
@@ -562,6 +567,7 @@ detect_files = function(text) {
     for (i in c('epstopdf', 'colorprofiles.sty')) {
       if (p %in% r[[i]]) return(i)
     }
+    if (p == r$fd) v = tolower(v)  # LGRcmr.fd -> lgrcmr.fd
     if (!(p %in% r$font)) return(v)
     if (p == r$font[1]) paste0(v, '.sty') else font_ext(v)
   })))
