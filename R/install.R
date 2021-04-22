@@ -75,7 +75,7 @@ install_tinytex = function(
   )
 
   install = function(...) {
-    if (need_source_install()) {
+    if (getOption('tinytex.source.install', need_source_install())) {
       install_tinytex_source(repository, ...)
     } else {
       install_prebuilt('TinyTeX-1', ..., repo = repository)
