@@ -47,7 +47,7 @@ else if [ $TINYTEX_INSTALLER != 'installer-unix' ]; then
   else
     echo "We do not have a prebuilt TinyTeX package for this operating system ${OSTYPE}."
     echo "I will try to install from source for you instead."
-    wget ${TINYTEX_URL}.tar.gz
+    wget -O ${TINYTEX_INSTALLER}.tar.gz ${TINYTEX_URL}.tar.gz
     tar xzf ${TINYTEX_INSTALLER}.tar.gz
     ./install.sh
     mkdir -p $TEXDIR
