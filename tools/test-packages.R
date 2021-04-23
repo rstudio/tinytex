@@ -30,6 +30,7 @@ x1 = sort(unique(c(
   setdiff(tinytex::tl_pkgs(), x0),
   'latexmk',  # https://github.com/yihui/tinytex/issues/51
   'float', # https://github.com/yihui/tinytex/issues/122
+  'psnfss', # https://github.com/yihui/tinytex/issues/303
   # https://github.com/yihui/tinytex/issues/73
   'ec', 'inconsolata', 'times', 'tex', 'helvetic', 'dvips', 'metafont', 'mfware', 'xkeyval'
 )))

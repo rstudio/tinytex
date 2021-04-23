@@ -72,6 +72,7 @@ pdfescape
 pdftex
 pdftexcmds
 plain
+psnfss
 refcount
 rerunfilecheck
 stringenc

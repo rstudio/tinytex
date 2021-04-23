@@ -108,7 +108,6 @@ polyglossia
 preprint
 preview
 psfrag
-psnfss
 ragged2e
 realscripts
 revtex4-1
