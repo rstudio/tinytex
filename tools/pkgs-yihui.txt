@@ -8,6 +8,7 @@ ametsoc
 amscls
 apacite
 appendix
+awesomebox
 babel-english
 babel-french
 bbm-macros
@@ -52,6 +53,7 @@ fancyhdr
 floatflt
 floatrow
 fmtcount
+fontawesome5
 fontaxes
 footmisc
 forarray
