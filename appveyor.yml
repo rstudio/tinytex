@@ -47,9 +47,9 @@ for:
 
   test_script:
     - set PATH=%APPDATA%\TinyTeX\bin\win32;%PATH%
+    - Rscript tools/config.R
     - Rscript "tools/install-windows-base.R"  # the infraonly scheme
     - ps: Compress-Archive $Env:APPDATA\\TinyTeX TinyTeX-0.zip
-    - Rscript tools/config.R
     - travis-tool.sh install_deps
     - Rscript tools/update.R
     - R CMD INSTALL .

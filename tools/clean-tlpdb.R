@@ -1,3 +1,4 @@
+if (!requireNamespace('tinytex', quietly = TRUE)) install.packages('tinytex')
 # clean texlive.tlpdb.* files
 tinytex:::delete_tlpdb_files()
 # clean log files
