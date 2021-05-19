@@ -57,6 +57,7 @@ else if [ $TINYTEX_INSTALLER != 'installer-unix' ]; then
 fi
 
 cd $TEXDIR/bin/*/
+./tlmgr conf tlmgr gui-lang en
 [ $OSNAME != "Darwin" ] && ./tlmgr option sys_bin ~/bin
 ([ -z $CI ] || [ $(echo $CI | tr "[:upper:]" "[:lower:]") != "true" ]) && ./tlmgr option repository ctan
 ./tlmgr path add

@@ -41,6 +41,9 @@ rd /s /q "%APPDATA%\TinyTeX"
 rd /s /q "%APPDATA%\TinyTeX"
 move /y TinyTeX "%APPDATA%"
 
+echo Set language to en
+call "%APPDATA%\TinyTeX\bin\win32\tlmgr" conf tlmgr gui-lang en
+
 echo add tlmgr to PATH
 call "%APPDATA%\TinyTeX\bin\win32\tlmgr" path add
 if /i not "%CI%"=="true" call "%APPDATA%\TinyTeX\bin\win32\tlmgr" option repository ctan

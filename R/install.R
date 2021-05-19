@@ -369,6 +369,7 @@ install_prebuilt = function(
 
 # post-install configurations
 post_install_config = function(add_path, extra_packages, repo, hash = FALSE) {
+  tlmgr(c('conf', 'tlmgr', 'gui-lang', 'en'))
   if (os_index == 2) {
     dir.create('~/bin', FALSE, TRUE)
     tlmgr(c('option', 'sys_bin', '~/bin'))

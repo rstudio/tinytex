@@ -45,6 +45,7 @@ rm -f install-tl
 alias tlmgr='./bin/*/tlmgr'
 rm -f bin/man bin/*/man
 
+tlmgr conf tlmgr gui-lang en
 tlmgr option repository "$TLREPO"
 
 if [ "$3" != '' ]; then
