@@ -303,15 +303,12 @@ tl_sizes = function(show_total = TRUE, pkgs = NULL, only_installed = TRUE, field
   info = info[info$package %in% tl_names(info$package), , drop = FALSE]
   if ('size' %in% names(info)) {
     info = info[order(info[, 'size'], decreasing = TRUE), , drop = FALSE]
-    info$size_h = sapply(info[, 'size'], auto_size)
-    if (show_total) message('The total size is ', auto_size(sum(info$size)))
+    info$size_h = xfun::format_bytes(info[, 'size'])
+    if (show_total) message('The total size is ', xfun::format_bytes(sum(info$size)))
   }
   rownames(info) = NULL
   info
 }
-
-# human-readable size from bytes
-auto_size = function(bytes) format(structure(bytes, class = 'object_size'), 'auto')
 
 #' List the names of installed TeX Live packages
 #'
