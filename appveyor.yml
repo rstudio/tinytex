@@ -20,8 +20,10 @@ artifacts:
     name: TinyTeX
   - path: installer*
     name: TinyTeX installer
-  - path: bin/tinytex*
-    name: tinytex binary
+  - path: tinytex
+    name: tinytex *nix binary
+  - path: tinytex.exe
+    name: tinytex Windows binary
 
 for:
 -

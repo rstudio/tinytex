@@ -17,5 +17,4 @@ system2(
 
 b = list.files('../..', '^quarto-latexmk([.]exe)?$', full.names = TRUE, recursive = TRUE)
 message('quarto-latexmk was built at ', b)
-dir.create('../../../bin')
-file.copy(b, file.path('../../../bin', paste0('tinytex', if (os == 1) '.exe')))
+file.copy(b, file.path('../../..', paste0('tinytex', if (os == 1) '.exe')))
