@@ -12,6 +12,10 @@ after_test:
   - cmd: del *.Rproj
 
 artifacts:
+  - path: tinytex
+    name: tinytex *nix binary
+  - path: tinytex.exe
+    name: tinytex Windows binary
   - path: TinyTeX-0.*
     name: TinyTeX (infraonly)
   - path: TinyTeX-1.*
@@ -20,10 +24,6 @@ artifacts:
     name: TinyTeX
   - path: installer*
     name: TinyTeX installer
-  - path: tinytex
-    name: tinytex *nix binary
-  - path: tinytex.exe
-    name: tinytex Windows binary
 
 for:
 -
