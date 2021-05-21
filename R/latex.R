@@ -224,7 +224,9 @@ latexmk_emu = function(
     invisible(res)
   }
   run_engine()
-  if (install_packages) check_babel(logfile)
+  # some problems only trigger warnings but not errors, e.g.,
+  # https://github.com/yihui/tinytex/issues/311 fix them and re-run engine
+  if (install_packages && check_extra(logfile)) run_engine()
 
   # generate index
   if (file.exists(idx <- aux_files['idx'])) {
@@ -402,13 +404,27 @@ latex_warning = function(file, show = getOption('tinytex.latexmk.warning', TRUE)
   x[i]
 }
 
-# check if any babel packages are missing
-check_babel = function(file) {
-  if (length(m <- latex_warning(file, FALSE)) == 0 || length(grep('^Package babel Warning:', m)) == 0)
-    return()
-  r = "^\\(babel).* language `([[:alpha:]]+)'.*$"
-  if (length(m <- grep_sub(r, '\\1', m)) == 0) return()
-  tlmgr_install(paste0('hyphen-', tolower(m)))
+# check if any babel/glossaries/... packages are missing
+check_extra = function(file) {
+  length(m <- latex_warning(file, FALSE)) > 0 &&
+    length(grep('^Package ([^ ]+) Warning:', m)) > 0 &&
+    any(check_babel(m), check_glossaries(m))
+}
+
+check_babel = function(text) {
+  r = "^\\(babel).* language `([^']+)'.*$"
+  if (length(m <- grep_sub(r, '\\1', text)) == 0) return(FALSE)
+  tlmgr_install(paste0('hyphen-', tolower(m))) == 0
+}
+
+# Package glossaries Warning: No language module detected for `english'.
+# (glossaries)                Language modules need to be installed separately.
+# (glossaries)                Please check on CTAN for a bundle called
+# (glossaries)                `glossaries-english' or similar.
+check_glossaries = function(text) {
+  r = "^\\(glossaries).* `([^']+)'.*$"
+  if (length(m <- grep_sub(r, '\\1', text)) == 0) return(FALSE)
+  tlmgr_install(m) == 0
 }
 
 # check the version of latexmk
