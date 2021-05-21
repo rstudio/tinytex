@@ -16,7 +16,7 @@ system2(
   )
 )
 
-b = list.files('../..', '^quarto-latexmk([.]exe)?$', full.names = TRUE, recursive = TRUE)
-message('quarto-latexmk was built at ', b)
+b = list.files('../dist/bin/tinytex', '^tinytex([.]exe)?$', full.names = TRUE, recursive = TRUE)
+message('tinytex was built at ', b)
 Sys.chmod(b, '0755')
-file.copy(b, file.path('../../..', paste0('tinytex', if (os == 1) '.exe')))
+file.copy(b, '../../..')
