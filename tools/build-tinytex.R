@@ -10,7 +10,8 @@ setwd('package/src')
 system2(
   paste0(if (os > 1) './', 'quarto-bld'),
   c(
-    'compile-quarto-latexmk', '--target',
+    'compile-quarto-latexmk', '--name', 'tinytex', '', '--version', format(Sys.Date(), '%Y.%m'),
+    '--description', 'Intelligent compilation of LaTeX documents with TinyTeX', '--target',
     c('x86_64-pc-windows-msvc', 'x86_64-apple-darwin', 'x86_64-unknown-linux-gnu')[os]
   )
 )
