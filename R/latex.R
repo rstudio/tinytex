@@ -408,7 +408,7 @@ latex_warning = function(file, show = getOption('tinytex.latexmk.warning', TRUE)
 check_extra = function(file) {
   length(m <- latex_warning(file, FALSE)) > 0 &&
     length(grep('^Package ([^ ]+) Warning:', m)) > 0 &&
-    any(check_babel(m), check_glossaries(m))
+    any(check_babel(m), check_glossaries(m), check_datetime2(m))
 }
 
 check_babel = function(text) {
@@ -425,6 +425,14 @@ check_glossaries = function(text) {
   r = "^\\(glossaries).* `([^']+)'.*$"
   if (length(m <- grep_sub(r, '\\1', text)) == 0) return(FALSE)
   tlmgr_install(m) == 0
+}
+
+# Package datetime2 Warning: Date-Time Language Module `english' not installed on
+# input line xxx.
+check_datetime2 = function(text) {
+  r = "^Package datetime2 Warning: Date-Time Language Module `([^']+)' not installed.*$"
+  if (length(m <- grep_sub(r, '\\1', text)) == 0) return(FALSE)
+  tlmgr_install(paste0('datetime2-', m)) == 0
 }
 
 # check the version of latexmk
