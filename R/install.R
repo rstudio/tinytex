@@ -274,6 +274,11 @@ symlink_root = function(path) {
   in_dir(dirname(path), symlink_root(path2))
 }
 
+# a helper function to open tlmgr.pl (on *nix)
+open_tlmgr = function() {
+  file.edit(symlink_root(Sys.which('tlmgr')))
+}
+
 #' Check if the LaTeX installation is TinyTeX
 #'
 #' First find the root directory of the installation via
