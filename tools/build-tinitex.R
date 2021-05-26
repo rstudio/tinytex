@@ -20,7 +20,7 @@ b = list.files('../dist/bin/tinitex', '^tinitex([.]exe)?$', full.names = TRUE, r
 message('tinitex was built at ', b)
 Sys.chmod(b, '0755')
 if (os == 1) {
-  p = b
+  system2("powershell", c("-Command", shQuote(sprintf('Compress-Archive %s %s', b, p <- 'tinitex.zip'))))
 } else {
   file.copy(b, basename(b))
   tar(p <- paste0('tinitex.', if (os == 2) 'tgz' else 'tar.gz'), basename(b), compression = 'gzip')

@@ -9,8 +9,7 @@ environment:
 after_test:
   - Rscript tools/build-tinitex.R
   - sh: rm *.Rproj
-  - ps: Compress-Archive tinitex.exe tinitex.zip
-  - cmd: del *.Rproj tinitex.exe
+  - cmd: del *.Rproj
 
 artifacts:
   - path: tinitex.*
