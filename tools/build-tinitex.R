@@ -20,7 +20,7 @@ b = list.files('../dist/bin/tinitex', '^tinitex([.]exe)?$', full.names = TRUE, r
 message('tinitex was built at ', b)
 Sys.chmod(b, '0755')
 if (os == 1) {
-  zip(p <- 'tinitex.zip', b)
+  p = b
 } else {
   tar(p <- paste0('tinitex.', if (os == 2) 'tgz' else 'tar.gz'), b, compression = 'gzip')
 }
