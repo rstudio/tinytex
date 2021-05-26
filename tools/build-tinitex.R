@@ -30,7 +30,7 @@ print(file.info(b))
 if (os == 1) {
   system2("powershell", c("-Command", shQuote(sprintf('Compress-Archive %s %s', b, p <- 'tinitex.zip'))))
 } else {
-  gzip_file(b, p <- paste0('tinitex.', if (os == 2) 'tgz' else 'tar.gz'), compression = 'gzip')
+  gzip_file(b, p <- paste0('tinitex.', if (os == 2) 'tgz' else 'tar.gz'))
 }
 
 file.copy(p, '../../..')
