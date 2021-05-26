@@ -17,9 +17,9 @@ system2(
 )
 
 # gzip a file without including its path in the tarball
-gzip_file = function(tf, f, ...) {
+gzip_file = function(tf, f) {
   owd = setwd(dirname(f)); on.exit(setwd(owd), add = TRUE)
-  tar(tf, basename(f), compression = 'gzip', ...)
+  system2('tar', shQuote(c('zvcf', tf, basename(f))))
   normalizePath(tf)
 }
 
