@@ -7,15 +7,13 @@ environment:
   CTAN_REPO: https://ctan.math.illinois.edu/systems/texlive/tlnet
 
 after_test:
-  - Rscript tools/build-tinytex.R
+  - Rscript tools/build-tinitex.R
   - sh: rm *.Rproj
   - cmd: del *.Rproj
 
 artifacts:
-  - path: tinytex
-    name: tinytex *nix binary
-  - path: tinytex.exe
-    name: tinytex Windows binary
+  - path: tinitex.*
+    name: tinitex binary
   - path: TinyTeX-0.*
     name: TinyTeX (infraonly)
   - path: TinyTeX-1.*
