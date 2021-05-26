@@ -17,9 +17,10 @@ system2(
 )
 
 # gzip a file without including its path in the tarball
-gzip_file = function(f, ...) {
+gzip_file = function(tf, f, ...) {
   owd = setwd(dirname(f)); on.exit(setwd(owd), add = TRUE)
-  tar(..., files = basename(f), compression = 'gzip')
+  tar(tf, basename(f), compression = 'gzip', ...)
+  normalizePath(tf)
 }
 
 b = list.files('../dist/bin/tinitex', '^tinitex([.]exe)?$', full.names = TRUE, recursive = TRUE)
@@ -30,7 +31,7 @@ print(file.info(b))
 if (os == 1) {
   system2("powershell", c("-Command", shQuote(sprintf('Compress-Archive %s %s', b, p <- 'tinitex.zip'))))
 } else {
-  gzip_file(b, p <- paste0('tinitex.', if (os == 2) 'tgz' else 'tar.gz'))
+  p = gzip_file(paste0('tinitex.', if (os == 2) 'tgz' else 'tar.gz'), b)
 }
 
 file.copy(p, '../../..')
