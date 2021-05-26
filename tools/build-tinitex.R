@@ -22,7 +22,8 @@ Sys.chmod(b, '0755')
 if (os == 1) {
   p = b
 } else {
-  tar(p <- paste0('tinitex.', if (os == 2) 'tgz' else 'tar.gz'), b, compression = 'gzip')
+  file.copy(b, basename(b))
+  tar(p <- paste0('tinitex.', if (os == 2) 'tgz' else 'tar.gz'), basename(b), compression = 'gzip')
 }
 
 file.copy(p, '../../..')
