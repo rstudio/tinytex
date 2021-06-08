@@ -44,5 +44,6 @@ move /y TinyTeX "%APPDATA%"
 echo add tlmgr to PATH
 call "%APPDATA%\TinyTeX\bin\win32\tlmgr" path add
 if /i not "%CI%"=="true" call "%APPDATA%\TinyTeX\bin\win32\tlmgr" option repository ctan
+call "%APPDATA%\TinyTeX\bin\win32\tlmgr" postaction install script xetex
 
 exit /b %ERRORLEVEL%

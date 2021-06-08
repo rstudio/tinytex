@@ -58,5 +58,6 @@ fi
 
 cd $TEXDIR/bin/*/
 [ $OSNAME != "Darwin" ] && ./tlmgr option sys_bin ~/bin
+./tlmgr postaction install script xetex  # GH issue #313
 ([ -z $CI ] || [ $(echo $CI | tr "[:upper:]" "[:lower:]") != "true" ]) && ./tlmgr option repository ctan
 ./tlmgr path add
