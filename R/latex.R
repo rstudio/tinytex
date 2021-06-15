@@ -400,7 +400,7 @@ latex_warning = function(file, show = getOption('tinytex.latexmk.warning', TRUE)
     j:n
   }))
   i = sort(unique(i))
-  if (show) warning(paste(x[i], collapse = '\n'), call. = FALSE)
+  if (show) for(msg in x[i]) warning(msg, call. = FALSE, immediate. = TRUE)
   x[i]
 }
 
