@@ -522,8 +522,7 @@ parse_packages = function(
   unique(pkgs)
 }
 
-# find filenames (could also be font names) from LaTeX error logs
-detect_files = function(text) {
+regex_errors = function() {
   # possible errors are like:
   # ! LaTeX Error: File `framed.sty' not found.
   # /usr/local/bin/mktexpk: line 123: mf: command not found
@@ -544,7 +543,7 @@ detect_files = function(text) {
   # ! I can't find file `hyph-de-1901.ec.tex'.
   # ! Package pdfx Error: No color profile sRGB_IEC61966-2-1_black_scaled.icc found
   # No file LGRcmr.fd. ! LaTeX Error: This NFSS system isn't set up properly.
-  r = list(
+  list(
     font = c(
       # error messages about missing fonts (don't move the first item below, as
       # it is special and emitted by widetext; the rest can be freely reordered)
@@ -583,6 +582,11 @@ detect_files = function(text) {
       ".*! I can't find file `([^']+)'.*"
     )
   )
+}
+
+# find filenames (could also be font names) from LaTeX error logs
+detect_files = function(text) {
+  r = regex_errors()
   x = grep(paste(unlist(r), collapse = '|'), text, value = TRUE)
   if (length(x) > 0) unique(unlist(lapply(unlist(r), function(p) {
     v = grep_sub(p, '\\1', x)

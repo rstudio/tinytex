@@ -22,6 +22,8 @@ artifacts:
     name: TinyTeX
   - path: installer*
     name: TinyTeX installer
+  - path: regex.tar.gz
+    name: Regex for LaTeX errors
 
 for:
 -
@@ -117,6 +119,7 @@ for:
     - export PATH="$HOME/bin:$PATH"
     - Rscript "tools/test-basic.R"
     - tar zcf TinyTeX.tar.gz -C ~ .TinyTeX
+    - Rscript "tools/export-regex.R"
     - cd tools
     - cp install-base.sh install.sh
     - echo "tlmgr install $(cat pkgs-custom.txt | tr '\n' ' ')" >> install.sh
