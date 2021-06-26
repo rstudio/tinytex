@@ -120,6 +120,7 @@ for:
     - Rscript "tools/test-basic.R"
     - tar zcf TinyTeX.tar.gz -C ~ .TinyTeX
     - Rscript "tools/export-regex.R"
+    - tar zcf regex.tar.gz regex.json
     - cd tools
     - cp install-base.sh install.sh
     - echo "tlmgr install $(cat pkgs-custom.txt | tr '\n' ' ')" >> install.sh
