@@ -339,8 +339,8 @@ install_prebuilt = function(
   if (xfun::file_ext(pkg) == '') {
     if (version == 'latest') {
       version = xfun::github_releases('yihui/tinytex-releases', version)
-      version = gsub('^v', '', version)
     }
+    version = gsub('^v', '', version)
     installer = if (pkg == '') 'TinyTeX' else pkg
     # e.g., TinyTeX-0.zip, TinyTeX-1-v2020.10.tar.gz, ...
     pkg = paste0(
