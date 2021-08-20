@@ -357,6 +357,7 @@ install_prebuilt = function(
     }
     if (!file.exists(pkg)) download_installer(pkg, version)
   }
+  pkg = path.expand(pkg)
 
   # installation dir shouldn't be a file but a directory
   file.remove(exist_files(c(dir1, dir2)))
