@@ -325,7 +325,7 @@ tl_pkgs = function(only_installed = TRUE) {
 }
 
 tl_list = function(pkgs = NULL, field = 'name', only_installed = TRUE, ...) {
-  tlmgr(c('info', '--list', if (only_installed) '--only-installed', '--data', field, pkgs), ...)
+  tlmgr(c('info', '--list', if (only_installed) '--only-installed', '--data', shQuote(field), pkgs), ...)
 }
 
 tl_platform = function() tlmgr('print-platform', stdout = TRUE, .quiet = TRUE)
