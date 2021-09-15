@@ -17,6 +17,12 @@ assert('`tlmgr info` can list the installed packages', {
   (c('xetex', 'luatex', 'graphics') %in% res)
 })
 
+assert('`tl_size()` can correctly list name and size', {
+  res = tl_sizes(pkgs = "luatex")$package
+  # only check a few basic packages
+  ('luatex' %==% tl_sizes(pkgs = "luatex")$package)
+})
+
 assert('fonts package are correctly identified', {
   p_q = function(...) parse_packages(..., quiet = c(TRUE, TRUE, TRUE))
   (p_q(text = "! Font U/psy/m/n/10=psyr at 10.0pt not loadable: Metric (TFM) file not found") %==% 'symbol')
