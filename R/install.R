@@ -394,6 +394,9 @@ post_install_config = function(add_path, extra_packages, repo, hash = FALSE) {
   }
   # fix fonts.conf: https://github.com/yihui/tinytex/issues/313
   tlmgr(c('postaction', 'install', 'script', 'xetex'), .quiet = TRUE)
+  # do not wrap lines in latex log (#322)
+  tlmgr_conf(c('texmf', 'max_print_line', '10000'), .quiet = TRUE)
+
   if (add_path) tlmgr_path()
   r_texmf(.quiet = TRUE)
   # don't use the default random ctan mirror when installing on CI servers

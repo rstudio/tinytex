@@ -46,6 +46,7 @@ alias tlmgr='./bin/*/tlmgr'
 rm -f bin/man bin/*/man
 
 tlmgr option repository "$TLREPO"
+tlmgr conf texmf max_print_line 10000
 
 if [ "$3" != '' ]; then
   tlmgr option repository "$3"
