@@ -408,7 +408,12 @@ latex_warning = function(file, show = getOption('tinytex.latexmk.warning', TRUE)
 check_extra = function(file) {
   length(m <- latex_warning(file, FALSE)) > 0 &&
     length(grep('^Package ([^ ]+) Warning:', m)) > 0 &&
-    any(check_babel(m), check_glossaries(m), check_datetime2(m))
+    any(
+      check_babel(m),
+      check_glossaries(m),
+      check_datetime2(m),
+      check_polyglossia(m)
+    )
 }
 
 check_babel = function(text) {
@@ -425,6 +430,16 @@ check_glossaries = function(text) {
   r = "^\\(glossaries).* `([^']+)'.*$"
   if (length(m <- grep_sub(r, '\\1', text)) == 0) return(FALSE)
   tlmgr_install(m) == 0
+}
+
+# Package polyglossia Warning: No hyphenation patterns were loaded for `hungarian'
+# Package polyglossia Warning: No hyphenation patterns were loaded for British English
+check_polyglossia = function(text) {
+  r = "^Package polyglossia Warning: No hyphenation patterns were loaded for (`[^']+'|British English).*"
+  if (length(m <- grep_sub(r, '\\1', text)) == 0) return(FALSE)
+  m[m == 'British English'] = 'english'
+  m = gsub("[`']", '', m)
+  tlmgr_install(paste0('hyphen-', m)) == 0
 }
 
 # Package datetime2 Warning: Date-Time Language Module `english' not installed on
