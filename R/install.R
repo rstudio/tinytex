@@ -74,8 +74,9 @@ install_tinytex = function(
     stop('Sorry, but tinytex::install_tinytex() does not support this platform: ', os)
   )
 
+  src_install = getOption('tinytex.source.install', need_source_install())
   install = function(...) {
-    if (getOption('tinytex.source.install', need_source_install())) {
+    if (src_install) {
       install_tinytex_source(repository, ...)
     } else {
       install_prebuilt('TinyTeX-1', ..., repo = repository)
@@ -84,17 +85,20 @@ install_tinytex = function(
   force(extra_packages)  # evaluate it before installing another version of TinyTeX
   if (version == 'daily') {
     version = ''
-    # test if https://yihui.org is accessible because the daily version is
-    # downloaded from there
-    if (missing(version) && !url_accessible('https://yihui.org')) {
+    # test if https://yihui.org or github.com is accessible because the daily
+    # version is downloaded from there
+    determine_version = function() {
+      if (url_accessible('https://yihui.org')) return('')
+      if (url_accessible('https://github.com')) return('daily-github')
       warning(
         "The daily version of TinyTeX does not appear to be accessible. ",
         "Switching to version = 'latest' instead. If you are sure to install ",
         "the daily version, call tinytex::install_tinytex(version = 'daily') ",
         "(which may fail)."
       )
-      version = 'latest'
+      'latest'
     }
+    if (missing(version) && !src_install) version = determine_version()
   }
   user_dir = install(user_dir, version, add_path, extra_packages)
 
@@ -352,6 +356,10 @@ install_prebuilt = function(
   if (xfun::file_ext(pkg) == '') {
     if (version == 'latest') {
       version = xfun::github_releases('yihui/tinytex-releases', version)
+    } else if (version == 'daily-github') {
+      version = ''
+      opts = options(tinytex.install.url = 'https://github.com/yihui/tinytex-releases/releases/download/daily/')
+      on.exit(options(opts), add = TRUE)
     }
     version = gsub('^v', '', version)
     installer = if (pkg == '') 'TinyTeX' else pkg
@@ -411,7 +419,7 @@ post_install_config = function(add_path, extra_packages, repo, hash = FALSE) {
 download_installer = function(file, version) {
   url = if (version != '') sprintf(
     'https://github.com/yihui/tinytex-releases/releases/download/v%s/%s', version, file
-  ) else paste0('https://yihui.org/tinytex/', file)
+  ) else paste0(getOption('tinytex.install.url', 'https://yihui.org/tinytex/'), file)
   download_file(url, file)
 }
 
