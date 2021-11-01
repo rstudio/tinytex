@@ -10,7 +10,7 @@ for /d %%G in ("TinyTeX*") do rd /s /q "%%~G"
 if not defined TINYTEX_INSTALLER set TINYTEX_INSTALLER=TinyTeX-1
 
 if not defined TINYTEX_VERSION (
-  set TINYTEX_URL=https://yihui.org/tinytex/%TINYTEX_INSTALLER%.zip
+  set TINYTEX_URL=https://github.com/yihui/tinytex-releases/releases/download/daily/%TINYTEX_INSTALLER%.zip
 ) else (
   set TINYTEX_URL=https://github.com/yihui/tinytex-releases/releases/download/v%TINYTEX_VERSION%/%TINYTEX_INSTALLER%-v%TINYTEX_VERSION%.zip
 )
