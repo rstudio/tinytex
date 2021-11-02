@@ -50,7 +50,6 @@ jobs:
         with:
           extra-packages: |
             rcmdcheck
-            curl
 
       - uses: r-lib/actions/check-r-package@v1
 
