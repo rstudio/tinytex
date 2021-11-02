@@ -120,7 +120,7 @@ The installation is done through
 ./install-tl -profile=tinytex.profile
 ```
 
-where `install-tl` is extracted from the Net installer (use `install-tl-windows.bat` on Windows). The full source of the installation scripts can be found on Github at https://github.com/yihui/tinytex/tree/master/tools. To install TinyTeX on *nix, run `install-unx.sh`; to install it on Windows, run `install-windows.bat`.
+where `install-tl` is extracted from the Net installer (use `install-tl-windows.bat` on Windows). The full source of the installation scripts can be found on Github at https://github.com/yihui/tinytex/tree/main/tools. To install TinyTeX on *nix, run `install-unx.sh`; to install it on Windows, run `install-windows.bat`.
 
 I set the `portable` option to `1` above, which means the installation directory will be portable. You can move it anywhere in your system, as long as you know how to handle the `PATH` variable, or call the executables (e.g., `tlmgr` or `pdflatex`) with their full paths. By default, the installation scripts of TinyTeX will try to add TeX Live's bin path to the environment variable `PATH`, or create symlinks to a path that is in `PATH` (e.g., `/usr/local/bin` on macOS and `$HOME/bin` on Linux).
 
