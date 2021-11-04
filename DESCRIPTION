@@ -1,7 +1,7 @@
 Package: tinytex
 Type: Package
 Title: Helper Functions to Install and Maintain TeX Live, and Compile LaTeX Documents
-Version: 0.35
+Version: 0.35.1
 Authors@R: c(
   person("Yihui", "Xie", role = c("aut", "cre", "cph"), email = "xie@yihui.name", comment = c(ORCID = "0000-0003-0645-5666")),
   person(family = "RStudio, PBC", role = "cph"),
@@ -23,3 +23,4 @@ URL: https://github.com/yihui/tinytex
 BugReports: https://github.com/yihui/tinytex/issues
 Encoding: UTF-8
 RoxygenNote: 7.1.2
+Remotes: yihui/xfun

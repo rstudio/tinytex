@@ -88,8 +88,8 @@ install_tinytex = function(
     # test if https://yihui.org or github.com is accessible because the daily
     # version is downloaded from there
     determine_version = function() {
-      if (url_accessible('https://yihui.org')) return('')
-      if (url_accessible('https://github.com')) return('daily-github')
+      if (xfun::url_accessible('https://yihui.org')) return('')
+      if (xfun::url_accessible('https://github.com')) return('daily-github')
       warning(
         "The daily version of TinyTeX does not appear to be accessible. ",
         "Switching to version = 'latest' instead. If you are sure to install ",
@@ -421,15 +421,6 @@ download_installer = function(file, version) {
     'https://github.com/yihui/tinytex-releases/releases/download/v%s/%s', version, file
   ) else paste0(getOption('tinytex.install.url', 'https://yihui.org/tinytex/'), file)
   download_file(url, file)
-}
-
-# TODO: use xfun::url_accessible()
-url_accessible = function(url) {
-  tf = tempfile(); on.exit(unlink(tf), add = TRUE)
-  tryCatch(suppressWarnings({
-    xfun::download_file(url, tf, quiet = TRUE)
-    TRUE
-  }), error = function(e) FALSE)
 }
 
 #' Copy TinyTeX to another location and use it in another system
