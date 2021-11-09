@@ -417,9 +417,9 @@ check_extra = function(file) {
 }
 
 check_babel = function(text) {
-  r = "^\\(babel).* language `([^']+)'.*$"
-  if (length(m <- grep_sub(r, '\\1', text)) == 0) return(FALSE)
-  tlmgr_install(paste0('hyphen-', tolower(m))) == 0
+  r = "^(\\(babel\\).* |Package babel Warning: No hyphenation patterns were preloaded for the )language [`']([^']+)'.*$"
+  if (length(m <- grep_sub(r, 'hyphen-\\2', text)) == 0) return(FALSE)
+  tlmgr_install(tolower(m)) == 0
 }
 
 # Package glossaries Warning: No language module detected for `english'.
