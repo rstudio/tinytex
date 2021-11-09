@@ -427,7 +427,7 @@ check_babel = function(text) {
 # (glossaries)                Please check on CTAN for a bundle called
 # (glossaries)                `glossaries-english' or similar.
 check_glossaries = function(text) {
-  r = "^\\(glossaries).* `([^']+)'.*$"
+  r = "^\\(glossaries).* [`']([^']+)'.*$"
   if (length(m <- grep_sub(r, '\\1', text)) == 0) return(FALSE)
   tlmgr_install(m) == 0
 }
@@ -435,7 +435,7 @@ check_glossaries = function(text) {
 # Package polyglossia Warning: No hyphenation patterns were loaded for `hungarian'
 # Package polyglossia Warning: No hyphenation patterns were loaded for British English
 check_polyglossia = function(text) {
-  r = "^Package polyglossia Warning: No hyphenation patterns were loaded for (`[^']+'|British English).*"
+  r = "^Package polyglossia Warning: No hyphenation patterns were loaded for ([`'][^']+'|British English).*"
   if (length(m <- grep_sub(r, '\\1', text)) == 0) return(FALSE)
   m[m == 'British English'] = 'english'
   m = gsub("[`']", '', m)
@@ -445,7 +445,7 @@ check_polyglossia = function(text) {
 # Package datetime2 Warning: Date-Time Language Module `english' not installed on
 # input line xxx.
 check_datetime2 = function(text) {
-  r = "^Package datetime2 Warning: Date-Time Language Module `([^']+)' not installed.*$"
+  r = "^Package datetime2 Warning: Date-Time Language Module [`']([^']+)' not installed.*$"
   if (length(m <- grep_sub(r, '\\1', text)) == 0) return(FALSE)
   tlmgr_install(paste0('datetime2-', m)) == 0
 }
@@ -574,7 +574,7 @@ regex_errors = function() {
     ),
     epstopdf = c(
       # possible errors when epstopdf is missing
-      ".* File `(.+eps-converted-to.pdf)'.*",
+      ".* File [`'](.+eps-converted-to.pdf)'.*",
       ".*xdvipdfmx:fatal: pdf_ref_obj.*"
     ),
     colorprofiles.sty = c(
@@ -587,14 +587,14 @@ regex_errors = function() {
     style = c(
       # missing .sty or commands
       ".* Loading '([^']+)' aborted!",
-      ".*! LaTeX Error: File `([^']+)' not found.*",
+      ".*! LaTeX Error: File [`']([^']+)' not found.*",
       ".* file ['`]?([^' ]+)'? not found.*",
       '.*the language definition file ([^ ]+) .*',
       '.* \\(file ([^)]+)\\): cannot open .*',
-      ".*file `([^']+)' .*is missing.*",
-      ".*! CTeX fontset `([^']+)' is unavailable.*",
+      ".*file [`']([^']+)' .*is missing.*",
+      ".*! CTeX fontset [`']([^']+)' is unavailable.*",
       ".*: ([^:]+): command not found.*",
-      ".*! I can't find file `([^']+)'.*"
+      ".*! I can't find file [`']([^']+)'.*"
     )
   )
 }
