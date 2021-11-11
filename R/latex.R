@@ -419,6 +419,8 @@ check_extra = function(file) {
 check_babel = function(text) {
   r = "^(\\(babel\\).* |Package babel Warning: No hyphenation patterns were preloaded for the )language [`']([^']+)'.*$"
   if (length(m <- grep_sub(r, 'hyphen-\\2', text)) == 0) return(FALSE)
+  # (babel) the language `German (new orthography)' into the format
+  m = gsub('\\s.*', '', m)
   tlmgr_install(tolower(m)) == 0
 }
 
