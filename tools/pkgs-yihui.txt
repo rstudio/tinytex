@@ -119,6 +119,7 @@ sectsty
 seqsplit
 setspace
 sidecap
+sidenotes
 siunitx
 soul
 soulutf8
