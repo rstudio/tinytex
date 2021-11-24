@@ -39,7 +39,6 @@
 #'
 #' # list all installed LaTeX packages
 #' tlmgr(c('info', '--list', '--only-installed', '--data', 'name'))
-#'
 tlmgr = function(args = character(), usermode = FALSE, ..., .quiet = FALSE) {
   tweak_path()
   if (!.quiet && !tlmgr_available()) warning(
@@ -169,20 +168,22 @@ tlmgr_remove = function(pkgs = character(), usermode = FALSE) {
   if (length(pkgs)) tlmgr(c('remove', pkgs), usermode)
 }
 
+#' @param raw Whether to return the raw output of the command \command{tlmgr
+#'   --version}, or a short version of the format \samp{TeX Live YEAR (TinyTeX)
+#'   with tlmgr DATE}.
 #' @rdname tlmgr
 #' @importFrom xfun raw_string
 #' @export
-tlmgr_version = function(short = FALSE) {
-  vers = tlmgr("--version", stdout = TRUE, .quiet = TRUE)
-  if (short) {
-    year = gsub("^TeX Live \\(https://tug.org/texlive\\) version (\\d+)$", "\\1", vers[3], perl = TRUE)
-    tinytex = if (is_tinytex()) "[TinyTeX] " else ""
-    date = gsub("^tlmgr revision \\d+ \\(([\\d-]+) .*$", "\\1", vers[1], perl = TRUE)
-    vers = sprintf("TeX Live %s %swith tlmgr %s", year, tinytex, date)
+tlmgr_version = function(raw = TRUE) {
+  vers = tlmgr('--version', stdout = TRUE, .quiet = TRUE)
+  if (!raw) {
+    year = xfun::grep_sub('^TeX Live.* version (\\d+).*$', '\\1', vers)[1]
+    tinytex = if (is_tinytex()) '(TinyTeX) ' else ''
+    date = xfun::grep_sub('^tlmgr revision \\d+ \\(([0-9-]+) .*$', '\\1', vers)[1]
+    vers = sprintf('TeX Live %s %swith tlmgr %s', year, tinytex, date)
   }
   xfun::raw_string(vers)
 }
-
 
 #' @param self Whether to update the TeX Live Manager itself.
 #' @param more_args A character vector of more arguments to be passed to the

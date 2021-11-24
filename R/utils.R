@@ -1,7 +1,5 @@
+# for xfun::session_info('tinytex')
 xfun_session_info = function() {
-  tryCatch(
-    tlmgr_version(short = TRUE),
-    error = function(e) NULL
-  )
+  tryCatch(tlmgr_version(raw = FALSE), error = function(e) NULL)
 }
 
