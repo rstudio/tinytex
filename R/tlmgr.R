@@ -39,6 +39,7 @@
 #'
 #' # list all installed LaTeX packages
 #' tlmgr(c('info', '--list', '--only-installed', '--data', 'name'))
+#'
 tlmgr = function(args = character(), usermode = FALSE, ..., .quiet = FALSE) {
   tweak_path()
   if (!.quiet && !tlmgr_available()) warning(
@@ -166,6 +167,20 @@ check_installed = function(pkgs) {
 #' @export
 tlmgr_remove = function(pkgs = character(), usermode = FALSE) {
   if (length(pkgs)) tlmgr(c('remove', pkgs), usermode)
+}
+
+#' @rdname tlmgr
+#' @importFrom xfun raw_string
+#' @export
+tlmgr_version = function(short = FALSE) {
+  vers = tlmgr("--version", stdout = TRUE, .quiet = TRUE)
+  if (short) {
+    year = gsub("^TeX Live \\(https://tug.org/texlive\\) version (\\d+)$", "\\1", vers[3], perl = TRUE)
+    tinytex = if (is_tinytex()) "[TinyTeX] " else ""
+    date = gsub("^tlmgr revision \\d+ \\(([\\d-]+) .*$", "\\1", vers[1], perl = TRUE)
+    vers = sprintf("TeX Live %s %swith tlmgr %s", year, tinytex, date)
+  }
+  xfun::raw_string(vers)
 }
 
 

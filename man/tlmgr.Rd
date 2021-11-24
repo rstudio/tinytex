@@ -5,6 +5,7 @@
 \alias{tlmgr_search}
 \alias{tlmgr_install}
 \alias{tlmgr_remove}
+\alias{tlmgr_version}
 \alias{tlmgr_update}
 \alias{tlmgr_path}
 \alias{tlmgr_conf}
@@ -23,6 +24,8 @@ tlmgr_install(
 )
 
 tlmgr_remove(pkgs = character(), usermode = FALSE)
+
+tlmgr_version(short = FALSE)
 
 tlmgr_update(
   all = TRUE,
