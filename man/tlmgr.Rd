@@ -5,6 +5,7 @@
 \alias{tlmgr_search}
 \alias{tlmgr_install}
 \alias{tlmgr_remove}
+\alias{tlmgr_version}
 \alias{tlmgr_update}
 \alias{tlmgr_path}
 \alias{tlmgr_conf}
@@ -23,6 +24,8 @@ tlmgr_install(
 )
 
 tlmgr_remove(pkgs = character(), usermode = FALSE)
+
+tlmgr_version(raw = TRUE)
 
 tlmgr_update(
   all = TRUE,
@@ -79,6 +82,10 @@ to match only full words.}
 this after a binary package is installed, such as the \pkg{metafont}
 package, which contains the executable \command{mf}, but it does not hurt
 even if no binary packages were installed).}
+
+\item{raw}{Whether to return the raw output of the command \command{tlmgr
+--version}, or a short version of the format \samp{TeX Live YEAR (TinyTeX)
+with tlmgr DATE}.}
 
 \item{self}{Whether to update the TeX Live Manager itself.}
 

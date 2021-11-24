@@ -168,6 +168,22 @@ tlmgr_remove = function(pkgs = character(), usermode = FALSE) {
   if (length(pkgs)) tlmgr(c('remove', pkgs), usermode)
 }
 
+#' @param raw Whether to return the raw output of the command \command{tlmgr
+#'   --version}, or a short version of the format \samp{TeX Live YEAR (TinyTeX)
+#'   with tlmgr DATE}.
+#' @rdname tlmgr
+#' @importFrom xfun raw_string
+#' @export
+tlmgr_version = function(raw = TRUE) {
+  vers = tlmgr('--version', stdout = TRUE, .quiet = TRUE)
+  if (!raw) {
+    year = xfun::grep_sub('^TeX Live.* version (\\d+).*$', '\\1', vers)[1]
+    tinytex = if (is_tinytex()) '(TinyTeX) ' else ''
+    date = xfun::grep_sub('^tlmgr revision \\d+ \\(([0-9-]+) .*$', '\\1', vers)[1]
+    vers = sprintf('TeX Live %s %swith tlmgr %s', year, tinytex, date)
+  }
+  xfun::raw_string(vers)
+}
 
 #' @param self Whether to update the TeX Live Manager itself.
 #' @param more_args A character vector of more arguments to be passed to the
