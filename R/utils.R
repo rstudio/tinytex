@@ -1,9 +1,15 @@
 # for xfun::session_info('tinytex')
 xfun_session_info = function() {
   pdftex_info = tryCatch(system2('pdflatex', "--version", stdout = TRUE)[1], error = function(e) NULL)
-  if (is.null(pdftex_info)) return(invisible(NULL))
+  if (is.null(pdftex_info)) {
+    # try tectonic engine ?
+    tryCatch(system2('tectonic', "--version", stdout = TRUE), error = function(e) NULL)
+  }
 
-  info = if (grepl("TeX Live", pdftex_info, fixed = TRUE)) {
+  info = if (is.null(pdftex_info)) {
+    # try tectonic engine ?
+    tryCatch(system2('tectonic', "--version", stdout = TRUE), error = function(e) NULL)
+  } else if (grepl("TeX Live", pdftex_info, fixed = TRUE)) {
     # we get more information on tlmgr in that case
     tryCatch(tlmgr_version(raw = FALSE), error = function(e) NULL)
   } else {
