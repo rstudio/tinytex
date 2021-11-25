@@ -1,10 +1,6 @@
 # for xfun::session_info('tinytex')
 xfun_session_info = function() {
   pdftex_info = tryCatch(system2('pdflatex', "--version", stdout = TRUE)[1], error = function(e) NULL)
-  if (is.null(pdftex_info)) {
-    # try tectonic engine ?
-    tryCatch(system2('tectonic', "--version", stdout = TRUE), error = function(e) NULL)
-  }
 
   info = if (is.null(pdftex_info)) {
     # try tectonic engine ?
