@@ -2,6 +2,7 @@
 xfun_session_info = function() {
   try_null = function(...) tryCatch(..., error = function(e) NULL)
   version_info = function(cmd) try_null(system2(cmd, '--version', stdout = TRUE))
+  tweak_path()
   pdftex_info = version_info('pdflatex')[1]
 
   info = if (is.null(pdftex_info)) {
