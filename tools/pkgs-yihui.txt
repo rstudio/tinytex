@@ -74,6 +74,7 @@ logreq
 ltxkeys
 ly1
 makecell
+makeindex
 marginnote
 marvosym
 mathalpha
