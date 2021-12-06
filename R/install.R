@@ -130,8 +130,15 @@ normalize_repo = function(url) {
   # don't normalize the url if users passes I(url) or 'ctan' or NULL
   if (is.null(url) || url == 'ctan' || inherits(url, 'AsIs')) return(url)
   url = sub('/+$', '', url)
-  if (!grepl('/tlnet$', url)) url = paste0(url, '/systems/texlive/tlnet')
-  url
+  if (!grepl('/tlnet$', url)) {
+    url2 = paste0(url, '/systems/texlive/tlnet')
+    if (capabilities('libcurl')) {
+      s = xfun::try_silent(xfun::attr(curlGetHeaders(url2), 'status'))
+      # return the original url if appending the path results in a failing url
+      if (!inherits(s, 'try-error') && s != 200) return(url)
+    }
+  }
+  url2
 }
 
 win_app_dir = function(..., error = TRUE) {
