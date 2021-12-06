@@ -132,10 +132,10 @@ normalize_repo = function(url) {
   url = sub('/+$', '', url)
   if (!grepl('/tlnet$', url)) {
     url2 = paste0(url, '/systems/texlive/tlnet')
-    if (capabilities("libcurl")) {
-      s = xfun::try_silent(xfun::attr(curlGetHeaders(url2), "status"))
-      # If appending the path results in a wrong url, then return the original one
-      if (!inherits(s, "try-error") && s != 200) return(url)
+    if (capabilities('libcurl')) {
+      s = xfun::try_silent(xfun::attr(curlGetHeaders(url2), 'status'))
+      # return the original url if appending the path results in a failing url
+      if (!inherits(s, 'try-error') && s != 200) return(url)
     }
   }
   url2
