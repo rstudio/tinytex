@@ -258,8 +258,7 @@ latexmk_emu = function(
           }
           if (!tlmgr_available() || !install_packages) return(warn())
           # install the possibly missing .bst package and rebuild bib
-          r = '.* open style file ([^ ]+).*'
-          pkgs = parse_packages(files = grep_sub(r, '\\1', x), quiet = !verbose)
+          pkgs = parse_packages(text = x, quiet = !verbose)
           if (length(pkgs) == 0 || identical(pkgs, pkgs_last)) return(warn())
           pkgs_last <<- pkgs
           tlmgr_install(pkgs); build_bib()
@@ -593,6 +592,7 @@ regex_errors = function() {
       ".* file ['`]?([^' ]+)'? not found.*",
       '.*the language definition file ([^ ]+) .*',
       '.* \\(file ([^)]+)\\): cannot open .*',
+      '.* open style file ([^ ]+).*',
       ".*file [`']([^']+)' .*is missing.*",
       ".*! CTeX fontset [`']([^']+)' is unavailable.*",
       ".*: ([^:]+): command not found.*",
