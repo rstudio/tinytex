@@ -18,6 +18,8 @@ for (i in c('pdflatex', 'xelatex', 'lualatex')) {
   }
 }
 
+knitr::knit2pdf('tools/test.Rnw')
+
 pkgs_new = setdiff(tinytex::tl_pkgs(), pkgs_old)
 
 if (length(files_new <- setdiff(all_files(), files_old))) {
