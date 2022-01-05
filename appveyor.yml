@@ -3,8 +3,12 @@ image:
   - macOS
   - Ubuntu
 
+skip_branch_with_pr: true
+
 environment:
   CTAN_REPO: https://ctan.math.illinois.edu/systems/texlive/tlnet
+  GITHUB_PAT:
+    secure: I8LpQZGeTQzw9wAWakdWI66i917ZRWhrh7QzmwvOX7qQPZk9B0Ri5nua1rb8dxii
 
 after_test:
   - Rscript tools/build-tinitex.R
