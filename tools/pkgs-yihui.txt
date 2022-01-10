@@ -129,6 +129,7 @@ standalone
 stix
 stmaryrd
 sttools
+subcaption
 subfig
 subfigure
 symbol
