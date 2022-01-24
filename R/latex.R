@@ -232,6 +232,7 @@ latexmk_emu = function(
   if (file.exists(idx <- aux_files['idx'])) {
     idx_engine = getOption('tinytex.makeindex', 'makeindex')
     install_cmd(idx_engine)
+    run_engine()  # run the engine one more time (cf rstudio/bookdown#1274)
     system2_quiet(idx_engine, c(getOption('tinytex.makeindex.args'), shQuote(idx)), error = {
       stop("Failed to build the index via ", idx_engine, call. = FALSE)
     })
