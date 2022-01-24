@@ -29,6 +29,20 @@ artifacts:
   - path: regex.tar.gz
     name: Regex for LaTeX errors
 
+deploy:
+  tag: daily
+  release: TinyTeX daily build
+  description: >
+    This release contains the daily build of TinyTeX ($(date -u +"%Y-%m-%dT%H:%M:%SZ")).
+    Please see https://github.com/yihui/tinytex-releases for more info.
+  provider: GitHub
+  auth_token:
+    secure: JAcCR9O77GYd9mpnPTpLcv2slw0f0mOz/OkeCk+nKZIMwKJSAtuBt3x8WfsfDL6Z
+  repository: yihui/tinytex-releases
+  artifact: /.*/
+  prerelease: true
+  force_update: true
+
 for:
 -
   matrix:
