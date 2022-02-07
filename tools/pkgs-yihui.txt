@@ -158,6 +158,7 @@ vruler
 wallpaper
 wrapfig
 xargs
+xpatch
 xltxtra
 xstring
 xwatermark
