@@ -35,8 +35,7 @@ jobs:
       - uses: r-lib/actions/setup-r-dependencies@v1
         with:
           extra-packages: |
-            curl,
-            yihui/knitr
+            curl
 
       - name: Find required LateX packages
         run: Rscript tools/test-packages.R
