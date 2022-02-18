@@ -46,6 +46,9 @@ tlmgr = function(args = character(), usermode = FALSE, ..., .quiet = FALSE) {
   )
   if (usermode) args = c('--usermode', args)
   if (!.quiet) message(paste(c('tlmgr', args), collapse = ' '))
+  # use TeX Live's own binaries (e.g., curl): https://github.com/yihui/tinytex/issues/354
+  vars = xfun::set_envvar(c(TEXLIVE_PREFER_OWN = 1))
+  on.exit(xfun::set_envvar(vars), add = TRUE)
   system2('tlmgr', args, ...)
 }
 
