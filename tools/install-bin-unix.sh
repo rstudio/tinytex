@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -e
+
 cd ${TMPDIR:-/tmp}
 
 [ -z $(which tlmgr) ] || TL_INSTALLED_PKGS=$(tlmgr info --list --only-installed --data name | tr '\n' ' ')
@@ -37,7 +39,7 @@ else
 fi
 
 if [ $OSNAME = 'Darwin' ]; then
-    curl -L --retry 10 --retry-delay 30 ${TINYTEX_URL}.tgz -o TinyTeX.tgz
+    curl -L -f --retry 10 --retry-delay 30 ${TINYTEX_URL}.tgz -o TinyTeX.tgz
     tar xzf TinyTeX.tgz -C $(dirname $TEXDIR)
     rm TinyTeX.tgz
 else if [ $TINYTEX_INSTALLER != 'installer-unix' ]; then
