@@ -60,6 +60,7 @@ lm
 lm-math
 ltxcmds
 lua-alt-getopt
+lua-uni-algos
 luahbtex
 lualatex-math
 lualibs
