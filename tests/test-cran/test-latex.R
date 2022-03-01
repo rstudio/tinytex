@@ -16,6 +16,7 @@ assert('detect_files() can detect filenames from LaTeX log', {
   (detect_files('! Package isodate.sty Error: Package file substr.sty not found.') %==% 'substr.sty')
   (detect_files("! Package fontenc Error: Encoding file `t2aenc.def' not found.") %==% 't2aenc.def')
   (detect_files("! I can't find file `hyph-de-1901.ec.tex'.") %==% 'hyph-de-1901.ec.tex')
+  (detect_files("luaotfload-features.lua:835: module 'lua-uni-normalize' not found:") %==% 'lua-uni-algos.lua')
 })
 
 

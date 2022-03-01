@@ -582,6 +582,9 @@ regex_errors = function() {
     colorprofiles.sty = c(
       '.* Package pdfx Error: No color profile ([^ ]+).*'
     ),
+    `lua-uni-algos.lua` = c(
+      ".* module '(lua-uni-normalize)' not found:.*"
+    ),
     tikz = c(
       # when a required tikz library is missing
       '.* (tikzlibrary[^ ]+?[.]code[.]tex).*'
@@ -610,7 +613,8 @@ detect_files = function(text) {
     v = grep_sub(p, '\\1', x)
     if (length(v) == 0) return(v)
     if (p == r$tikz && length(grep('! Package tikz Error:', text)) == 0) return()
-    for (i in c('epstopdf', 'colorprofiles.sty')) {
+    # these are some known filenames
+    for (i in c('epstopdf', grep('[.]', names(r), value = TRUE))) {
       if (p %in% r[[i]]) return(i)
     }
     if (p == r$fd) v = tolower(v)  # LGRcmr.fd -> lgrcmr.fd
