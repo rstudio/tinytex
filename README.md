@@ -1,9 +1,9 @@
 # TinyTeX
 
 <!-- badges: start -->
-[![R-CMD-check](https://github.com/yihui/tinytex/workflows/R-CMD-check/badge.svg)](https://github.com/yihui/tinytex/actions)
+[![R-CMD-check](https://github.com/yihui/tinytex/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/yihui/tinytex/actions/workflows/R-CMD-check.yaml)
 [![AppVeyor build status](https://ci.appveyor.com/api/projects/status/github/yihui/tinytex?svg=true&branch=main)](https://ci.appveyor.com/project/yihui/tinytex)
-[![Coverage status](https://codecov.io/gh/yihui/tinytex/branch/main/graph/badge.svg)](https://codecov.io/github/yihui/tinytex?branch=main)
+[![Codecov test coverage](https://codecov.io/gh/yihui/tinytex/branch/main/graph/badge.svg)](https://app.codecov.io/gh/yihui/tinytex?branch=main)
 [![CRAN release](https://www.r-pkg.org/badges/version/tinytex)](https://cran.r-project.org/package=tinytex)
 <!-- badges: end -->
 

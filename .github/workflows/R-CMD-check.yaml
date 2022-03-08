@@ -1,11 +1,16 @@
-# For help debugging build failures open an issue on the RStudio community with the 'github-actions' tag.
-# https://community.rstudio.com/new-topic?category=Package%20development&tags=github-actions
+# Workflow derived from https://github.com/r-lib/actions/tree/v2/examples
+# Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
+#
+# NOTE: This workflow is overkill for most R packages and
+# check-standard.yaml is likely a better choice.
+# usethis::use_github_action("check-standard") will install it.
 on:
   push:
-    branches: main
+    branches: [main]
   pull_request:
-    branches: main
-name: Check & Coverage
+    branches: [main]
+
+name: R-CMD-check
 
 jobs:
   R-CMD-check:
@@ -17,25 +22,29 @@ jobs:
       fail-fast: false
       matrix:
         config:
+          - {os: macOS-latest,   r: 'release'}
           - {os: windows-latest, r: 'release'}
-          - {os: macOS-latest, r: 'release'}
-          - {os: ubuntu-18.04, r: 'oldrel'}
-          - {os: ubuntu-18.04, r: 'release'}
-          - {os: ubuntu-18.04, r: 'devel', http-user-agent: 'release'}
+
+          # Use older ubuntu to maximise backward compatibility
+          - {os: ubuntu-18.04,   r: 'devel', http-user-agent: 'release'}
+          - {os: ubuntu-18.04,   r: 'release'}
+          - {os: ubuntu-18.04,   r: 'oldrel-1'}
+          - {os: ubuntu-18.04,   r: 'oldrel-2'}
+          - {os: ubuntu-18.04,   r: 'oldrel-3'}
+          - {os: ubuntu-18.04,   r: 'oldrel-4'}
 
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
-      R_KEEP_PKG_SOURCE: true
-      R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
+      R_KEEP_PKG_SOURCE: yes
       # don't treat missing suggested packages as error
       _R_CHECK_FORCE_SUGGESTS_: false
 
     steps:
       - uses: actions/checkout@v2
 
-      - uses: r-lib/actions/setup-pandoc@v1
+      - uses: r-lib/actions/setup-pandoc@v2
 
-      - uses: r-lib/actions/setup-r@v1
+      - uses: r-lib/actions/setup-r@v2
         with:
           r-version: ${{ matrix.config.r }}
           http-user-agent: ${{ matrix.config.http-user-agent }}
@@ -46,12 +55,14 @@ jobs:
           # install full prebuilt version
           TINYTEX_INSTALLER: TinyTeX
 
-      - uses: r-lib/actions/setup-r-dependencies@master
+      - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: |
-            rcmdcheck
+          extra-packages: any::rcmdcheck
+          needs: check
 
-      - uses: r-lib/actions/check-r-package@v1
+      - uses: r-lib/actions/check-r-package@v2
+        with:
+          upload-snapshots: true
 
       - name: Test coverage
         if: success() && runner.os == 'Linux' && matrix.config.r == 'release'
@@ -59,10 +70,3 @@ jobs:
           pak::pkg_install('covr')
           covr::codecov()
         shell: Rscript {0}
-
-      - name: Upload check results
-        if: failure()
-        uses: actions/upload-artifact@main
-        with:
-          name: ${{ runner.os }}-r${{ matrix.config.r }}-results
-          path: check
