@@ -10,6 +10,7 @@ bigintcalc
 bitset
 booktabs
 cm
+ctablestack
 dehyph
 dvipdfmx
 dvips
@@ -32,7 +33,6 @@ glyphlist
 graphics
 graphics-cfg
 graphics-def
-grffile
 helvetic
 hycolor
 hyperref
@@ -66,6 +66,7 @@ lualatex-math
 lualibs
 luaotfload
 luatex
+luatexbase
 mdwtools
 metafont
 mfware
@@ -77,6 +78,7 @@ plain
 psnfss
 refcount
 rerunfilecheck
+selnolig
 stringenc
 tex
 tex-ini-files
