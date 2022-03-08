@@ -34,7 +34,7 @@ jobs:
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: any:curl
+          extra-packages: any::curl
 
       - name: Find required LateX packages
         run: Rscript tools/test-packages.R
