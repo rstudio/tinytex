@@ -1,6 +1,7 @@
 #' @import stats utils tools
 #' @importFrom xfun grep_sub dir_exists in_dir
-NULL
+#' @keywords internal
+'_PACKAGE'
 
 os = .Platform$OS.type
 
