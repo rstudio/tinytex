@@ -66,7 +66,7 @@ jobs:
         run: tools\\install-bin-windows.bat
         shell: cmd
 
-      - name: Build tinytex
+      - name: Build tinitex
         run: Rscript tools/build-tinitex.R
 
       - name: Archive code coverage results
@@ -75,4 +75,4 @@ jobs:
           name: TinyTex-bundles
           path: |
             TinyTeX*.zip
-            tinytex.zip
+            tinitex.zip
