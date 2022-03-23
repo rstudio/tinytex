@@ -77,7 +77,9 @@ jobs:
           name: bundles
           path: |
             TinyTeX*.zip
-            tinitex.zip 
+            tinitex.zip
+          if-no-files-found: error
+          retention-days: 1
 
   build-linux:
     runs-on: ubuntu-latest
@@ -112,12 +114,12 @@ jobs:
           try(update.packages(ask = FALSE, checkBuilt = TRUE))
         shell: Rscript {0}
 
-      - name: Build TinyTeX-0.zip
+      - name: Build TinyTeX-0.zip & install more package
         run: |
           sed -i 's|# finished base|cp $OLDPWD/install-tl-unx.tar.gz tools/; Rscript tools/clean-tlpdb.R; tar zcf TinyTeX-0.tar.gz -C ~ .TinyTeX|' tools/install-unx.sh
           ./tools/install-unx.sh
 
-      - name: Build TinyTeX-1.zip
+      - name: Build TinyTeX-1.zip with new package installed
         run: |
           Rscript "tools/clean-tlpdb.R"
           tar zcf TinyTeX-1.tar.gz -C ~ .TinyTeX
@@ -158,6 +160,8 @@ jobs:
             tinitex.tar.gz
             installer-unix.tar.gz
             regex.tar.gz
+          if-no-files-found: error
+          retention-days: 1
 
   build-mac:
     runs-on: macos-latest
@@ -192,12 +196,12 @@ jobs:
           try(update.packages(ask = FALSE, checkBuilt = TRUE))
         shell: Rscript {0}
 
-      - name: Build TinyTeX-0.zip
+      - name: Build TinyTeX-0.zip & install more package
         run: |
           sed -i '' 's|# finished base|Rscript "${{ github.workspace }}/tools/clean-tlpdb.R"; tar zcf "${{ github.workspace}}/TinyTeX-0.tgz" -C ~/Library TinyTeX|' tools/install-unx.sh
           ./tools/install-unx.sh
 
-      - name: Build TinyTeX-1.zip
+      - name: Build TinyTeX-1.zip with new package installed
         run: |
           Rscript "tools/clean-tlpdb.R"
           tar zcf TinyTeX-1.tgz -C ~/Library TinyTeX
@@ -224,6 +228,8 @@ jobs:
           path: |
             TinyTeX*.tgz
             tinitex.tgz
+          if-no-files-found: error
+          retention-days: 1
 
   deploy:
     if: success()
