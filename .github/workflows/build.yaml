@@ -42,5 +42,7 @@ jobs:
       - name: Install Infra Only scheme
         run: Rscript "tools/install-windows-base.R"
 
-      - name: Check Install
-        run: dir $Env:APPDATA\\TinyTeX
+      - name: Create bundle
+        run: Compress-Archive $Env:APPDATA\\TinyTeX TinyTeX-0.zip
+
+      - run: dir .
