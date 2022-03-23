@@ -232,7 +232,7 @@ jobs:
           retention-days: 1
 
   deploy:
-    if: success()
+    needs: [build-mac, build-linux, build-windows]
     runs-on: ubuntu-latest
     name: deploy artifacts as Github release
 
