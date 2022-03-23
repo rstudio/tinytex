@@ -219,7 +219,7 @@ jobs:
       - name: Build tinitex
         run: Rscript tools/build-tinitex.R
 
-      - run: ls --lisa
+      - run: ls -lisa
 
       - name: Upload bundles
         uses: actions/upload-artifact@v3
