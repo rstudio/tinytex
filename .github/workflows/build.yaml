@@ -30,19 +30,49 @@ jobs:
           use-public-rspm: true
 
       # do we want to install CRAN tinytex or dev tinytex ?
-      - uses: r-lib/actions/setup-r-dependencies@v2
+      - name: Install tinytex package and its deps
+        uses: r-lib/actions/setup-r-dependencies@v2
         with:
           extra-packages: local::.
+
+      - name: Update all packages
+        run: |
+          try(update.packages(ask = FALSE, checkBuilt = TRUE))
+        shell: Rscript {0}
 
       - name: Add TinyTex to PATH
         run: |
           echo "$APPDATA\TinyTeX\bin\win32" >> $GITHUB_PATH
         shell: bash
 
-      - name: Install Infra Only scheme
-        run: Rscript "tools/install-windows-base.R"
+      - name: Build TinyTeX-0.zip
+        run: |
+          Rscript "tools/install-windows-base.R" # the infraonly scheme
+          Compress-Archive $Env:APPDATA\\TinyTeX TinyTeX-0.zip
 
-      - name: Create bundle
-        run: Compress-Archive $Env:APPDATA\\TinyTeX TinyTeX-0.zip
+      - name: Build TinyTeX-1.zip
+        run: |
+          Rscript "tools/install-windows-more.R"  # extra packages for compiling R Markdown
+          Compress-Archive $Env:APPDATA\\TinyTeX TinyTeX-1.zip
 
-      - run: dir .
+      - name: Build TinyTeX.zip
+        run: |
+          Rscript "tools/test-basic.R"  # even more LaTeX packages
+          Compress-Archive $Env:APPDATA\\TinyTeX TinyTeX.zip
+
+      - name: Test Installation
+        env:
+          TINYTEX_INSTALLER: TinyTeX-0
+        run: echo | tools\install-bin-windows.bat
+        shell: bash
+
+      - name: Build tinytex
+        run: Rscript tools/build-tinitex.R
+
+      - name: Archive code coverage results
+        uses: actions/upload-artifact@v3
+        with:
+          name: TinyTex-bundles
+          path: |
+            TinyTeX*.zip
+            tinytex.zip
