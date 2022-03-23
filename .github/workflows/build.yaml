@@ -71,6 +71,14 @@ jobs:
 
       - run: dir .
 
+      - name: Upload bundles
+        uses: actions/upload-artifact@v3
+        with:
+          name: bundles
+          path: |
+            TinyTeX*.zip
+            tinitex.zip 
+
   build-linux:
     runs-on: ubuntu-latest
     name: Build Bundles For Linux
@@ -141,6 +149,16 @@ jobs:
 
       - run: ls --lisa
 
+      - name: Upload bundles
+        uses: actions/upload-artifact@v3
+        with:
+          name: bundles
+          path: |
+            TinyTeX*.tar.gz
+            tinitex.tar.gz
+            installer-unix.tar.gz
+            regex.tar.gz
+
   build-mac:
     runs-on: macos-latest
     name: Build Bundles For macOS
@@ -198,3 +216,24 @@ jobs:
         run: Rscript tools/build-tinitex.R
 
       - run: ls --lisa
+
+      - name: Upload bundles
+        uses: actions/upload-artifact@v3
+        with:
+          name: bundles
+          path: |
+            TinyTeX*.tgz
+            tinitex.tgz
+
+  deploy:
+    if: success()
+    runs-on: ubuntu-latest
+    name: deploy artifacts as Github release
+
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          name: bundles
+          path: ~/tinytex-bundles
+      - run: ls -lisa
+        working-directory: ~/tinytex-bundles
