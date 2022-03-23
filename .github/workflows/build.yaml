@@ -63,8 +63,8 @@ jobs:
       - name: Test Installation
         env:
           TINYTEX_INSTALLER: TinyTeX-0
-        run: echo | tools\install-bin-windows.bat
-        shell: bash
+        run: tools\\install-bin-windows.bat
+        shell: cmd
 
       - name: Build tinytex
         run: Rscript tools/build-tinitex.R
