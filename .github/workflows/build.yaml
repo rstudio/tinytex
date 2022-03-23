@@ -241,5 +241,4 @@ jobs:
         with:
           name: bundles
           path: ~/tinytex-bundles
-      - run: ls -lisa
-        working-directory: ~/tinytex-bundles
+      - run: ls -lisa ~/tinytex-bundles
