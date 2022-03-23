@@ -7,8 +7,12 @@
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - '.github/workflows/build.yaml'
   pull_request:
     branches: [main]
+    paths-ignore:
+      - '.github/workflows/build.yaml'
 
 name: R-CMD-check
 

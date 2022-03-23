@@ -3,8 +3,12 @@
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - '.github/workflows/build.yaml'
   pull_request:
     branches: [main]
+    paths-ignore:
+      - '.github/workflows/build.yaml'
 
 name: check required LateX packages
 
