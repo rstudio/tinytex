@@ -262,5 +262,4 @@ jobs:
           files: ${{ runner.temp }}/tinytex-bundles/*
           fail_on_unmatched_files: true
           generate_release_notes: false
-          append_body: false
         
