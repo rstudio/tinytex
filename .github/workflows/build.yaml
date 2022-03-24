@@ -250,7 +250,6 @@ jobs:
 
       - name: Create Release
         uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
         with:
           repository: cderv/tinytex-releases
           token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
