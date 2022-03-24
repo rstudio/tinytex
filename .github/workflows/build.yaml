@@ -33,7 +33,7 @@ jobs:
       - name: Install tinytex package and its deps
         uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: local::.
+          extra-packages: local::., any::rmarkdown
 
       - name: Update all packages
         run: |
@@ -107,7 +107,7 @@ jobs:
       - name: Install tinytex package and its deps
         uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: local::.
+          extra-packages: local::., any::rmarkdown
 
       - name: Update all packages
         run: |
