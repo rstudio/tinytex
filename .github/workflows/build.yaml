@@ -241,5 +241,27 @@ jobs:
         with:
           name: bundles
           path: ${{ runner.temp }}/tinytex-bundles
+
       - run: ls -lisa tinytex-bundles
         working-directory: ${{ runner.temp }}
+
+      - name: Get Date for bundles
+        run: echo "CURRENT_DATE=" ($(date))" >> $GITHUB_ENV
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          repository: cderv/tinytex-releases
+          token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
+          prerelease: true
+          name: TinyTeX daily build
+          tag_name: daily
+          body: |
+            This release contains the daily build of TinyTeX${{ env.CURRENT_DATE }}.
+            Please see https://github.com/yihui/tinytex-releases for more info.
+          files: ${{ runner.temp }}/tinytex-bundles/*
+          fail_on_unmatched_files: true
+          generate_release_notes: false
+          append_body: false
+        
