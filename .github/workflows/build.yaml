@@ -236,13 +236,10 @@ jobs:
     runs-on: ubuntu-latest
     name: deploy artifacts as Github release
 
-    defaults:
-      run:
-        working-directory: ${{ runner.temp }}
-
     steps:
       - uses: actions/download-artifact@v3
         with:
           name: bundles
-          path: tinytex-bundles
+          path: ${{ runner.temp }}/tinytex-bundles
       - run: ls -lisa tinytex-bundles
+        working-directory: ${{ runner.temp }}
