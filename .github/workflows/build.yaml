@@ -246,7 +246,7 @@ jobs:
         working-directory: ${{ runner.temp }}
 
       - name: Get Date for bundles
-        run: echo "CURRENT_DATE=" ($(date))" >> $GITHUB_ENV
+        run: echo "CURRENT_DATE=($(date))" >> $GITHUB_ENV
 
       - name: Create Release
         uses: softprops/action-gh-release@v1
