@@ -248,19 +248,19 @@ jobs:
       - name: Get Date for bundles
         run: echo "CURRENT_DATE=($(date))" >> $GITHUB_ENV
 
-      - name: Create Release
-        uses: softprops/action-gh-release@v1
+
+      - uses: ncipollo/release-action@v1
         with:
-          repository: cderv/tinytex-releases
+          owner: cderv
+          repo: tinytex-releases
           token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
-          draft: true
           prerelease: true
-          name: TinyTeX daily build
-          tag_name: daily
+          tag: daily
+          allowUpdates: true
+          artifacts: ${{ runner.temp }}/tinytex-bundles/*
           body: |
             This release contains the daily build of TinyTeX${{ env.CURRENT_DATE }}.
             Please see https://github.com/yihui/tinytex-releases for more info.
-          files: ${{ runner.temp }}/tinytex-bundles/*
-          fail_on_unmatched_files: true
-          generate_release_notes: false
+          artifactErrorsFailBuild: true
+
         
