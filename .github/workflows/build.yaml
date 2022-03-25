@@ -253,6 +253,7 @@ jobs:
         with:
           repository: cderv/tinytex-releases
           token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
+          draft: true
           prerelease: true
           name: TinyTeX daily build
           tag_name: daily
