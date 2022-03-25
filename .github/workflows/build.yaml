@@ -7,6 +7,7 @@ name: Build TinyTeX Bundles
 
 jobs:
   build-windows:
+    if: false()
     runs-on: windows-latest
     name: Build Bundles For Windows
 
@@ -164,6 +165,7 @@ jobs:
           retention-days: 1
 
   build-mac:
+    if: false()
     runs-on: macos-latest
     name: Build Bundles For macOS
 
@@ -232,7 +234,7 @@ jobs:
           retention-days: 1
 
   deploy:
-    needs: [build-mac, build-linux, build-windows]
+    needs: [build-linux]
     runs-on: ubuntu-latest
     name: deploy artifacts as Github release
 
