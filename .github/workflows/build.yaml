@@ -269,16 +269,15 @@ jobs:
       - name: Publish new release
         env:
           GH_TOKEN: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
+          GH_REPO: cderv/tinytex-releases
         run: |
           echo "::group::Move tag to last commit on master"
-          sha=$(gh api repos/cderv/tinytex-releases/git/ref/heads/master --jq '.object.sha')
-          gh api repos/yihui/tinytex-releases/git/refs/tags/daily -f sha=$sha
+          sha=$(gh api repos/{owner}/{repo}/git/ref/heads/master --jq '.object.sha')
+          gh api repos/{owner}/{repo}/git/refs/tags/daily -f sha=$sha --template 'Tag {{.ref}} moved on {{.object.sha}} ({{.object.url}})'
           echo "::endgroup::"
-          echo "::group::delete current release" 
-          gh -R cderv/tinytex-releases release delete daily -y
-          echo "::endgroup::"
-          echo "::group::undraft new release" 
-          gh api repos/cderv/tinytex-releases/releases/${{ steps.draft-release.outputs.id}} -f draft=false -f tag_name='daily'
+          echo "::group::delete current release and undraft new" 
+          gh release delete daily -y
+          gh api repos/{owner}/{repo}/releases/${{ steps.draft-release.outputs.id}} -f draft=false -f tag_name='daily' --template 'Release url: {{.html_url}}'
           echo "::endgroup::"
 
         
