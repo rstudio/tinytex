@@ -276,6 +276,6 @@ jobs:
           # delete current release
           gh -R cderv/tinytex-releases release delete daily -y
           # undraft new release
-          gh api repos/{owner}/{repo}/releases/${{ steps.draft-release.outputs.id}} -f draft=false -f tag_name='daily'
+          gh api repos/cderv/tinytex-releases/releases/${{ steps.draft-release.outputs.id}} -f draft=false -f tag_name='daily'
 
         
