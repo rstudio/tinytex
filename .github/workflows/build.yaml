@@ -273,8 +273,8 @@ jobs:
         run: |
           echo "::group::Move tag to last commit on master"
           sha=$(gh api repos/{owner}/{repo}/git/ref/heads/master --jq '.object.sha')
-          gh api repos/{owner}/{repo}/git/refs/tags/daily -f sha=$sha --template 'Tag {{.ref | color "blue"}} moved on {{.object.sha | color "blue"}} ({{.object.url}})'
-          echo "::endgroup::"
+          gh api repos/{owner}/{repo}/git/refs/tags/daily -f sha=$sha --template 'Tag {{.ref | color "blue"}} moved on commit sha {{.object.sha | color "blue"}} ({{.object.url}})'
+          echo -e "\n::endgroup::"
           echo "::group::delete current release and undraft new" 
           gh release delete daily -y
           gh api repos/{owner}/{repo}/releases/${{ steps.draft-release.outputs.id}} -f draft=false -f tag_name='daily' --template 'Release url: {{.html_url}}'
