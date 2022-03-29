@@ -258,7 +258,6 @@ jobs:
           draft: true
           prerelease: true
           name: TinyTeX daily build
-          tag_name: daily
           body: |
             This release contains the daily build of TinyTeX${{ env.CURRENT_DATE }}.
             Please see https://github.com/yihui/tinytex-releases for more info.
