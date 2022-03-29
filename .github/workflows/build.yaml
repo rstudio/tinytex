@@ -1,7 +1,8 @@
 on:
   workflow_dispatch:
-  pull_request:
-    branches: [main]
+#  schedule: 
+#    - cron: '5 4 * * *'
+
     
 name: Build TinyTeX Bundles
 
@@ -232,6 +233,7 @@ jobs:
           retention-days: 1
 
   deploy:
+    if: ${ false }
     needs: [build-windows, build-linux, build-mac]
     runs-on: ubuntu-latest
     name: deploy artifacts as Github release
