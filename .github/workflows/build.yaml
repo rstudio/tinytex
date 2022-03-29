@@ -271,7 +271,7 @@ jobs:
           GH_TOKEN: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
         run: |
           # move tag to last commit on master
-          sha=gh api repos/cderv/tinytex-releases/git/ref/heads/master --jq '.object.sha'
+          sha=$(gh api repos/cderv/tinytex-releases/git/ref/heads/master --jq '.object.sha')
           gh api repos/cderv/tinytex-releases/git/refs/tags/daily -f sha=$sha
           # delete current release
           gh -R cderv/tinytex-releases release delete daily -y
