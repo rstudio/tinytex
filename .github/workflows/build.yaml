@@ -270,12 +270,15 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
         run: |
-          # move tag to last commit on master
+          echo "::group::Move tag to last commit on master"
           sha=$(gh api repos/cderv/tinytex-releases/git/ref/heads/master --jq '.object.sha')
-          gh api repos/cderv/tinytex-releases/git/refs/tags/daily -f sha=$sha
-          # delete current release
+          gh api repos/yihui/tinytex-releases/git/refs/tags/daily -f sha=$sha
+          echo "::endgroup::"
+          echo "::group::delete current release" 
           gh -R cderv/tinytex-releases release delete daily -y
-          # undraft new release
+          echo "::endgroup::"
+          echo "::group::undraft new release" 
           gh api repos/cderv/tinytex-releases/releases/${{ steps.draft-release.outputs.id}} -f draft=false -f tag_name='daily'
+          echo "::endgroup::"
 
         
