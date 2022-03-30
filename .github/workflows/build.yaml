@@ -1,7 +1,7 @@
 on:
   workflow_dispatch:
-#  schedule: 
-#    - cron: '5 4 * * *'
+  schedule: 
+    - cron: '5 4 * * *'
 
     
 name: Build TinyTeX Bundles
@@ -233,7 +233,6 @@ jobs:
           retention-days: 1
 
   deploy:
-    if: ${ false }
     needs: [build-windows, build-linux, build-mac]
     runs-on: ubuntu-latest
     name: deploy artifacts as Github release
@@ -254,7 +253,7 @@ jobs:
         id: draft-release
         uses: softprops/action-gh-release@v1
         with:
-          repository: cderv/tinytex-releases
+          repository: yihui/tinytex-releases
           token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
           draft: true
           prerelease: true
@@ -269,7 +268,7 @@ jobs:
       - name: Publish new release
         env:
           GH_TOKEN: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
-          GH_REPO: cderv/tinytex-releases
+          GH_REPO: yihui/tinytex-releases
         run: |
           echo "::group::Move tag to last commit on master"
           sha=$(gh api repos/{owner}/{repo}/git/ref/heads/master --jq '.object.sha')
