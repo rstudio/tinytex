@@ -4,7 +4,6 @@ adjustbox
 ae
 algorithmicx
 algorithms
-ametsoc
 amscls
 apacite
 appendix
