@@ -13,7 +13,9 @@
 #'   via \code{xfun::github_releases('yihui/tinytex-releases')}). By default, it
 #'   installs the latest daily build of TinyTeX. If \code{version = 'latest'},
 #'   it installs the latest Github release of TinyTeX.
-#' @param repository The CTAN repository to set. You can find available
+#' @param repository The CTAN repository to set. By default, it is the
+#'   repository automatically chosen by \code{https://mirror.ctan.org} (which is
+#'   usually the fastest one to your location). You can find available
 #'   repositories at \code{https://ctan.org/mirrors}), e.g.,
 #'   \code{'http://mirrors.tuna.tsinghua.edu.cn/CTAN/'}, or
 #'   \code{'https://mirror.las.iastate.edu/tex-archive/'}. In theory, this
@@ -29,7 +31,7 @@
 #'   for the default installation directories on different platforms.
 #' @export
 install_tinytex = function(
-  force = FALSE, dir = 'auto', version = 'daily', repository = 'ctan',
+  force = FALSE, dir = 'auto', version = 'daily', repository = 'auto',
   extra_packages = if (is_tinytex()) tl_pkgs(), add_path = TRUE
 ) {
   if (!is.logical(force)) stop('The argument "force" must take a logical value.')
@@ -48,9 +50,9 @@ install_tinytex = function(
     user_dir = normalizePath(dir, mustWork = FALSE)
   }
 
-  https = grepl('^https://', repository)
   repository = normalize_repo(repository)
   not_ctan = repository != 'ctan'
+  https = grepl('^https://', repository)
 
   owd = setwd(tempdir()); on.exit(setwd(owd), add = TRUE)
 
@@ -129,6 +131,7 @@ need_source_install = function() {
 normalize_repo = function(url) {
   # don't normalize the url if users passes I(url) or 'ctan' or NULL
   if (is.null(url) || url == 'ctan' || inherits(url, 'AsIs')) return(url)
+  if (url == 'auto') return(auto_repo())
   url = sub('/+$', '', url)
   if (!grepl('/tlnet$', url)) {
     url2 = paste0(url, '/systems/texlive/tlnet')
@@ -136,6 +139,14 @@ normalize_repo = function(url) {
     if (xfun::url_accessible(url2)) return(url2)
   }
   url
+}
+
+# get the automatic CTAN mirror returned from mirror.ctan.org
+auto_repo = function() {
+  x = curlGetHeaders('https://mirror.ctan.org/systems/texlive/tlnet')
+  x = xfun::grep_sub('^location: ([^[:space:]]+)\\s*$', '\\1', x)
+  x = tail(x, 1)
+  if (length(x) == 1) x else 'ctan'
 }
 
 win_app_dir = function(..., error = TRUE) {

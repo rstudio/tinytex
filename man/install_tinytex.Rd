@@ -11,7 +11,7 @@ install_tinytex(
   force = FALSE,
   dir = "auto",
   version = "daily",
-  repository = "ctan",
+  repository = "auto",
   extra_packages = if (is_tinytex()) tl_pkgs(),
   add_path = TRUE
 )
@@ -34,8 +34,10 @@ via \code{xfun::github_releases('yihui/tinytex-releases')}). By default, it
 installs the latest daily build of TinyTeX. If \code{version = 'latest'},
 it installs the latest Github release of TinyTeX.}
 
-\item{repository}{The CTAN repository to set. You can find available
-repositories at \code{https://ctan.org/mirrors}), e.g.,
+\item{repository}{The CTAN repository to set. By default, the repository
+automatically chosen by \code{https://mirror.ctan.org} (which is usually
+the fastest one to your location). You can find available repositories at
+\code{https://ctan.org/mirrors}), e.g.,
 \code{'http://mirrors.tuna.tsinghua.edu.cn/CTAN/'}, or
 \code{'https://mirror.las.iastate.edu/tex-archive/'}. In theory, this
 argument should end with the path \file{/systems/texlive/tlnet}, and if it
