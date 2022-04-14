@@ -66,7 +66,7 @@ install_tinytex = function(
     os,
     'unix' = {
       check_local_bin()
-      if (os_index != 3 && !dir_exists('~/bin')) on.exit(message(
+      if (os_index != 3 && !any(dir_exists(c('~/bin', '~/.local/bin')))) on.exit(message(
         'You may have to restart your system after installing TinyTeX to make sure ',
         '~/bin appears in your PATH variable (https://github.com/yihui/tinytex/issues/16).'
       ), add = TRUE)
@@ -411,8 +411,8 @@ install_prebuilt = function(
 # post-install configurations
 post_install_config = function(add_path, extra_packages, repo, hash = FALSE) {
   if (os_index == 2) {
-    dir.create('~/bin', FALSE, TRUE)
-    tlmgr(c('option', 'sys_bin', '~/bin'))
+    if (!dir_exists(bin_dir <- '~/.local/bin')) dir.create(bin_dir <- '~/bin', FALSE, TRUE)
+    tlmgr(c('option', 'sys_bin', bin_dir))
   }
   # fix fonts.conf: https://github.com/yihui/tinytex/issues/313
   tlmgr(c('postaction', 'install', 'script', 'xetex'), .quiet = TRUE)

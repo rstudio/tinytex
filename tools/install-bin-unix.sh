@@ -59,7 +59,13 @@ else if [ $TINYTEX_INSTALLER != 'installer-unix' ]; then
 fi
 
 cd $TEXDIR/bin/*/
-[ $OSNAME != "Darwin" ] && ./tlmgr option sys_bin ~/bin
+
+BINDIR="$HOME/.local/bin"
+if [ ! -d  $BINDIR]; then
+  BINDIR="$HOME/bin"
+fi
+
+[ $OSNAME != "Darwin" ] && ./tlmgr option sys_bin $BINDIR
 ./tlmgr postaction install script xetex  # GH issue #313
 ([ -z $CI ] || [ $(echo $CI | tr "[:upper:]" "[:lower:]") != "true" ]) && ./tlmgr option repository ctan
 ./tlmgr path add
