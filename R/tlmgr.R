@@ -223,11 +223,7 @@ check_tl_version = function(x) {
   message(
     'A new version of TeX Live has been released. If you need to install or update ',
     'any LaTeX packages, you have to upgrade ', if (!is_tinytex()) 'TeX Live.' else c(
-      'TinyTeX with tinytex::reinstall_tinytex(). If it fails to upgrade, you ',
-      'might be using a default random CTAN mirror that has not been fully synced ',
-      'to the main CTAN repository, and you need to wait for a few more days or ',
-      'use a CTAN mirror that is known to be up-to-date (see the "repository" ',
-      'argument on the help page ?tinytex::install_tinytex).'
+      'TinyTeX with tinytex::reinstall_tinytex(repository = "main").'
     )
   )
   .global$update_noted = TRUE
