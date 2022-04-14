@@ -61,7 +61,7 @@ fi
 cd $TEXDIR/bin/*/
 
 BINDIR="$HOME/.local/bin"
-if [ ! -d  $BINDIR]; then
+if [ ! -d  $BINDIR ]; then
   BINDIR="$HOME/bin"
 fi
 
