@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -e
+
 TLREPO=${CTAN_REPO:-http://mirror.ctan.org/systems/texlive/tlnet}
 TLINST="install-tl-unx.tar.gz"
 TLURL=$TLREPO/$TLINST
