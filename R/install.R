@@ -132,7 +132,7 @@ normalize_repo = function(url) {
   # don't normalize the url if users passes I(url) or 'ctan' or NULL
   if (is.null(url) || url == 'ctan' || inherits(url, 'AsIs')) return(url)
   if (url == 'auto') return(auto_repo())
-  if (url == 'main') return('https://ctan.org/tex-archive/systems/texlive/tlnet')
+  if (url == 'illinois') return('https://ctan.math.illinois.edu/systems/texlive/tlnet')
   url = sub('/+$', '', url)
   if (!grepl('/tlnet$', url)) {
     url2 = paste0(url, '/systems/texlive/tlnet')
