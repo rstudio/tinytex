@@ -3,7 +3,6 @@ on:
   schedule:
     - cron: '5 4 * * *'
 
-
 name: Build TinyTeX Bundles
 
 jobs:
@@ -12,7 +11,7 @@ jobs:
     name: Build Bundles For Windows
 
     env:
-      CTAN_REPO: https://ctan.org/tex-archive/systems/texlive/tlnet
+      CTAN_REPO: https://ctan.math.illinois.edu/systems/texlive/tlnet
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
@@ -87,7 +86,7 @@ jobs:
     name: Build Bundles For Linux
 
     env:
-      CTAN_REPO: https://ctan.org/tex-archive/systems/texlive/tlnet
+      CTAN_REPO: https://ctan.math.illinois.edu/systems/texlive/tlnet
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
@@ -169,7 +168,7 @@ jobs:
     name: Build Bundles For macOS
 
     env:
-      CTAN_REPO: https://ctan.org/tex-archive/systems/texlive/tlnet
+      CTAN_REPO: https://ctan.math.illinois.edu/systems/texlive/tlnet
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
