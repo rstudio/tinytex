@@ -246,9 +246,6 @@ jobs:
           echo "This release contains the daily build of TinyTeX ($(date +'%A %B %d %Y %r'))." > .github/notes.md
           echo "Please see https://github.com/yihui/tinytex-releases for more info." >> .github/notes.md
       - name: Publish new release
-        env:
-          GH_TOKEN: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
-          GH_REPO: cderv/tinytex-releases
         run: |
           echo "::group::Move tag to last commit on master"
           sha=$(gh api repos/{owner}/{repo}/git/ref/heads/master --jq '.object.sha')
@@ -259,3 +256,13 @@ jobs:
           gh release edit ${{needs.new-release.outputs.draft-tag}} --draft=false --notes-file .github/notes.md
           gh release delete ${old} -y
           echo -e "\n::endgroup::"
+
+  cleaning:
+    needs: [new-release, build-windows, build-linux, build-mac]
+    if: ${{ failure() }}
+    runs-on: ubuntu-latest
+    name: Cleaning step in case of error
+    steps:
+      - name: Remove unused daily release
+        run: |
+          gh release delete ${{needs.new-release.outputs.draft-tag}} -y
