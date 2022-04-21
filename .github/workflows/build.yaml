@@ -95,7 +95,7 @@ jobs:
 
       - name: Upload bundles
         run: |
-          gh release upload ${{needs.new-release.outputs.draft-tag}} TinyTeX-0.zip TinyTeX-1.zip TinyTeX.zip tinytex.zip
+          gh release upload ${{needs.new-release.outputs.draft-tag}} TinyTeX-0.zip TinyTeX-1.zip TinyTeX.zip tinitex.zip --clobber
 
   build-linux:
     needs: [new-release]
@@ -170,7 +170,7 @@ jobs:
 
       - name: Upload bundles
         run: |
-          gh release upload ${{needs.new-release.outputs.draft-tag}} TinyTeX-0.tar.gz TinyTeX-1.tar.gz TinyTeX.tar.gz tinytex.tar.gz installer-unix.tar.gz regex.tar.gz
+          gh release upload ${{needs.new-release.outputs.draft-tag}} TinyTeX-0.tar.gz TinyTeX-1.tar.gz TinyTeX.tar.gz tinitex.tar.gz installer-unix.tar.gz regex.tar.gz --clobber
 
   build-mac:
     needs: [new-release]
@@ -233,7 +233,7 @@ jobs:
 
       - name: Upload bundles
         run: |
-          gh release upload ${{needs.new-release.outputs.draft-tag}} TinyTeX-0.tgz TinyTeX-1.tgz TinyTeX.tgz tinytex.tgz
+          gh release upload ${{needs.new-release.outputs.draft-tag}} TinyTeX-0.tgz TinyTeX-1.tgz TinyTeX.tgz tinitex.tgz --clobber
 
   deploy:
     needs: [new-release, build-windows, build-linux, build-mac]
@@ -259,7 +259,7 @@ jobs:
 
   cleaning:
     needs: [new-release, build-windows, build-linux, build-mac]
-    if: ${{ failure() }}
+    if: ${{ failure() || cancelled() }}
     runs-on: ubuntu-latest
     name: Cleaning step in case of error
     steps:
