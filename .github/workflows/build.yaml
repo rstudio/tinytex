@@ -170,7 +170,7 @@ jobs:
 
       - name: Upload bundles
         run: |
-          gh release upload ${{needs.new-release.outputs.draft}} TinyTeX-0.tar.gz TinyTeX-1.tar.gz TinyTeX.tar.gz tinytex.zip installer-unix.tar.gz regex.tar.gz
+          gh release upload ${{needs.new-release.outputs.draft}} TinyTeX-0.tar.gz TinyTeX-1.tar.gz TinyTeX.tar.gz tinytex.tar.gz installer-unix.tar.gz regex.tar.gz
 
   build-mac:
     needs: [new-release]
