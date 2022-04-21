@@ -1,12 +1,48 @@
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '5 4 * * *'
+  #schedule:
+  #  - cron: '5 4 * * *'
 
 name: Build TinyTeX Bundles
 
+env:
+  # for gh usage with external repo
+  GH_TOKEN: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
+  GH_REPO: cderv/tinytex-releases
+
 jobs:
+  new-release:
+    runs-on: ubuntu-latest
+    name: Create new daily draft release
+    outputs:
+      tag: ${{ steps.draft.outputs.tag }}
+      draft-tag: ${{ steps.draft.outputs.draft-tag }}
+
+    steps:
+      - name: Configure Git
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+
+      - name: Create temp tag
+        run: |
+          git tag pre-daily
+          git push --tags
+      - name: Create release note
+        run: |
+          echo "This release contains the daily build of TinyTeX ($(date +'%A %B %d %Y %r'))." > .github/notes.md
+          echo "Please see https://github.com/yihui/tinytex-releases for more info." >> .github/notes.md
+
+      - name: Create new draft release
+        id: draft
+        run: |
+          tag=daily
+          url=$(gh -R cderv/tinytex-releases release create ${tag} --draft --prerelease --title "TinyTeX daily build" --notes-file ".github/notes.md")
+          echo "::set-output name=draft-tag::$(echo $url | grep -o tag/[^/]*$ | cut -c 5-)"
+          echo "::set-output name=tag::${tag}"
+    
   build-windows:
+    needs: [new-release]
     runs-on: windows-latest
     name: Build Bundles For Windows
 
@@ -72,16 +108,11 @@ jobs:
       - run: dir .
 
       - name: Upload bundles
-        uses: actions/upload-artifact@v3
-        with:
-          name: bundles
-          path: |
-            TinyTeX*.zip
-            tinitex.zip
-          if-no-files-found: error
-          retention-days: 1
+        run: |
+          gh release upload ${{needs.new-release.outputs.draft}} TinyTeX-0.zip TinyTeX-1.zip TinyTeX.zip tinytex.zip
 
   build-linux:
+    needs: [new-release]
     runs-on: ubuntu-latest
     name: Build Bundles For Linux
 
@@ -152,18 +183,11 @@ jobs:
       - run: ls -lisa
 
       - name: Upload bundles
-        uses: actions/upload-artifact@v3
-        with:
-          name: bundles
-          path: |
-            TinyTeX*.tar.gz
-            tinitex.tar.gz
-            installer-unix.tar.gz
-            regex.tar.gz
-          if-no-files-found: error
-          retention-days: 1
+        run: |
+          gh release upload ${{needs.new-release.outputs.draft}} TinyTeX-0.tar.gz TinyTeX-1.tar.gz TinyTeX.tar.gz tinytex.zip installer-unix.tar.gz regex.tar.gz
 
   build-mac:
+    needs: [new-release]
     runs-on: macos-latest
     name: Build Bundles For macOS
 
@@ -222,58 +246,26 @@ jobs:
       - run: ls -lisa
 
       - name: Upload bundles
-        uses: actions/upload-artifact@v3
-        with:
-          name: bundles
-          path: |
-            TinyTeX*.tgz
-            tinitex.tgz
-          if-no-files-found: error
-          retention-days: 1
+        run: |
+          gh release upload ${{needs.new-release.outputs.draft}} TinyTeX-0.tgz TinyTeX-1.tgz TinyTeX.tgz tinytex.tgz
 
   deploy:
-    needs: [build-windows, build-linux, build-mac]
+    needs: [new-release, build-windows, build-linux, build-mac]
     runs-on: ubuntu-latest
-    name: deploy artifacts as Github release
-
+    name: Publish new daily release
+    
     steps:
-      - uses: actions/download-artifact@v3
-        with:
-          name: bundles
-          path: ${{ runner.temp }}/tinytex-bundles
-
-      - run: ls -lisa tinytex-bundles
-        working-directory: ${{ runner.temp }}
-
-      - name: Get Date for bundles
-        run: echo "CURRENT_DATE=($(date +'%A %B %d %Y %r'))" >> $GITHUB_ENV
-
-      - name: Create draft release with new assets
-        id: draft-release
-        uses: softprops/action-gh-release@v1
-        with:
-          repository: yihui/tinytex-releases
-          token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
-          draft: true
-          prerelease: true
-          name: TinyTeX daily build
-          body: |
-            This release contains the daily build of TinyTeX${{ env.CURRENT_DATE }}.
-            Please see https://github.com/yihui/tinytex-releases for more info.
-          files: ${{ runner.temp }}/tinytex-bundles/*
-          fail_on_unmatched_files: true
-          generate_release_notes: false
-
       - name: Publish new release
         env:
           GH_TOKEN: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
-          GH_REPO: yihui/tinytex-releases
+          GH_REPO: cderv/tinytex-releases
         run: |
           echo "::group::Move tag to last commit on master"
           sha=$(gh api repos/{owner}/{repo}/git/ref/heads/master --jq '.object.sha')
           gh api repos/{owner}/{repo}/git/refs/tags/daily -f sha=$sha --template 'Tag {{.ref | color "blue"}} moved on commit sha {{.object.sha | color "blue"}}.'
           echo -e "\n::endgroup::"
-          echo "::group::delete current release and undraft new"
-          gh release delete daily -y
-          gh api repos/{owner}/{repo}/releases/${{ steps.draft-release.outputs.id}} -f draft=false -f tag_name='daily' --template 'Release url: {{.html_url}}'
+          echo "::group::undraft new and delete current release"
+          old=$(gh release edit ${{needs.new-release.outputs.tag}} --draft=true | grep -o tag/[^/]*$ | cut -c 5-)
+          gh release edit ${{needs.new-release.outputs.draft}} --draft=false
+          gh release delete ${old} -y
           echo -e "\n::endgroup::"
