@@ -95,7 +95,7 @@ jobs:
 
       - name: Upload bundles
         run: |
-          gh release upload ${{needs.new-release.outputs.draft}} TinyTeX-0.zip TinyTeX-1.zip TinyTeX.zip tinytex.zip
+          gh release upload ${{needs.new-release.outputs.draft-tag}} TinyTeX-0.zip TinyTeX-1.zip TinyTeX.zip tinytex.zip
 
   build-linux:
     needs: [new-release]
@@ -170,7 +170,7 @@ jobs:
 
       - name: Upload bundles
         run: |
-          gh release upload ${{needs.new-release.outputs.draft}} TinyTeX-0.tar.gz TinyTeX-1.tar.gz TinyTeX.tar.gz tinytex.tar.gz installer-unix.tar.gz regex.tar.gz
+          gh release upload ${{needs.new-release.outputs.draft-tag}} TinyTeX-0.tar.gz TinyTeX-1.tar.gz TinyTeX.tar.gz tinytex.tar.gz installer-unix.tar.gz regex.tar.gz
 
   build-mac:
     needs: [new-release]
@@ -233,7 +233,7 @@ jobs:
 
       - name: Upload bundles
         run: |
-          gh release upload ${{needs.new-release.outputs.draft}} TinyTeX-0.tgz TinyTeX-1.tgz TinyTeX.tgz tinytex.tgz
+          gh release upload ${{needs.new-release.outputs.draft-tag}} TinyTeX-0.tgz TinyTeX-1.tgz TinyTeX.tgz tinytex.tgz
 
   deploy:
     needs: [new-release, build-windows, build-linux, build-mac]
@@ -256,6 +256,6 @@ jobs:
           echo -e "\n::endgroup::"
           echo "::group::undraft new and delete current release"
           old=$(gh release edit ${{needs.new-release.outputs.tag}} --draft=true | grep -o tag/[^/]*$ | cut -c 5-)
-          gh release edit ${{needs.new-release.outputs.draft}} --draft=false --notes-file .github/notes.md
+          gh release edit ${{needs.new-release.outputs.draft-tag}} --draft=false --notes-file .github/notes.md
           gh release delete ${old} -y
           echo -e "\n::endgroup::"
