@@ -28,16 +28,12 @@ jobs:
         run: |
           git tag pre-daily
           git push --tags
-      - name: Create release note
-        run: |
-          echo "This release contains the daily build of TinyTeX ($(date +'%A %B %d %Y %r'))." > .github/notes.md
-          echo "Please see https://github.com/yihui/tinytex-releases for more info." >> .github/notes.md
 
       - name: Create new draft release
         id: draft
         run: |
           tag=daily
-          url=$(gh -R cderv/tinytex-releases release create ${tag} --draft --prerelease --title "TinyTeX daily build" --notes-file ".github/notes.md")
+          url=$(gh -R cderv/tinytex-releases release create ${tag} --draft --prerelease --title "TinyTeX daily build" --notes "(WIP) Next daily release")
           echo "::set-output name=draft-tag::$(echo $url | grep -o tag/[^/]*$ | cut -c 5-)"
           echo "::set-output name=tag::${tag}"
     
@@ -253,8 +249,12 @@ jobs:
     needs: [new-release, build-windows, build-linux, build-mac]
     runs-on: ubuntu-latest
     name: Publish new daily release
-    
+
     steps:
+      - name: Create release note
+        run: |
+          echo "This release contains the daily build of TinyTeX ($(date +'%A %B %d %Y %r'))." > .github/notes.md
+          echo "Please see https://github.com/yihui/tinytex-releases for more info." >> .github/notes.md
       - name: Publish new release
         env:
           GH_TOKEN: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
@@ -266,6 +266,6 @@ jobs:
           echo -e "\n::endgroup::"
           echo "::group::undraft new and delete current release"
           old=$(gh release edit ${{needs.new-release.outputs.tag}} --draft=true | grep -o tag/[^/]*$ | cut -c 5-)
-          gh release edit ${{needs.new-release.outputs.draft}} --draft=false
+          gh release edit ${{needs.new-release.outputs.draft}} --draft=false --notes-file .github/notes.md
           gh release delete ${old} -y
           echo -e "\n::endgroup::"
