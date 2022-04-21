@@ -19,16 +19,6 @@ jobs:
       draft-tag: ${{ steps.draft.outputs.draft-tag }}
 
     steps:
-      - name: Configure Git
-        run: |
-          git config user.name 'github-actions[bot]'
-          git config user.email 'github-actions[bot]@users.noreply.github.com'
-
-      - name: Create temp tag
-        run: |
-          git tag pre-daily
-          git push --tags
-
       - name: Create new draft release
         id: draft
         run: |
