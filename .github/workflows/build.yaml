@@ -258,7 +258,7 @@ jobs:
           echo -e "\n::endgroup::"
 
   cleaning:
-    needs: [new-release, build-windows, build-linux, build-mac]
+    needs: [new-release, deploy]
     if: ${{ failure() || cancelled() }}
     runs-on: ubuntu-latest
     name: Cleaning step in case of error
