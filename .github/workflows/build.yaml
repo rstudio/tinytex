@@ -243,8 +243,8 @@ jobs:
     steps:
       - name: Create release note
         run: |
-          echo "This release contains the daily build of TinyTeX ($(date +'%A %B %d %Y %r'))." > .github/notes.md
-          echo "Please see https://github.com/yihui/tinytex-releases for more info." >> .github/notes.md
+          echo "This release contains the daily build of TinyTeX ($(date +'%A %B %d %Y %r'))." > notes.md
+          echo "Please see https://github.com/yihui/tinytex-releases for more info." >> notes.md
       - name: Publish new release
         run: |
           echo "::group::Move tag to last commit on master"
@@ -253,7 +253,7 @@ jobs:
           echo -e "\n::endgroup::"
           echo "::group::undraft new and delete current release"
           old=$(gh release edit ${{needs.new-release.outputs.tag}} --draft=true | grep -o tag/[^/]*$ | cut -c 5-)
-          gh release edit ${{needs.new-release.outputs.draft-tag}} --draft=false --notes-file .github/notes.md
+          gh release edit ${{needs.new-release.outputs.draft-tag}} --draft=false --notes-file notes.md
           gh release delete ${old} -y
           echo -e "\n::endgroup::"
 
