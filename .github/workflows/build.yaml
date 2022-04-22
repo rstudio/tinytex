@@ -27,11 +27,6 @@ jobs:
           echo "::set-output name=draft-tag::$(echo $url | grep -o tag/[^/]*$ | cut -c 5-)"
           echo "::set-output name=tag::${tag}"
 
-      - name: Update GH to get 2.8 needed for gh release edit
-        run: |
-          gh release download -R cli/cli --pattern '*linux_amd64.deb'
-          sudo dpkg -i $(ls *.deb)
-    
   build-windows:
     needs: [new-release]
     runs-on: windows-latest
@@ -43,7 +38,7 @@ jobs:
 
     steps:
       - name: Clone repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Install Pandoc
         uses: r-lib/actions/setup-pandoc@v2
@@ -250,6 +245,12 @@ jobs:
         run: |
           echo "This release contains the daily build of TinyTeX ($(date +'%A %B %d %Y %r'))." > notes.md
           echo "Please see https://github.com/yihui/tinytex-releases for more info." >> notes.md
+
+      - name: Update GH to get 2.8 needed for gh release edit
+        run: |
+          gh release download -R cli/cli --pattern '*linux_amd64.deb'
+          sudo dpkg -i $(ls *.deb)
+          
       - name: Publish new release
         run: |
           echo "::group::Move tag to last commit on master"
