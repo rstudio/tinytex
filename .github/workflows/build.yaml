@@ -82,6 +82,11 @@ jobs:
           Rscript "tools/test-basic.R"  # even more LaTeX packages
           Compress-Archive $Env:APPDATA\\TinyTeX TinyTeX.zip
 
+      - name: Build TinyTeX-2 (scheme-full)
+        run: |
+          RScript "tools/build-scheme-full.R"
+          Compress-Archive $Env:APPDATA\\TinyTeX TinyTeX-2.zip
+
       - name: Test Installation
         env:
           TINYTEX_INSTALLER: TinyTeX-0
@@ -95,7 +100,7 @@ jobs:
 
       - name: Upload bundles
         run: |
-          gh release upload ${{needs.new-release.outputs.draft-tag}} TinyTeX-0.zip TinyTeX-1.zip TinyTeX.zip tinitex.zip --clobber
+          gh release upload ${{needs.new-release.outputs.draft-tag}} TinyTeX-0.zip TinyTeX-1.zip TinyTeX.zip TinyTeX-2.zip tinitex.zip --clobber
 
   build-linux:
     needs: [new-release]
@@ -146,6 +151,11 @@ jobs:
           Rscript "tools/test-basic.R"
           tar zcf TinyTeX.tar.gz -C ~ .TinyTeX
 
+      - name: Build TinyTeX-2 (scheme-full)
+        run: |
+          RScript "tools/build-scheme-full.R"
+          tar zcf TinyTeX-2.tar.gz -C ~ .TinyTeX
+
       - name: Export Regex file
         run: |
           Rscript "tools/export-regex.R"
@@ -170,7 +180,7 @@ jobs:
 
       - name: Upload bundles
         run: |
-          gh release upload ${{needs.new-release.outputs.draft-tag}} TinyTeX-0.tar.gz TinyTeX-1.tar.gz TinyTeX.tar.gz tinitex.tar.gz installer-unix.tar.gz regex.tar.gz --clobber
+          gh release upload ${{needs.new-release.outputs.draft-tag}} TinyTeX-0.tar.gz TinyTeX-1.tar.gz TinyTeX.tar.gz TinyTeX-2.tar.gz tinitex.tar.gz installer-unix.tar.gz regex.tar.gz --clobber
 
   build-mac:
     needs: [new-release]
@@ -221,6 +231,11 @@ jobs:
           Rscript "tools/test-basic.R"
           tar zcf TinyTeX.tgz -C ~/Library TinyTeX
 
+      - name: Build TinyTeX-2 (scheme-full)
+        run: |
+          RScript "tools/build-scheme-full.R"
+          tar zcf TinyTeX-2.tgz -C ~/Library TinyTeX
+
       - name: Test Installation
         env:
           TINYTEX_INSTALLER: TinyTeX-0
@@ -233,7 +248,7 @@ jobs:
 
       - name: Upload bundles
         run: |
-          gh release upload ${{needs.new-release.outputs.draft-tag}} TinyTeX-0.tgz TinyTeX-1.tgz TinyTeX.tgz tinitex.tgz --clobber
+          gh release upload ${{needs.new-release.outputs.draft-tag}} TinyTeX-0.tgz TinyTeX-1.tgz TinyTeX.tgz TinyTeX-2.tgz tinitex.tgz --clobber
 
   deploy:
     needs: [new-release, build-windows, build-linux, build-mac]
@@ -250,7 +265,7 @@ jobs:
         run: |
           gh release download -R cli/cli --pattern '*linux_amd64.deb'
           sudo dpkg -i $(ls *.deb)
-          
+
       - name: Publish new release
         run: |
           echo "::group::Move tag to last commit on master"
