@@ -243,7 +243,7 @@ jobs:
     steps:
       - name: Create release note
         run: |
-          echo "This release contains the daily build of TinyTeX ($(date +'%A %B %d %Y %r'))." > notes.md
+          echo "This release contains the daily build of TinyTeX ($(date +'%A %B %d %Y %r %Z'))." > notes.md
           echo "Please see https://github.com/yihui/tinytex-releases for more info." >> notes.md
 
       - name: Update GH to get 2.8 needed for gh release edit
