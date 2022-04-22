@@ -99,8 +99,13 @@ jobs:
       - run: dir .
 
       - name: Upload bundles
-        run: |
-          gh release upload ${{needs.new-release.outputs.draft-tag}} TinyTeX-0.zip TinyTeX-1.zip TinyTeX.zip TinyTeX-2.zip tinitex.zip --clobber
+        uses: nick-fields/retry@v2
+        with:
+          timeout_minutes: 5
+          max_attempts: 5
+          retry_wait_seconds: 10
+          command: |
+            gh release upload ${{needs.new-release.outputs.draft-tag}} TinyTeX-0.zip TinyTeX-1.zip TinyTeX.zip TinyTeX-2.zip tinitex.zip --clobber
 
   build-linux:
     needs: [new-release]
@@ -179,8 +184,13 @@ jobs:
       - run: ls -lisa
 
       - name: Upload bundles
-        run: |
-          gh release upload ${{needs.new-release.outputs.draft-tag}} TinyTeX-0.tar.gz TinyTeX-1.tar.gz TinyTeX.tar.gz TinyTeX-2.tar.gz tinitex.tar.gz installer-unix.tar.gz regex.tar.gz --clobber
+        uses: nick-fields/retry@v2
+        with:
+          timeout_minutes: 5
+          max_attempts: 5
+          retry_wait_seconds: 10
+          command: |
+            gh release upload ${{needs.new-release.outputs.draft-tag}} TinyTeX-0.tar.gz TinyTeX-1.tar.gz TinyTeX.tar.gz TinyTeX-2.tar.gz tinitex.tar.gz installer-unix.tar.gz regex.tar.gz --clobber
 
   build-mac:
     needs: [new-release]
@@ -247,8 +257,13 @@ jobs:
       - run: ls -lisa
 
       - name: Upload bundles
-        run: |
-          gh release upload ${{needs.new-release.outputs.draft-tag}} TinyTeX-0.tgz TinyTeX-1.tgz TinyTeX.tgz TinyTeX-2.tgz tinitex.tgz --clobber
+        uses: nick-fields/retry@v2
+        with:
+          timeout_minutes: 5
+          max_attempts: 5
+          retry_wait_seconds: 10
+          command: |
+            gh release upload ${{needs.new-release.outputs.draft-tag}} TinyTeX-0.tgz TinyTeX-1.tgz TinyTeX.tgz TinyTeX-2.tgz tinitex.tgz --clobber
 
   deploy:
     needs: [new-release, build-windows, build-linux, build-mac]
