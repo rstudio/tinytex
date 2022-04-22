@@ -26,6 +26,11 @@ jobs:
           url=$(gh -R cderv/tinytex-releases release create ${tag} --draft --prerelease --title "TinyTeX daily build" --notes "(WIP) Next daily release")
           echo "::set-output name=draft-tag::$(echo $url | grep -o tag/[^/]*$ | cut -c 5-)"
           echo "::set-output name=tag::${tag}"
+
+      - name: Update GH to get 2.8 needed for gh release edit
+        run: |
+          gh release download -R cli/cli --pattern '*linux_amd64.deb'
+          sudo dpkg -i $(ls *.deb)
     
   build-windows:
     needs: [new-release]
