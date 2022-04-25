@@ -51,7 +51,6 @@ jobs:
           r-version: release
           use-public-rspm: true
 
-      # do we want to install CRAN tinytex or dev tinytex ?
       - name: Install tinytex package and its deps
         uses: r-lib/actions/setup-r-dependencies@v2
         with:
@@ -184,6 +183,8 @@ jobs:
       - run: ls -lisa
 
       - name: Upload bundles
+        # this specific action is used at some issues have been observe with gh while uploading assets
+        # This allows to not fail the workflow on upload, but retry a few time
         uses: nick-fields/retry@v2
         with:
           timeout_minutes: 5
@@ -276,6 +277,7 @@ jobs:
           echo "This release contains the daily build of TinyTeX ($(date +'%A %B %d %Y %r %Z'))." > notes.md
           echo "Please see https://github.com/yihui/tinytex-releases for more info." >> notes.md
 
+      # TODO: Remove when version 2.8 will be available on GHA
       - name: Update GH to get 2.8 needed for gh release edit
         run: |
           gh release download -R cli/cli --pattern '*linux_amd64.deb'
