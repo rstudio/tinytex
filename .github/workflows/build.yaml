@@ -1,12 +1,36 @@
 on:
   workflow_dispatch:
   schedule:
-    - cron: '5 4 * * *'
+    - cron: '5 3 * * *'
 
 name: Build TinyTeX Bundles
 
+env:
+  # for gh usage with external repo
+  GH_TOKEN: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
+  # required for GH to run on another repo (-R option)
+  # https://cli.github.com/manual/gh_help_environment
+  GH_REPO: yihui/tinytex-releases
+
 jobs:
+  new-release:
+    runs-on: ubuntu-latest
+    name: Create new daily draft release
+    outputs:
+      tag: ${{ steps.draft.outputs.tag }}
+      draft-tag: ${{ steps.draft.outputs.draft-tag }}
+
+    steps:
+      - name: Create new draft release
+        id: draft
+        run: |
+          tag=daily
+          url=$(gh release create ${tag} --draft --prerelease --title "TinyTeX daily build" --notes "(WIP) Next daily release")
+          echo "::set-output name=draft-tag::$(echo $url | grep -o tag/[^/]*$ | cut -c 5-)"
+          echo "::set-output name=tag::${tag}"
+
   build-windows:
+    needs: [new-release]
     runs-on: windows-latest
     name: Build Bundles For Windows
 
@@ -16,7 +40,7 @@ jobs:
 
     steps:
       - name: Clone repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Install Pandoc
         uses: r-lib/actions/setup-pandoc@v2
@@ -29,7 +53,6 @@ jobs:
           r-version: release
           use-public-rspm: true
 
-      # do we want to install CRAN tinytex or dev tinytex ?
       - name: Install tinytex package and its deps
         uses: r-lib/actions/setup-r-dependencies@v2
         with:
@@ -60,6 +83,11 @@ jobs:
           Rscript "tools/test-basic.R"  # even more LaTeX packages
           Compress-Archive $Env:APPDATA\\TinyTeX TinyTeX.zip
 
+      - name: Build TinyTeX-2 (scheme-full)
+        run: |
+          Rscript "tools/build-scheme-full.R"
+          Compress-Archive $Env:APPDATA\\TinyTeX TinyTeX-2.zip
+
       - name: Test Installation
         env:
           TINYTEX_INSTALLER: TinyTeX-0
@@ -72,16 +100,16 @@ jobs:
       - run: dir .
 
       - name: Upload bundles
-        uses: actions/upload-artifact@v3
+        uses: nick-fields/retry@v2
         with:
-          name: bundles
-          path: |
-            TinyTeX*.zip
-            tinitex.zip
-          if-no-files-found: error
-          retention-days: 1
+          timeout_minutes: 5
+          max_attempts: 5
+          retry_wait_seconds: 10
+          command: |
+            gh release upload ${{needs.new-release.outputs.draft-tag}} TinyTeX-0.zip TinyTeX-1.zip TinyTeX.zip TinyTeX-2.zip tinitex.zip --clobber
 
   build-linux:
+    needs: [new-release]
     runs-on: ubuntu-latest
     name: Build Bundles For Linux
 
@@ -129,6 +157,11 @@ jobs:
           Rscript "tools/test-basic.R"
           tar zcf TinyTeX.tar.gz -C ~ .TinyTeX
 
+      - name: Build TinyTeX-2 (scheme-full)
+        run: |
+          Rscript "tools/build-scheme-full.R"
+          tar zcf TinyTeX-2.tar.gz -C ~ .TinyTeX
+
       - name: Export Regex file
         run: |
           Rscript "tools/export-regex.R"
@@ -152,18 +185,18 @@ jobs:
       - run: ls -lisa
 
       - name: Upload bundles
-        uses: actions/upload-artifact@v3
+        # this specific action is used at some issues have been observe with gh while uploading assets
+        # This allows to not fail the workflow on upload, but retry a few time
+        uses: nick-fields/retry@v2
         with:
-          name: bundles
-          path: |
-            TinyTeX*.tar.gz
-            tinitex.tar.gz
-            installer-unix.tar.gz
-            regex.tar.gz
-          if-no-files-found: error
-          retention-days: 1
+          timeout_minutes: 5
+          max_attempts: 5
+          retry_wait_seconds: 10
+          command: |
+            gh release upload ${{needs.new-release.outputs.draft-tag}} TinyTeX-0.tar.gz TinyTeX-1.tar.gz TinyTeX.tar.gz TinyTeX-2.tar.gz tinitex.tar.gz installer-unix.tar.gz regex.tar.gz --clobber
 
   build-mac:
+    needs: [new-release]
     runs-on: macos-latest
     name: Build Bundles For macOS
 
@@ -211,6 +244,11 @@ jobs:
           Rscript "tools/test-basic.R"
           tar zcf TinyTeX.tgz -C ~/Library TinyTeX
 
+      - name: Build TinyTeX-2 (scheme-full)
+        run: |
+          Rscript "tools/build-scheme-full.R"
+          tar zcf TinyTeX-2.tgz -C ~/Library TinyTeX
+
       - name: Test Installation
         env:
           TINYTEX_INSTALLER: TinyTeX-0
@@ -222,58 +260,49 @@ jobs:
       - run: ls -lisa
 
       - name: Upload bundles
-        uses: actions/upload-artifact@v3
+        uses: nick-fields/retry@v2
         with:
-          name: bundles
-          path: |
-            TinyTeX*.tgz
-            tinitex.tgz
-          if-no-files-found: error
-          retention-days: 1
+          timeout_minutes: 5
+          max_attempts: 5
+          retry_wait_seconds: 10
+          command: |
+            gh release upload ${{needs.new-release.outputs.draft-tag}} TinyTeX-0.tgz TinyTeX-1.tgz TinyTeX.tgz TinyTeX-2.tgz tinitex.tgz --clobber
 
   deploy:
-    needs: [build-windows, build-linux, build-mac]
+    needs: [new-release, build-windows, build-linux, build-mac]
     runs-on: ubuntu-latest
-    name: deploy artifacts as Github release
+    name: Publish new daily release
 
     steps:
-      - uses: actions/download-artifact@v3
-        with:
-          name: bundles
-          path: ${{ runner.temp }}/tinytex-bundles
+      - name: Create release note
+        run: |
+          echo "This release contains the daily build of TinyTeX ($(date +'%A %B %d %Y %r %Z'))." > notes.md
+          echo "Please see https://github.com/yihui/tinytex-releases for more info." >> notes.md
 
-      - run: ls -lisa tinytex-bundles
-        working-directory: ${{ runner.temp }}
-
-      - name: Get Date for bundles
-        run: echo "CURRENT_DATE=($(date +'%A %B %d %Y %r'))" >> $GITHUB_ENV
-
-      - name: Create draft release with new assets
-        id: draft-release
-        uses: softprops/action-gh-release@v1
-        with:
-          repository: yihui/tinytex-releases
-          token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
-          draft: true
-          prerelease: true
-          name: TinyTeX daily build
-          body: |
-            This release contains the daily build of TinyTeX${{ env.CURRENT_DATE }}.
-            Please see https://github.com/yihui/tinytex-releases for more info.
-          files: ${{ runner.temp }}/tinytex-bundles/*
-          fail_on_unmatched_files: true
-          generate_release_notes: false
+      # TODO: Remove when version 2.8 will be available on GHA
+      - name: Update GH to get 2.8 needed for gh release edit
+        run: |
+          gh release download -R cli/cli --pattern '*linux_amd64.deb'
+          sudo dpkg -i $(ls *.deb)
 
       - name: Publish new release
-        env:
-          GH_TOKEN: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
-          GH_REPO: yihui/tinytex-releases
         run: |
           echo "::group::Move tag to last commit on master"
           sha=$(gh api repos/{owner}/{repo}/git/ref/heads/master --jq '.object.sha')
           gh api repos/{owner}/{repo}/git/refs/tags/daily -f sha=$sha --template 'Tag {{.ref | color "blue"}} moved on commit sha {{.object.sha | color "blue"}}.'
           echo -e "\n::endgroup::"
-          echo "::group::delete current release and undraft new"
-          gh release delete daily -y
-          gh api repos/{owner}/{repo}/releases/${{ steps.draft-release.outputs.id}} -f draft=false -f tag_name='daily' --template 'Release url: {{.html_url}}'
+          echo "::group::undraft new and delete current release"
+          old=$(gh release edit ${{needs.new-release.outputs.tag}} --draft=true | grep -o tag/[^/]*$ | cut -c 5-)
+          gh release edit ${{needs.new-release.outputs.draft-tag}} --draft=false --notes-file notes.md
+          gh release delete ${old} -y
           echo -e "\n::endgroup::"
+
+  cleaning:
+    needs: [new-release, deploy]
+    if: ${{ failure() || cancelled() }}
+    runs-on: ubuntu-latest
+    name: Cleaning step in case of error
+    steps:
+      - name: Remove unused daily release
+        run: |
+          gh release delete ${{needs.new-release.outputs.draft-tag}} -y
