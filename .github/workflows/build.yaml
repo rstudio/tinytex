@@ -1,14 +1,16 @@
 on:
   workflow_dispatch:
-  #schedule:
-  #  - cron: '5 4 * * *'
+  schedule:
+    - cron: '5 3 * * *'
 
 name: Build TinyTeX Bundles
 
 env:
   # for gh usage with external repo
   GH_TOKEN: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
-  GH_REPO: cderv/tinytex-releases
+  # required for GH to run on another repo (-R option)
+  # https://cli.github.com/manual/gh_help_environment
+  GH_REPO: yihui/tinytex-releases
 
 jobs:
   new-release:
@@ -23,7 +25,7 @@ jobs:
         id: draft
         run: |
           tag=daily
-          url=$(gh -R cderv/tinytex-releases release create ${tag} --draft --prerelease --title "TinyTeX daily build" --notes "(WIP) Next daily release")
+          url=$(gh release create ${tag} --draft --prerelease --title "TinyTeX daily build" --notes "(WIP) Next daily release")
           echo "::set-output name=draft-tag::$(echo $url | grep -o tag/[^/]*$ | cut -c 5-)"
           echo "::set-output name=tag::${tag}"
 
