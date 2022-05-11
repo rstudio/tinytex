@@ -23,10 +23,13 @@ reinstall_tinytex(packages = TRUE, dir = tinytex_root(), ...)
 tinytex_root(error = TRUE)
 }
 \arguments{
-\item{force}{Whether to force to install (override) or uninstall TinyTeX.}
+\item{force}{Whether to force to install or uninstall TinyTeX. For
+\code{install_tinytex()}, \code{force = FALSE} will stop this function from
+installing TinyTeX if another LaTeX distribution is detected, or the
+directory specified via the \code{dir} argument exists.}
 
-\item{dir}{The directory to install or uninstall TinyTeX (should not exist
-unless \code{force = TRUE}).}
+\item{dir}{The directory to install (should not exist unless \code{force =
+TRUE}) or uninstall TinyTeX.}
 
 \item{version}{The version of TinyTeX, e.g., \code{"2020.09"} (see all
 available versions at \url{https://github.com/yihui/tinytex-releases}, or

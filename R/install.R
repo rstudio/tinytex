@@ -5,9 +5,12 @@
 #' \code{uninstall_tinytex()} removes TinyTeX; \code{reinstall_tinytex()}
 #' reinstalls TinyTeX as well as previously installed LaTeX packages by default;
 #' \code{tinytex_root()} returns the root directory of TinyTeX if found.
-#' @param force Whether to force to install (override) or uninstall TinyTeX.
-#' @param dir The directory to install or uninstall TinyTeX (should not exist
-#'   unless \code{force = TRUE}).
+#' @param force Whether to force to install or uninstall TinyTeX. For
+#'   \code{install_tinytex()}, \code{force = FALSE} will stop this function from
+#'   installing TinyTeX if another LaTeX distribution is detected, or the
+#'   directory specified via the \code{dir} argument exists.
+#' @param dir The directory to install (should not exist unless \code{force =
+#'   TRUE}) or uninstall TinyTeX.
 #' @param version The version of TinyTeX, e.g., \code{"2020.09"} (see all
 #'   available versions at \url{https://github.com/yihui/tinytex-releases}, or
 #'   via \code{xfun::github_releases('yihui/tinytex-releases')}). By default, it
@@ -35,10 +38,23 @@ install_tinytex = function(
   extra_packages = if (is_tinytex()) tl_pkgs(), add_path = TRUE
 ) {
   if (!is.logical(force)) stop('The argument "force" must take a logical value.')
+  # if tlmgr is detected in the system, ask in interactive mode whether to
+  # continue the installation, and stop in non-interactive() mode
+  p = which_bin(c('tlmgr', 'pdftex', 'xetex', 'luatex'))
+  p = p[p != '']
+  if (!force && length(p)) {
+    message("Found '", p[1], "', which indicates a LaTeX distribution may have existed in the system.")
+    if (interactive()) {
+      if (tolower(substr(readline('Continue the installation anyway? (Y/N) '), 1, 1)) != 'y')
+        return(invisible(''))
+    } else stop(
+      'If you want to force installing TinyTeX anyway, use tinytex::install_tinytex(force = TRUE).'
+    )
+  }
   check_dir = function(dir) {
     if (dir_exists(dir) && !force) stop(
       'The directory "', dir, '" exists. Please either delete it, ',
-      'or use install_tinytex(force = TRUE).'
+      'or use tinytex::install_tinytex(force = TRUE).'
     )
   }
   if (missing(dir)) dir = ''
@@ -278,8 +294,7 @@ reinstall_tinytex = function(packages = TRUE, dir = tinytex_root(), ...) {
 #' @rdname install_tinytex
 #' @export
 tinytex_root = function(error = TRUE) {
-  tweak_path()
-  path = Sys.which('tlmgr')
+  path = which_bin('tlmgr')
   if (path == '') return('')
   root_dir = function(path, ...) {
     dir = normalizePath(file.path(dirname(path), ...), mustWork = TRUE)
@@ -295,6 +310,12 @@ tinytex_root = function(error = TRUE) {
   ) else return('')
   path = symlink_root(path)
   root_dir(normalizePath(path), '..', '..', '..')
+}
+
+# return paths to TinyTeX's executables even if TinyTeX was not added to PATH
+which_bin = function(exec) {
+  tweak_path()
+  Sys.which(exec)
 }
 
 # trace a symlink to its final destination
