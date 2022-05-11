@@ -346,10 +346,10 @@ open_tlmgr = function() {
 #' @examples tinytex::is_tinytex()
 is_tinytex = function() tryCatch({
   root = tinytex_root()
-  root != '' && (gsub('^[.]', '', tolower(basename(root))) == 'tinytex' || any(grepl(
-    '\\W[.]?TinyTeX\\W',
-    readLines(file.path(root, 'texmf-dist/web2c/fmtutil.cnf'), n = 1)
-  )))
+  root != '' && (
+    gsub('^[.]', '', tolower(basename(root))) == 'tinytex' ||
+      file.exists(file.path(root, '.tinytex'))
+  )
 }, error = function(e) FALSE)
 
 dir_rename = function(from, to) {

@@ -37,6 +37,8 @@ cd install-tl-*
 del TinyTeX\install-tl.log ..\tinytex.profile
 if exist instal-tl del install-tl
 if exist instal-tl-windows.bat del install-tl-windows.bat
+rem a token to differentiate TinyTeX with other TeX Live distros
+echo.> TinyTeX\.tinytex
 
 rem TeXLive installed to ./TinyTeX; move it to APPDATA
 rd /s /q "%APPDATA%\TinyTeX"
