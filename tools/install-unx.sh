@@ -19,6 +19,8 @@ download https://yihui.org/gh/tinytex/tools/install-base.sh | sh -s - "$@"
 rm -rf $TEXDIR
 mkdir -p $TEXDIR
 mv texlive/* $TEXDIR
+# a token to differentiate TinyTeX with other TeX Live distros
+touch $TEXDIR/.tinytex
 rm -r texlive
 cd $PREVWD
 # finished base

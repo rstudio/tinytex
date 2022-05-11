@@ -46,8 +46,6 @@ rm -f install-tl
 
 alias tlmgr='./bin/*/tlmgr'
 rm -f bin/man bin/*/man
-# a token to differentiate TinyTeX with other TeX Live distros
-touch .tinytex
 
 tlmgr option repository "$TLREPO"
 tlmgr conf texmf max_print_line 10000
