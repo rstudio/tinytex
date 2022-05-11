@@ -69,6 +69,12 @@ custom LaTeX distribution based on TeX Live. The function
 reinstalls TinyTeX as well as previously installed LaTeX packages by default;
 \code{tinytex_root()} returns the root directory of TinyTeX if found.
 }
+\note{
+If you really want to disable the installation, you may set the
+  environment variable \var{TINYTEX_PREVENT_INSTALL} to \code{true}. Then
+  \code{install_tinytex()} will fail immediately. This can be useful to
+  sysadmins who want to prevent the accidental installation of TinyTeX.
+}
 \references{
 See the TinyTeX documentation (\url{https://yihui.org/tinytex/})
   for the default installation directories on different platforms.

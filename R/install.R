@@ -32,11 +32,19 @@
 #'   the bin path of TeX Live to the system environment variable \var{PATH}.
 #' @references See the TinyTeX documentation (\url{https://yihui.org/tinytex/})
 #'   for the default installation directories on different platforms.
+#' @note If you really want to disable the installation, you may set the
+#'   environment variable \var{TINYTEX_PREVENT_INSTALL} to \code{true}. Then
+#'   \code{install_tinytex()} will fail immediately. This can be useful to
+#'   sysadmins who want to prevent the accidental installation of TinyTeX.
 #' @export
 install_tinytex = function(
   force = FALSE, dir = 'auto', version = 'daily', repository = 'auto',
   extra_packages = if (is_tinytex()) tl_pkgs(), add_path = TRUE
 ) {
+  if (tolower(Sys.getenv('TINYTEX_PREVENT_INSTALL')) == 'true') stop(
+    "The environment variable 'TINYTEX_PREVENT_INSTALL' was set to 'true', so ",
+    "the installation is aborted."
+  )
   if (!is.logical(force)) stop('The argument "force" must take a logical value.')
   # if tlmgr is detected in the system, ask in interactive mode whether to
   # continue the installation, and stop in non-interactive() mode
