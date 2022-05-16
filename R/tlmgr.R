@@ -46,7 +46,7 @@ tlmgr = function(args = character(), usermode = FALSE, ..., .quiet = FALSE) {
   )
   if (usermode) args = c('--usermode', args)
   if (!.quiet) message(paste(c('tlmgr', args), collapse = ' '))
-  # use TeX Live's own binaries (e.g., curl): https://github.com/yihui/tinytex/issues/354
+  # use TeX Live's own binaries (e.g., curl): https://github.com/rstudio/tinytex/issues/354
   vars = xfun::set_envvar(c(TEXLIVE_PREFER_OWN = 1))
   on.exit(xfun::set_envvar(vars), add = TRUE)
   system2('tlmgr', args, ...)
@@ -289,7 +289,7 @@ r_texmf = function(action = c('add', 'remove'), ...) {
 r_texmf_path = function() {
   d = file.path(R.home('share'), 'texmf')
   if (dir_exists(d)) return(d)
-  # retry another directory: https://github.com/yihui/tinytex/issues/60
+  # retry another directory: https://github.com/rstudio/tinytex/issues/60
   if ('Rd.sty' %in% basename(list.files(d2 <- '/usr/share/texmf', recursive = TRUE))) {
     return(d2)
   }

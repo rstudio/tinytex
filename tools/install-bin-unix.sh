@@ -33,9 +33,9 @@ fi
 rm -rf $TEXDIR
 
 if [ -z $TINYTEX_VERSION ]; then
-  TINYTEX_URL="https://github.com/yihui/tinytex-releases/releases/download/daily/$TINYTEX_INSTALLER"
+  TINYTEX_URL="https://github.com/rstudio/tinytex-releases/releases/download/daily/$TINYTEX_INSTALLER"
 else
-  TINYTEX_URL="https://github.com/yihui/tinytex-releases/releases/download/v$TINYTEX_VERSION/$TINYTEX_INSTALLER-v$TINYTEX_VERSION"
+  TINYTEX_URL="https://github.com/rstudio/tinytex-releases/releases/download/v$TINYTEX_VERSION/$TINYTEX_INSTALLER-v$TINYTEX_VERSION"
 fi
 
 if [ $OSNAME = 'Darwin' ]; then

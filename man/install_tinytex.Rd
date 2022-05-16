@@ -32,8 +32,8 @@ directory specified via the \code{dir} argument exists.}
 TRUE}) or uninstall TinyTeX.}
 
 \item{version}{The version of TinyTeX, e.g., \code{"2020.09"} (see all
-available versions at \url{https://github.com/yihui/tinytex-releases}, or
-via \code{xfun::github_releases('yihui/tinytex-releases')}). By default, it
+available versions at \url{https://github.com/rstudio/tinytex-releases}, or
+via \code{xfun::github_releases('rstudio/tinytex-releases')}). By default, it
 installs the latest daily build of TinyTeX. If \code{version = 'latest'},
 it installs the latest Github release of TinyTeX.}
 

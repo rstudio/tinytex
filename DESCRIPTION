@@ -1,7 +1,7 @@
 Package: tinytex
 Type: Package
 Title: Helper Functions to Install and Maintain TeX Live, and Compile LaTeX Documents
-Version: 0.38.6
+Version: 0.38.7
 Authors@R: c(
   person("Yihui", "Xie", role = c("aut", "cre", "cph"), email = "xie@yihui.name", comment = c(ORCID = "0000-0003-0645-5666")),
   person(family = "RStudio, PBC", role = "cph"),
@@ -19,7 +19,7 @@ Description: Helper functions to install and maintain the 'LaTeX' distribution
 Imports: xfun (>= 0.29)
 Suggests: testit, rstudioapi
 License: MIT + file LICENSE
-URL: https://github.com/yihui/tinytex
-BugReports: https://github.com/yihui/tinytex/issues
+URL: https://github.com/rstudio/tinytex
+BugReports: https://github.com/rstudio/tinytex/issues
 Encoding: UTF-8
 RoxygenNote: 7.1.2

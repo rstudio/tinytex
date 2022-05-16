@@ -11,8 +11,8 @@ Helper functions to install and maintain the 'LaTeX' distribution named 'TinyTeX
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://github.com/yihui/tinytex}
-  \item Report bugs at \url{https://github.com/yihui/tinytex/issues}
+  \item \url{https://github.com/rstudio/tinytex}
+  \item Report bugs at \url{https://github.com/rstudio/tinytex/issues}
 }
 
 }

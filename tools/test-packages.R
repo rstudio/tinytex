@@ -28,10 +28,10 @@ system(sprintf('du -sh %s', tinytex::tinytex_root()))
 # now see which packages are required to compile the above Rmd files
 x1 = sort(unique(c(
   setdiff(tinytex::tl_pkgs(), x0),
-  'latexmk',  # https://github.com/yihui/tinytex/issues/51
-  'float', # https://github.com/yihui/tinytex/issues/122
-  'psnfss', # https://github.com/yihui/tinytex/issues/303
-  # https://github.com/yihui/tinytex/issues/73
+  'latexmk',  # https://github.com/rstudio/tinytex/issues/51
+  'float', # https://github.com/rstudio/tinytex/issues/122
+  'psnfss', # https://github.com/rstudio/tinytex/issues/303
+  # https://github.com/rstudio/tinytex/issues/73
   'ec', 'inconsolata', 'times', 'tex', 'helvetic', 'dvips', 'metafont', 'mfware', 'xkeyval'
 )))
 tinytex::tlmgr_install(x1)

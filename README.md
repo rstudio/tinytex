@@ -1,8 +1,8 @@
 # TinyTeX
 
 <!-- badges: start -->
-[![R-CMD-check](https://github.com/yihui/tinytex/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/yihui/tinytex/actions/workflows/R-CMD-check.yaml)
-[![Codecov test coverage](https://codecov.io/gh/yihui/tinytex/branch/main/graph/badge.svg)](https://app.codecov.io/gh/yihui/tinytex?branch=main)
+[![R-CMD-check](https://github.com/rstudio/tinytex/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/rstudio/tinytex/actions/workflows/R-CMD-check.yaml)
+[![Codecov test coverage](https://codecov.io/gh/rstudio/tinytex/branch/main/graph/badge.svg)](https://app.codecov.io/gh/rstudio/tinytex?branch=main)
 [![CRAN release](https://www.r-pkg.org/badges/version/tinytex)](https://cran.r-project.org/package=tinytex)
 <!-- badges: end -->
 
@@ -18,4 +18,4 @@ I believe these problems can be solved by TinyTeX, a custom LaTeX distribution b
 
 This repo contains the installation scripts of TinyTeX (under the `tools` directory) and the R companion package **tinytex**. Please see the full documentation at <https://yihui.org/tinytex/>. Obviously I hope it is not too long.
 
-The R package **tinytex** is licensed under MIT. The LaTeX distribution TinyTeX is [licensed under GPL-2](https://github.com/yihui/tinytex-releases#license).
+The R package **tinytex** is licensed under MIT. The LaTeX distribution TinyTeX is [licensed under GPL-2](https://github.com/rstudio/tinytex-releases#license).

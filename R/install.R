@@ -12,8 +12,8 @@
 #' @param dir The directory to install (should not exist unless \code{force =
 #'   TRUE}) or uninstall TinyTeX.
 #' @param version The version of TinyTeX, e.g., \code{"2020.09"} (see all
-#'   available versions at \url{https://github.com/yihui/tinytex-releases}, or
-#'   via \code{xfun::github_releases('yihui/tinytex-releases')}). By default, it
+#'   available versions at \url{https://github.com/rstudio/tinytex-releases}, or
+#'   via \code{xfun::github_releases('rstudio/tinytex-releases')}). By default, it
 #'   installs the latest daily build of TinyTeX. If \code{version = 'latest'},
 #'   it installs the latest Github release of TinyTeX.
 #' @param repository The CTAN repository to set. By default, it is the
@@ -83,7 +83,7 @@ install_tinytex = function(
   if ((texinput <- Sys.getenv('TEXINPUT')) != '') message(
     'Your environment variable TEXINPUT is "', texinput,
     '". Normally you should not set this variable, because it may lead to issues like ',
-    'https://github.com/yihui/tinytex/issues/92.'
+    'https://github.com/rstudio/tinytex/issues/92.'
   )
 
   switch(
@@ -92,7 +92,7 @@ install_tinytex = function(
       check_local_bin()
       if (os_index != 3 && !any(dir_exists(c('~/bin', '~/.local/bin')))) on.exit(message(
         'You may have to restart your system after installing TinyTeX to make sure ',
-        '~/bin appears in your PATH variable (https://github.com/yihui/tinytex/issues/16).'
+        '~/bin appears in your PATH variable (https://github.com/rstudio/tinytex/issues/16).'
       ), add = TRUE)
     },
     'windows' = {},
@@ -189,7 +189,7 @@ check_local_bin = function() {
   chown_cmd = 'chown -R `whoami`:admin /usr/local/bin'
   message(
     'The directory /usr/local/bin is not writable. I recommend that you ',
-    'make it writable. See https://github.com/yihui/tinytex/issues/24 for more info.'
+    'make it writable. See https://github.com/rstudio/tinytex/issues/24 for more info.'
   )
   if (system(sprintf(
     "/usr/bin/osascript -e 'do shell script \"%s\" with administrator privileges'", chown_cmd
@@ -281,7 +281,7 @@ reinstall_tinytex = function(packages = TRUE, dir = tinytex_root(), ...) {
     paste('"', pkgs, '"', sep = '', collapse = ', '), '))\n'
   )
   # in theory, users should not touch the texmf-local dir; if they did, I'll try
-  # to preserve it during reinstall: https://github.com/yihui/tinytex/issues/117
+  # to preserve it during reinstall: https://github.com/rstudio/tinytex/issues/117
   if (length(list.files(texmf <- file.path(dir, 'texmf-local'), recursive = TRUE)) > 0) {
     dir.create(texmf_tmp <- tempfile(), recursive = TRUE)
     message(
@@ -399,10 +399,10 @@ install_prebuilt = function(
 
   if (xfun::file_ext(pkg) == '') {
     if (version == 'latest') {
-      version = xfun::github_releases('yihui/tinytex-releases', version)
+      version = xfun::github_releases('rstudio/tinytex-releases', version)
     } else if (version == 'daily-github') {
       version = ''
-      opts = options(tinytex.install.url = 'https://github.com/yihui/tinytex-releases/releases/download/daily/')
+      opts = options(tinytex.install.url = 'https://github.com/rstudio/tinytex-releases/releases/download/daily/')
       on.exit(options(opts), add = TRUE)
     }
     version = gsub('^v', '', version)
@@ -444,7 +444,7 @@ post_install_config = function(add_path, extra_packages, repo, hash = FALSE) {
     if (!dir_exists(bin_dir <- '~/.local/bin')) dir.create(bin_dir <- '~/bin', FALSE, TRUE)
     tlmgr(c('option', 'sys_bin', bin_dir))
   }
-  # fix fonts.conf: https://github.com/yihui/tinytex/issues/313
+  # fix fonts.conf: https://github.com/rstudio/tinytex/issues/313
   tlmgr(c('postaction', 'install', 'script', 'xetex'), .quiet = TRUE)
   # do not wrap lines in latex log (#322)
   tlmgr_conf(c('texmf', 'max_print_line', '10000'), .quiet = TRUE, stdout = FALSE)
@@ -462,7 +462,7 @@ post_install_config = function(add_path, extra_packages, repo, hash = FALSE) {
 
 download_installer = function(file, version) {
   url = if (version != '') sprintf(
-    'https://github.com/yihui/tinytex-releases/releases/download/v%s/%s', version, file
+    'https://github.com/rstudio/tinytex-releases/releases/download/v%s/%s', version, file
   ) else paste0(getOption('tinytex.install.url', 'https://yihui.org/tinytex/'), file)
   download_file(url, file)
 }

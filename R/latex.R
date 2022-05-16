@@ -225,7 +225,7 @@ latexmk_emu = function(
   }
   run_engine()
   # some problems only trigger warnings but not errors, e.g.,
-  # https://github.com/yihui/tinytex/issues/311 fix them and re-run engine
+  # https://github.com/rstudio/tinytex/issues/311 fix them and re-run engine
   if (install_packages && check_extra(logfile)) run_engine()
 
   # generate index
