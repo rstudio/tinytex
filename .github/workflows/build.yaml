@@ -279,12 +279,6 @@ jobs:
           echo "This release contains the daily build of TinyTeX ($(date +'%A %B %d %Y %r %Z'))." > notes.md
           echo "Please see https://github.com/rstudio/tinytex-releases for more info." >> notes.md
 
-      # TODO: Remove when version 2.8 will be available on GHA
-      - name: Update GH to get 2.8 needed for gh release edit
-        run: |
-          gh release download -R cli/cli --pattern '*linux_amd64.deb'
-          sudo dpkg -i $(ls *.deb)
-
       - name: Publish new release
         run: |
           echo "::group::Move tag to last commit on master"
