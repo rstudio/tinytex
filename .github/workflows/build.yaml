@@ -71,24 +71,24 @@ jobs:
       - name: Build TinyTeX-0.zip
         run: |
           Rscript "tools/install-windows-base.R" # the infraonly scheme
-          Compress-Archive $Env:APPDATA\\TinyTeX TinyTeX-0.zip
+          7z a TinyTeX-0.zip $Env:APPDATA\\TinyTeX
 
       - name: Build TinyTeX-1.zip
         run: |
           Rscript "tools/install-windows-more.R"  # extra packages for compiling R Markdown
-          Compress-Archive $Env:APPDATA\\TinyTeX TinyTeX-1.zip
+          7z a TinyTeX-1.zip $Env:APPDATA\\TinyTeX
 
       - name: Build TinyTeX.zip
         run: |
           Rscript "tools/test-basic.R"  # even more LaTeX packages
-          Compress-Archive $Env:APPDATA\\TinyTeX TinyTeX.zip
+          7z a TinyTeX.zip $Env:APPDATA\\TinyTeX
 
       - name: Build TinyTeX-2 (scheme-full)
         run: |
           Rscript "tools/build-scheme-full.R"
-          Compress-Archive $Env:APPDATA\\TinyTeX TinyTeX-2.zip
+          7z a TinyTeX-2.zip $Env:APPDATA\\TinyTeX
 
-      - name: Test Installation
+      - name: Test Installation script
         env:
           TINYTEX_INSTALLER: TinyTeX-0
         run: tools\\install-bin-windows.bat
@@ -174,7 +174,7 @@ jobs:
           echo "tlmgr install $(cat pkgs-custom.txt | tr '\n' ' ')" >> install.sh
           tar zcf ../installer-unix.tar.gz install-tl-unx.tar.gz tinytex.profile install.sh
 
-      - name: Test Installation
+      - name: Test Installation script
         env:
           TINYTEX_INSTALLER: TinyTeX-0
         run: ./tools/install-bin-unix.sh
@@ -249,7 +249,7 @@ jobs:
           Rscript "tools/build-scheme-full.R"
           tar zcf TinyTeX-2.tgz -C ~/Library TinyTeX
 
-      - name: Test Installation
+      - name: Test Installation script
         env:
           TINYTEX_INSTALLER: TinyTeX-0
         run: ./tools/install-bin-unix.sh
