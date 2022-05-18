@@ -43,7 +43,7 @@ rd /s /q "%APPDATA%\TinyTeX"
 rd /s /q "%APPDATA%\TinyTeX"
 move /y TinyTeX "%APPDATA%"
 rem a token to differentiate TinyTeX with other TeX Live distros
-echo.> "%APPDATA%\.tinytex"
+echo.> "%APPDATA%\TinyTeX\.tinytex"
 
 rem clean up the install-tl-* directory
 cd ..
