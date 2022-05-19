@@ -13,9 +13,13 @@
 #'   TRUE}) or uninstall TinyTeX.
 #' @param version The version of TinyTeX, e.g., \code{"2020.09"} (see all
 #'   available versions at \url{https://github.com/rstudio/tinytex-releases}, or
-#'   via \code{xfun::github_releases('rstudio/tinytex-releases')}). By default, it
-#'   installs the latest daily build of TinyTeX. If \code{version = 'latest'},
-#'   it installs the latest Github release of TinyTeX.
+#'   via \code{xfun::github_releases('rstudio/tinytex-releases')}). By default,
+#'   it installs the latest daily build of TinyTeX. If \code{version =
+#'   'latest'}, it installs the latest monthly Github release of TinyTeX.
+#' @param bundle The bundle name of TinyTeX (which determines the collection of
+#'   LaTeX packages to install). See
+#'   \url{https://github.com/rstudio/tinytex-releases#releases} for all possible
+#'   bundles and their meanings.
 #' @param repository The CTAN repository to set. By default, it is the
 #'   repository automatically chosen by \code{https://mirror.ctan.org} (which is
 #'   usually the fastest one to your location). You can find available
@@ -38,7 +42,7 @@
 #'   sysadmins who want to prevent the accidental installation of TinyTeX.
 #' @export
 install_tinytex = function(
-  force = FALSE, dir = 'auto', version = 'daily', repository = 'auto',
+  force = FALSE, dir = 'auto', version = 'daily', bundle = 'TinyTeX-1', repository = 'auto',
   extra_packages = if (is_tinytex()) tl_pkgs(), add_path = TRUE
 ) {
   if (tolower(Sys.getenv('TINYTEX_PREVENT_INSTALL')) == 'true') stop(
@@ -59,6 +63,7 @@ install_tinytex = function(
       'If you want to force installing TinyTeX anyway, use tinytex::install_tinytex(force = TRUE).'
     )
   }
+  force(extra_packages)  # evaluate it before TinyTeX is removed or reinstalled next
   check_dir = function(dir) {
     if (dir_exists(dir) && !force) stop(
       'The directory "', dir, '" exists. Please either delete it, ',
@@ -100,14 +105,24 @@ install_tinytex = function(
   )
 
   src_install = getOption('tinytex.source.install', need_source_install())
+  # if needs to install from source, set `extra_packages` according to `bundle`
+  if (src_install && missing(extra_packages)) {
+    extra_packages = switch(
+      bundle,
+      'TinyTeX-2' = 'scheme-full',
+      'TinyTeX' = xfun::read_utf8('https://yihui.org/gh/tinytex/tools/pkgs-custom.txt'),
+      'TinyTeX-0' = {
+        warning("bundle = 'TinyTeX-0' is not supported for your system"); NULL
+      }
+    )
+  }
   install = function(...) {
     if (src_install) {
       install_tinytex_source(repository, ...)
     } else {
-      install_prebuilt('TinyTeX-1', ..., repo = repository)
+      install_prebuilt(bundle, ..., repo = repository)
     }
   }
-  force(extra_packages)  # evaluate it before installing another version of TinyTeX
   if (version == 'daily') {
     version = ''
     # test if https://yihui.org or github.com is accessible because the daily

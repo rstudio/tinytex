@@ -6,7 +6,7 @@
 \alias{tinytex-package}
 \title{tinytex: Helper Functions to Install and Maintain TeX Live, and Compile LaTeX Documents}
 \description{
-Helper functions to install and maintain the 'LaTeX' distribution named 'TinyTeX' (<https://yihui.org/tinytex/>), a lightweight, cross-platform, portable, and easy-to-maintain version of 'TeX Live'. This package also contains helper functions to compile 'LaTeX' documents, and install missing 'LaTeX' packages automatically.
+Helper functions to install and maintain the 'LaTeX' distribution named 'TinyTeX' (\url{https://yihui.org/tinytex/}), a lightweight, cross-platform, portable, and easy-to-maintain version of 'TeX Live'. This package also contains helper functions to compile 'LaTeX' documents, and install missing 'LaTeX' packages automatically.
 }
 \seealso{
 Useful links:

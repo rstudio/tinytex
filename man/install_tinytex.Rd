@@ -11,6 +11,7 @@ install_tinytex(
   force = FALSE,
   dir = "auto",
   version = "daily",
+  bundle = "TinyTeX-1",
   repository = "auto",
   extra_packages = if (is_tinytex()) tl_pkgs(),
   add_path = TRUE
@@ -33,9 +34,14 @@ TRUE}) or uninstall TinyTeX.}
 
 \item{version}{The version of TinyTeX, e.g., \code{"2020.09"} (see all
 available versions at \url{https://github.com/rstudio/tinytex-releases}, or
-via \code{xfun::github_releases('rstudio/tinytex-releases')}). By default, it
-installs the latest daily build of TinyTeX. If \code{version = 'latest'},
-it installs the latest Github release of TinyTeX.}
+via \code{xfun::github_releases('rstudio/tinytex-releases')}). By default,
+it installs the latest daily build of TinyTeX. If \code{version =
+'latest'}, it installs the latest monthly Github release of TinyTeX.}
+
+\item{bundle}{The bundle name of TinyTeX (which determines the collection of
+LaTeX packages to install). See
+\url{https://github.com/rstudio/tinytex-releases#releases} for all possible
+bundles and their meanings.}
 
 \item{repository}{The CTAN repository to set. By default, it is the
 repository automatically chosen by \code{https://mirror.ctan.org} (which is
