@@ -64,6 +64,7 @@ jknapltx
 koma-script
 langsci
 lastpage
+latexindent
 lettrine
 libertine
 lineno
@@ -134,6 +135,7 @@ symbol
 tabto-ltx
 tabu
 tcolorbox
+texcount
 tex-gyre
 textcase
 thmtools
