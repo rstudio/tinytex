@@ -21,7 +21,6 @@ else
   # case we personalize texmf variables
   if [ "$1" = '--admin' ]; then
     echo 'TEXMFCONFIG $HOME/.TinyTeX/texmf-config' >> $PRNAME
-    echo 'TEXMFHOME $HOME/.TinyTeX/texmf-home' >> $PRNAME
     echo 'TEXMFVAR $HOME/.TinyTeX/texmf-var' >> $PRNAME
   else
     mkdir -p $HOME/bin
@@ -32,7 +31,6 @@ fi
 # no need to personalize texmf variables if not installed by admin
 if [ "$1" != '--admin' ]; then
   echo 'TEXMFCONFIG $TEXMFSYSCONFIG' >> $PRNAME
-  echo 'TEXMFHOME ./texmf-home' >> $PRNAME
   echo 'TEXMFVAR $TEXMFSYSVAR' >> $PRNAME
 fi
 

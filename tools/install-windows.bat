@@ -24,7 +24,6 @@ powershell -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.Security
 powershell -Command "(gc tinytex.profile) -replace '\./', './TinyTeX/' | Out-File -encoding ASCII tinytex.profile"
 
 echo TEXMFCONFIG $TEXMFSYSCONFIG>> tinytex.profile
-echo TEXMFHOME ./TinyTeX/texmf-home>> tinytex.profile
 echo TEXMFVAR $TEXMFSYSVAR>> tinytex.profile
 
 rem download the custom package list
