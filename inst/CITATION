@@ -19,7 +19,7 @@ citEntry(
   author = 'Yihui Xie',
   journal = 'TUGboat',
   year = '2019',
-  volumne = '40',
+  volume = '40',
   number = '1',
   pages = '30--32',
   url = 'https://tug.org/TUGboat/Contents/contents40-1.html',
