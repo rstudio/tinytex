@@ -671,7 +671,9 @@ fmtutil = function(usermode = FALSE, ...) {
 
 fc_cache = function(args = c('-v', '-r')) {
   tweak_path()
-  system2('fc-cache', args)
+  # run fc-cache on default dirs, then on the TinyTeX root dir
+  for (i in unique(c('', tinytex_root(error = FALSE))))
+    system2('fc-cache', shQuote(c(args, if (i != '') i)))
 }
 
 # refresh/update/regenerate everything
