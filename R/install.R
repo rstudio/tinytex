@@ -183,7 +183,11 @@ normalize_repo = function(url) {
 
 # get the automatic CTAN mirror returned from mirror.ctan.org
 auto_repo = function() {
-  x = curlGetHeaders('https://mirror.ctan.org/systems/texlive/tlnet')
+  # curlGetHeaders() may time out, hence tryCatch() here
+  x = tryCatch(
+    curlGetHeaders('https://mirror.ctan.org/systems/texlive/tlnet'),
+    error = function(e) character()
+  )
   x = xfun::grep_sub('^location: ([^[:space:]]+)\\s*$', '\\1', x)
   x = tail(x, 1)
   if (length(x) == 1) x else 'ctan'
