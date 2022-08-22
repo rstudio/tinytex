@@ -4,7 +4,7 @@ setwd('quarto-cli')
 
 os = if (.Platform$OS.type == 'windows') 1 else if (Sys.info()['sysname'] == 'Darwin') 2 else 3
 
-system2(c('configure-windows.cmd', './configure-macos.sh', './configure-linux.sh')[os])
+system2(c('configure.cmd', rep('./configure.sh', 2))[os])
 
 setwd('package/src')
 system2(
