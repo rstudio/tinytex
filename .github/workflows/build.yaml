@@ -10,7 +10,7 @@ env:
   GH_TOKEN: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
   # required for GH to run on another repo (-R option)
   # https://cli.github.com/manual/gh_help_environment
-  GH_REPO: cderv/tinytex-releases
+  GH_REPO: rstudio/tinytex-releases
 
 jobs:
   new-release:
