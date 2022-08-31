@@ -10,7 +10,7 @@ env:
   GH_TOKEN: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
   # required for GH to run on another repo (-R option)
   # https://cli.github.com/manual/gh_help_environment
-  GH_REPO: rstudio/tinytex-releases
+  GH_REPO: cderv/tinytex-releases
 
 jobs:
   new-release:
@@ -94,11 +94,6 @@ jobs:
         run: tools\\install-bin-windows.bat
         shell: cmd
 
-      - name: Build tinitex
-        run: Rscript tools/build-tinitex.R
-
-      - run: dir .
-
       - name: Upload bundles
         uses: nick-fields/retry@v2
         with:
@@ -106,7 +101,7 @@ jobs:
           max_attempts: 5
           retry_wait_seconds: 10
           command: |
-            gh release upload ${{needs.new-release.outputs.draft-tag}} TinyTeX-0.zip TinyTeX-1.zip TinyTeX.zip TinyTeX-2.zip tinitex.zip --clobber
+            gh release upload ${{needs.new-release.outputs.draft-tag}} TinyTeX-0.zip TinyTeX-1.zip TinyTeX.zip TinyTeX-2.zip --clobber
 
   build-linux:
     needs: [new-release]
@@ -179,9 +174,6 @@ jobs:
           TINYTEX_INSTALLER: TinyTeX-0
         run: ./tools/install-bin-unix.sh
 
-      - name: Build tinitex
-        run: Rscript tools/build-tinitex.R
-
       - run: ls -lisa
 
       - name: Upload bundles
@@ -193,7 +185,7 @@ jobs:
           max_attempts: 5
           retry_wait_seconds: 10
           command: |
-            gh release upload ${{needs.new-release.outputs.draft-tag}} TinyTeX-0.tar.gz TinyTeX-1.tar.gz TinyTeX.tar.gz TinyTeX-2.tar.gz tinitex.tar.gz installer-unix.tar.gz regex.tar.gz --clobber
+            gh release upload ${{needs.new-release.outputs.draft-tag}} TinyTeX-0.tar.gz TinyTeX-1.tar.gz TinyTeX.tar.gz TinyTeX-2.tar.gz installer-unix.tar.gz regex.tar.gz --clobber
 
   build-mac:
     needs: [new-release]
@@ -254,9 +246,6 @@ jobs:
           TINYTEX_INSTALLER: TinyTeX-0
         run: ./tools/install-bin-unix.sh
 
-      - name: Build tinitex
-        run: Rscript tools/build-tinitex.R
-
       - run: ls -lisa
 
       - name: Upload bundles
@@ -266,10 +255,42 @@ jobs:
           max_attempts: 5
           retry_wait_seconds: 10
           command: |
-            gh release upload ${{needs.new-release.outputs.draft-tag}} TinyTeX-0.tgz TinyTeX-1.tgz TinyTeX.tgz TinyTeX-2.tgz tinitex.tgz --clobber
+            gh release upload ${{needs.new-release.outputs.draft-tag}} TinyTeX-0.tgz TinyTeX-1.tgz TinyTeX.tgz TinyTeX-2.tgz --clobber
+
+  tinitex: 
+    needs: [new-release]
+    name: Get tinitex release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Get tinytex artifacts
+        run: |
+          echo ">> Will retrieve artifact from Quarto latexmk workflow"
+          runId=$(gh run -R quarto-dev/quarto-cli list -w 'Test quarto-latexmk' --json 'headBranch,conclusion,databaseId' --jq 'map(select(.conclusion == "success" and .headBranch == "main")) | .[0].databaseId')
+          gh run -R quarto-dev/quarto-cli download $runId --name tinitex --dir tinitex
+        shell: bash
+
+      - name: Repackage in per OS bundle
+        working-directory: tinitex
+        run: |
+          7z a -o.. tinitex.zip x86_64-pc-windows-msvc/.
+          7z a -ttar -so tinitex.tar x86_64-apple-darwin/. | 7z a -si -o.. tinitex.tgz
+          7z a -ttar -so tinitex.tar x86_64-unknown-linux-gnu/. | 7z a -si -o.. tinitex.tar.gz
+      
+      - run: ls -lisa tinitex
+
+      - name: Upload bundles
+        uses: nick-fields/retry@v2
+        with:
+          timeout_minutes: 5
+          max_attempts: 5
+          retry_wait_seconds: 10
+          command: |
+            cd tinitex/
+            gh release upload ${{needs.new-release.outputs.draft-tag}} tinitex.zip tinitex.tgz tinitex.tar.gz --clobber
 
   deploy:
-    needs: [new-release, build-windows, build-linux, build-mac]
+    needs: [new-release, build-windows, build-linux, build-mac, tinitex]
     runs-on: ubuntu-latest
     name: Publish new daily release
 
