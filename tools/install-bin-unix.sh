@@ -68,4 +68,18 @@ fi
 [ $OSNAME != "Darwin" ] && ./tlmgr option sys_bin $BINDIR
 ./tlmgr postaction install script xetex  # GH issue #313
 ([ -z $CI ] || [ $(echo $CI | tr "[:upper:]" "[:lower:]") != "true" ]) && ./tlmgr option repository ctan
+
+if [ $OSNAME = 'Darwin' ]; then
+  # create the dir if it doesn't exist
+  if [ ! -d /usr/local/bin ]; then
+    echo "Admin privilege (password) is required to create the directory /usr/local/bin:"
+    sudo mkdir -p /usr/local/bin
+  fi
+  # change owner of the dir
+  if [ ! -w /usr/local/bin ]; then
+    echo "Admin privilege (password) is required to make /usr/local/bin writable:"
+    sudo chown -R `whoami`:admin /usr/local/bin
+  fi
+fi
+
 ./tlmgr path add
