@@ -102,6 +102,7 @@ ntgclass
 palatino
 parskip
 pbox
+pdfcol
 pdflscape
 pdfpages
 pdfsync
