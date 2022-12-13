@@ -155,7 +155,8 @@ tlmgr_writable = function() is_writable(Sys.which('tlmgr'))
 #' @note This function only works with LaTeX distributions based on TeX Live,
 #'   such as TinyTeX.
 #' @export
-#' @examples tinytex::check_installed('framed')
+#' @examplesIf interactive()
+#' tinytex::check_installed('framed')
 check_installed = function(pkgs) {
   if (length(pkgs) == 0) return(TRUE)
   res = tryCatch(
