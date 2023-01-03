@@ -232,7 +232,7 @@ check_tl_version = function(x) {
 
 delete_tlpdb_files = function() {
   if ((root <- tinytex_root(FALSE)) != '') file.remove(list.files(
-    file.path(root, 'tlpkg'), '^texlive[.]tlpdb[.][0-9a-f]{32}$', full.names = TRUE
+    file.path(root, 'tlpkg'), '^texlive[.]tlpdb.*[.][0-9a-f]{32}$', full.names = TRUE
   ))
 }
 
