@@ -239,7 +239,8 @@ jobs:
       - name: Build TinyTeX-2 (scheme-full)
         run: |
           Rscript "tools/build-scheme-full.R"
-          tar zcf TinyTeX-2.tgz -C ~/Library TinyTeX
+          # this really is the xz format (for smaller archive size) but `tar xf` can recognize it automatically regardless of file extension
+          tar Jcf TinyTeX-2.tgz -C ~/Library TinyTeX
 
       - name: Test Installation script
         env:

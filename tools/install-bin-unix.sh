@@ -40,17 +40,17 @@ fi
 
 if [ $OSNAME = 'Darwin' ]; then
     curl -L -f --retry 10 --retry-delay 30 ${TINYTEX_URL}.tgz -o TinyTeX.tgz
-    tar xzf TinyTeX.tgz -C $(dirname $TEXDIR)
+    tar xf TinyTeX.tgz -C $(dirname $TEXDIR)
     rm TinyTeX.tgz
 else if [ $TINYTEX_INSTALLER != 'installer-unix' ]; then
     wget --retry-connrefused --progress=dot:giga -O TinyTeX.tar.gz ${TINYTEX_URL}.tar.gz
-    tar xzf TinyTeX.tar.gz -C $(dirname $TEXDIR)
+    tar xf TinyTeX.tar.gz -C $(dirname $TEXDIR)
     rm TinyTeX.tar.gz
   else
     echo "We do not have a prebuilt TinyTeX package for this operating system ${OSTYPE}."
     echo "I will try to install from source for you instead."
     wget --retry-connrefused -O ${TINYTEX_INSTALLER}.tar.gz ${TINYTEX_URL}.tar.gz
-    tar xzf ${TINYTEX_INSTALLER}.tar.gz
+    tar xf ${TINYTEX_INSTALLER}.tar.gz
     ./install.sh
     mkdir -p $TEXDIR
     mv texlive/* $TEXDIR
