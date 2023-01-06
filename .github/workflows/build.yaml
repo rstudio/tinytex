@@ -26,8 +26,8 @@ jobs:
         run: |
           tag=daily
           url=$(gh release create ${tag} --draft --prerelease --title "TinyTeX daily build" --notes "(WIP) Next daily release")
-          echo "::set-output name=draft-tag::$(echo $url | grep -o tag/[^/]*$ | cut -c 5-)"
-          echo "::set-output name=tag::${tag}"
+          echo "draft-tag=$(echo $url | grep -o tag/[^/]*$ | cut -c 5-)" >> $GITHUB_OUTPUT
+          echo "tag=${tag}" >> $GITHUB_OUTPUT
 
   build-windows:
     needs: [new-release]
