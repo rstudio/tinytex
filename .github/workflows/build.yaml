@@ -223,7 +223,7 @@ jobs:
 
       - name: Build TinyTeX-0.zip & install more package
         run: |
-          sed -i '' 's|# finished base|Rscript "${{ github.workspace }}/tools/clean-tlpdb.R"; tar zcf "${{ github.workspace}}/TinyTeX-0.tgz" -C ~/Library TinyTeX|' tools/install-unx.sh
+          sed -i '' 's|# finished base|Rscript tools/clean-tlpdb.R; tar zcf TinyTeX-0.tgz -C ~/Library TinyTeX|' tools/install-unx.sh
           ./tools/install-unx.sh
 
       - name: Build TinyTeX-1.zip with new package installed
