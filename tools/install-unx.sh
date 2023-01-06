@@ -25,8 +25,7 @@ rm -r texlive
 cd $PREVWD
 # finished base
 
-cd $OLDPWD
-rm -r install-tl-*
+rm -r $OLDPWD/install-tl-*
 
 $TEXDIR/bin/*/tlmgr install $(download https://yihui.org/gh/tinytex/tools/pkgs-custom.txt | tr '\n' ' ')
 
