@@ -37,7 +37,7 @@ if errorlevel 1 exit /b %ERRORLEVEL%
 
 :unzip
 rem unzip the downloaded file
-echo unzip TinyTeX
+echo Unbundle TinyTeX
 if %BUNDLE_EXT% == exe (
   CALL %DOWNLOADED_FILE% -y
 ) ELSE (
