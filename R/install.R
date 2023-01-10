@@ -493,7 +493,7 @@ download_installer = function(file, version) {
   url = if (version != '') sprintf(
     'https://github.com/rstudio/tinytex-releases/releases/download/v%s/%s', version, file
   ) else paste0(getOption('tinytex.install.url', 'https://yihui.org/tinytex/'), file)
-  download_file(url, file)
+  download_file(url, file, mode = "wb")
 }
 
 #' Copy TinyTeX to another location and use it in another system
