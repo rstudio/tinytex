@@ -435,6 +435,8 @@ install_prebuilt = function(
       installer, if (version != '') paste0('-v', version), '.',
       c('zip', 'tar.gz', 'tgz')[os_index]
     )
+    # Full scheme is bundled as a self extracting archive on Windows
+    if (os_index == 1 && installer == 'TinyTeX-2') pkg = xfun::with_ext(pkg, "exe")
     if (file.exists(pkg) && is.na(cache)) {
       # invalidate cache (if unspecified) when the installer is more than one day old
       if (as.numeric(difftime(Sys.time(), file.mtime(pkg), units = 'days')) > 1)
@@ -449,8 +451,12 @@ install_prebuilt = function(
 
   # installation dir shouldn't be a file but a directory
   file.remove(exist_files(c(dir1, dir2)))
-  extract = if (grepl('[.]zip$', pkg)) unzip else untar
-  extract(pkg, exdir = path.expand(target))
+  if (grepl('[.]exe$', pkg)) {
+    system2(pkg, args = c('-y', paste0('-o', path.expand(target))))
+  } else {
+    extract = if (grepl('[.]zip$', pkg)) unzip else untar
+    extract(pkg, exdir = path.expand(target))
+  }
   # TinyTeX (or .TinyTeX) is extracted to the parent dir of `dir`; may need to rename
   if (dir != '') {
     if (basename(dir1) != b) file.rename(dir2, dir1)
