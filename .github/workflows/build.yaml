@@ -86,7 +86,7 @@ jobs:
       - name: Build TinyTeX-2 (scheme-full)
         run: |
           Rscript "tools/build-scheme-full.R"
-          7z a TinyTeX-2.zip $Env:APPDATA\\TinyTeX
+          7z a -sfx TinyTeX-2.exe $Env:APPDATA\\TinyTeX
 
       - name: Test Installation script
         env:
@@ -101,7 +101,7 @@ jobs:
           max_attempts: 5
           retry_wait_seconds: 10
           command: |
-            gh release upload ${{needs.new-release.outputs.draft-tag}} TinyTeX-0.zip TinyTeX-1.zip TinyTeX.zip TinyTeX-2.zip --clobber
+            gh release upload ${{needs.new-release.outputs.draft-tag}} TinyTeX-0.zip TinyTeX-1.zip TinyTeX.zip TinyTeX-2.exe --clobber
 
   build-linux:
     needs: [new-release]
