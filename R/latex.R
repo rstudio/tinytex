@@ -593,7 +593,7 @@ regex_errors = function() {
       # missing .sty or commands
       ".* Loading '([^']+)' aborted!",
       ".*! LaTeX Error: File [`']([^']+)' not found.*",
-      ".* file ['`]?([^' ]+)'? not found.*",
+      ".* [fF]ile ['`]?([^' ]+)'? not found.*",
       '.*the language definition file ([^ ]+) .*',
       '.* \\(file ([^)]+)\\): cannot open .*',
       '.* open style file ([^ ]+).*',
