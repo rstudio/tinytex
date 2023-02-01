@@ -394,10 +394,6 @@ dir_copy = function(from, to) {
     unlink(from, recursive = TRUE) == 0
 }
 
-download_file = function(...) {
-  xfun::download_file(..., quiet = Sys.getenv('APPVEYOR') != '')
-}
-
 # LaTeX packages that I use
 install_yihui_pkgs = function() {
   pkgs = readLines('https://yihui.org/gh/tinytex/tools/pkgs-yihui.txt')
