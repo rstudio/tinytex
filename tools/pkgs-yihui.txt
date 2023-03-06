@@ -124,7 +124,6 @@ sidecap
 sidenotes
 siunitx
 soul
-soulutf8
 srcltx
 standalone
 stix
