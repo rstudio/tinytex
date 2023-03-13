@@ -142,6 +142,7 @@ thmtools
 threeparttable
 threeparttablex
 thumbpdf
+tikzfill
 titlesec
 totcount
 totpages
