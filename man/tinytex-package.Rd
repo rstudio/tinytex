@@ -21,7 +21,7 @@ Useful links:
 
 Other contributors:
 \itemize{
-  \item  RStudio, PBC [copyright holder]
+  \item Posit Software, PBC [copyright holder, funder]
   \item Christophe Dervieux (\href{https://orcid.org/0000-0003-4474-2498}{ORCID}) [contributor]
   \item Devon Ryan \email{dpryan79@gmail.com} (\href{https://orcid.org/0000-0002-8549-0971}{ORCID}) [contributor]
   \item Ethan Heinzen [contributor]
