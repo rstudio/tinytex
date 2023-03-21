@@ -181,9 +181,9 @@ jobs:
       - name: Get Version information for daily build
         id: tlmgr-version
         run: |
-          echo "TLMGR_VERSION<<EOF" >> $GITHUB_OUTPUT
-          tlmgr version | sed -n '1p;3p' >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+          echo "TLMGR_VERSION<<EOFTLMGR" >> $GITHUB_OUTPUT
+          ~/bin/tlmgr version | sed -n '1p;3p' >> $GITHUB_OUTPUT
+          echo "EOFTLMGR" >> $GITHUB_OUTPUT
 
       - name: Upload bundles
         # this specific action is used at some issues have been observe with gh while uploading assets
