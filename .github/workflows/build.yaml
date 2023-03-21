@@ -63,7 +63,7 @@ jobs:
           try(update.packages(ask = FALSE, checkBuilt = TRUE))
         shell: Rscript {0}
 
-      - name: Add TinyTex to PATH
+      - name: Add TinyTeX to PATH
         run: |
           echo "$APPDATA\TinyTeX\bin\win32" >> $GITHUB_PATH
         shell: bash
@@ -206,7 +206,7 @@ jobs:
           pandoc-version: '2.19.2'
 
       - name: Install R
-        uses: r-lib/actions/setup-r@v3
+        uses: r-lib/actions/setup-r@v2
         with:
           r-version: release
           use-public-rspm: true
