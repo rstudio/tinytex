@@ -105,8 +105,10 @@ jobs:
 
   build-linux:
     needs: [new-release]
-    runs-on: ubuntu-latest
     name: Build Bundles For Linux
+    runs-on: ubuntu-latest
+    outputs:
+      tlmgr-version: ${{ steps.tlmgr-version.outputs.TLMGR_VERSION }}
 
     env:
       CTAN_REPO: https://ctan.math.illinois.edu/systems/texlive/tlnet
@@ -175,6 +177,13 @@ jobs:
         run: ./tools/install-bin-unix.sh
 
       - run: ls -lisa
+
+      - name: Get Version information for daily build
+        id: tlmgr-version
+        run: |
+          echo "TLMGR_VERSION<<EOFTLMGR" >> $GITHUB_OUTPUT
+          ~/bin/tlmgr version | sed -n '1p;3p' >> $GITHUB_OUTPUT
+          echo "EOFTLMGR" >> $GITHUB_OUTPUT
 
       - name: Upload bundles
         # this specific action is used at some issues have been observe with gh while uploading assets
@@ -300,6 +309,14 @@ jobs:
         run: |
           echo "This release contains the daily build of TinyTeX ($(date +'%A %B %d %Y %r %Z'))." > notes.md
           echo "Please see https://github.com/rstudio/tinytex-releases for more info." >> notes.md
+          echo "" >> notes.md
+          echo "## TeX Live version" >> notes.md
+          echo "" >> notes.md
+          echo '```' >> notes.md
+          cat <<EOF >> notes.md 
+          ${{ needs.build-linux.outputs.tlmgr-version }}
+          EOF
+          echo '```' >> notes.md
 
       - name: Publish new release
         run: |
