@@ -313,7 +313,9 @@ jobs:
           echo "## TeX Live version" >> notes.md
           echo "" >> notes.md
           echo "```" >> notes.md
-          echo ${{ needs.build-linux.outputs.tlmgr-version }} >> notes.md
+          cat >> notes.md << EOF
+          ${{ needs.build-linux.outputs.tlmgr-version }}
+          EOF
           echo "```" >> notes.md
 
       - name: Publish new release
