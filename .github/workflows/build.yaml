@@ -312,11 +312,11 @@ jobs:
           echo "" >> notes.md
           echo "## TeX Live version" >> notes.md
           echo "" >> notes.md
-          echo "```" >> notes.md
-          cat >> notes.md <<EOF
+          echo '```' >> notes.md
+          cat <<EOF >> notes.md 
           ${{ needs.build-linux.outputs.tlmgr-version }}
           EOF
-          echo "```" >> notes.md
+          echo '```' >> notes.md
 
       - name: Publish new release
         run: |
