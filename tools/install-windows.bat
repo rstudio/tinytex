@@ -57,8 +57,10 @@ for /F %%a in (pkgs-custom.txt) do set "pkgs=!pkgs! %%a"
 
 del pkgs-custom.txt
 
-call "%APPDATA%\TinyTeX\bin\win32\tlmgr" conf texmf max_print_line 10000
-call "%APPDATA%\TinyTeX\bin\win32\tlmgr" path add
-call "%APPDATA%\TinyTeX\bin\win32\tlmgr" install %pkgs%
+pushd "%APPDATA%\TinyTeX\bin\win*"
+call tlmgr conf texmf max_print_line 10000
+call tlmgr path add
+call tlmgr install %pkgs%
+popd
 
 pause

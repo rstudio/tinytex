@@ -36,7 +36,7 @@
 #' so that \code{latexmk()} knows where to find executables like
 #' \command{pdflatex}. For example, if you are using Windows and your TinyTeX is
 #' on an external drive \file{Z:/} under the folder \file{TinyTeX}, you may set
-#' \code{options(tinytex.tlmgr.path = "Z:/TinyTeX/bin/win32/tlmgr.bat")}.
+#' \code{options(tinytex.tlmgr.path = "Z:/TinyTeX/bin/windows/tlmgr.bat")}.
 #' Usually you should not need to set this option because TinyTeX can add itself
 #' to the \code{PATH} variable during installation or via
 #' \code{\link{use_tinytex}()}. In case both methods fail, you can use this

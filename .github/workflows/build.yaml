@@ -65,7 +65,7 @@ jobs:
 
       - name: Add TinyTeX to PATH
         run: |
-          echo "$APPDATA\TinyTeX\bin\win32" >> $GITHUB_PATH
+          echo "$APPDATA\TinyTeX\bin\windows" >> $GITHUB_PATH
         shell: bash
 
       - name: Build TinyTeX-0.zip

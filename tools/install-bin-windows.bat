@@ -51,7 +51,7 @@ rd /s /q "%APPDATA%\TinyTeX"
 move /y TinyTeX "%APPDATA%"
 
 echo add tlmgr to PATH
-cd /d "%APPDATA%\TinyTeX\bin\win32"
+cd /d "%APPDATA%\TinyTeX\bin\win*"
 call tlmgr path add
 if /i not "%CI%"=="true" call tlmgr option repository ctan
 call tlmgr postaction install script xetex
