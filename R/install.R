@@ -83,6 +83,11 @@ install_tinytex = function(
   not_ctan = repository != 'ctan'
   https = grepl('^https://', repository)
 
+  if (!grepl('TinyTeX', bundle)) message(
+    "The bundle name '", bundle, "' has been automatically corrected to '",
+    bundle <- gsub('tinytex', 'TinyTeX', bundle, ignore.case = TRUE), "'."
+  )
+
   owd = setwd(tempdir()); on.exit(setwd(owd), add = TRUE)
 
   if ((texinput <- Sys.getenv('TEXINPUT')) != '') message(
