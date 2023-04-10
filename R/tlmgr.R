@@ -159,10 +159,10 @@ tlmgr_writable = function() is_writable(Sys.which('tlmgr'))
 #' tinytex::check_installed('framed')
 check_installed = function(pkgs) {
   if (length(pkgs) == 0) return(TRUE)
-  res = tryCatch(
+  res = suppressWarnings(tryCatch(
     tl_list(pkgs, stdout = TRUE, stderr = FALSE, .quiet = TRUE),
-    error = function(e) NULL, warning = function(e) NULL
-  )
+    error = function(e) NULL
+  ))
   pkgs %in% res
 }
 
