@@ -421,6 +421,7 @@ check_babel = function(text) {
   if (length(m <- grep_sub(r, 'hyphen-\\2', text)) == 0) return(FALSE)
   # (babel) the language `German (new orthography)' into the format
   m = gsub('\\s.*', '', m)
+  m[m == 'hyphen-pinyin'] = 'hyphen-chinese'
   tlmgr_install(tolower(m)) == 0
 }
 
