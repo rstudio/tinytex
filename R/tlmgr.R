@@ -172,21 +172,28 @@ tlmgr_remove = function(pkgs = character(), usermode = FALSE) {
   if (length(pkgs)) tlmgr(c('remove', pkgs), usermode)
 }
 
-#' @param raw Whether to return the raw output of the command \command{tlmgr
-#'   --version}, or a short version of the format \samp{TeX Live YEAR (TinyTeX)
-#'   with tlmgr DATE}.
+#' @param format The data format to be returned: \code{raw} means the raw output
+#'   of the command \command{tlmgr --version}, \code{string} means a character
+#'   string of the format \samp{TeX Live YEAR (TinyTeX) with tlmgr DATE}, and
+#'   \code{list} means a list of the form \code{list(texlive = YEAR, tlmgr =
+#'   DATE, tinytex = TRUE/FALSE)}.
 #' @rdname tlmgr
 #' @importFrom xfun raw_string
 #' @export
-tlmgr_version = function(raw = TRUE) {
+tlmgr_version = function(format = c('raw', 'string', 'list')) {
   vers = tlmgr('--version', stdout = TRUE, .quiet = TRUE)
-  if (!raw) {
+  format = match.arg(format)
+  if (format != 'raw') {
     year = xfun::grep_sub('^TeX Live.* version (\\d+).*$', '\\1', vers)[1]
-    tinytex = if (is_tinytex()) '(TinyTeX) ' else ''
+    tinytex = is_tinytex()
     date = xfun::grep_sub('^tlmgr revision \\d+ \\(([0-9-]+) .*$', '\\1', vers)[1]
-    vers = sprintf('TeX Live %s %swith tlmgr %s', year, tinytex, date)
+    vers = if (format == 'list') {
+      list(texlive = as.integer(year), tlmgr = as.Date(date), tinytex = tinytex)
+    } else {
+      sprintf('TeX Live %s %swith tlmgr %s', year, if (tinytex) '(TinyTeX) ' else '', date)
+    }
   }
-  xfun::raw_string(vers)
+  if (is.character(vers)) xfun::raw_string(vers) else vers
 }
 
 #' @param self Whether to update the TeX Live Manager itself.

@@ -9,7 +9,7 @@ xfun_session_info = function() {
     version_info('tectonic')[1]  # try tectonic engine?
   } else if (grepl('TeX Live', pdftex_info, fixed = TRUE)) {
     # we get more information on tlmgr in that case
-    try_null(tlmgr_version(raw = FALSE))
+    try_null(tlmgr_version('string'))
   } else {
     # for other distributions, e.g., MiKTeX-pdfTeX 4.8 (MiKTeX 21.8)
     xfun::grep_sub('^.*\\((.*)\\)$', '\\1', pdftex_info)
