@@ -406,6 +406,7 @@ install_yihui_pkgs = function() {
 }
 
 # install a prebuilt version of TinyTeX
+#' @export     
 install_prebuilt = function(
   pkg = '', dir = '', version = '', add_path = TRUE, extra_packages = NULL,
   repo = 'ctan', hash = FALSE, cache = NA
