@@ -40,6 +40,8 @@
 #'   environment variable \var{TINYTEX_PREVENT_INSTALL} to \code{true}. Then
 #'   \code{install_tinytex()} will fail immediately. This can be useful to
 #'   sysadmins who want to prevent the accidental installation of TinyTeX.
+#'
+#'   Installing TinyTeX requires perl (on Linux, perl-base is insufficient).
 #' @export
 install_tinytex = function(
   force = FALSE, dir = 'auto', version = 'daily', bundle = 'TinyTeX-1', repository = 'auto',
