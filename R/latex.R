@@ -376,7 +376,7 @@ check_inline_math = function(x, f) {
 }
 
 check_unicode = function(x) {
-  if (length(grep('! Package inputenc Error: Unicode character', x))) message(
+  if (length(grep('! (Package inputenc|LaTeX) Error: Unicode character', x))) message(
     'Try other LaTeX engines instead (e.g., xelatex) if you are using pdflatex.',
     if ('rmarkdown' %in% loadedNamespaces())
       ' See https://bookdown.org/yihui/rmarkdown-cookbook/latex-unicode.html'
