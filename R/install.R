@@ -217,7 +217,8 @@ check_local_bin = function() {
     'See https://github.com/rstudio/tinytex/issues/24 for more info.'
   )
   if (!dir_exists(p)) osascript(paste('mkdir -p', p))
-  osascript(paste('chown -R `whoami`:admin', p))
+  user = system2('whoami', stdout = TRUE)
+  osascript(sprintf('chown -R %s:admin %s', user, p))
 }
 
 osascript = function(cmd) {
