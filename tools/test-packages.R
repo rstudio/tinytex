@@ -62,11 +62,3 @@ if (!identical(p1 <- tinytex:::tl_platforms(), p2 <- tinytex:::.tl_platforms)) s
   '\n.tl_platforms returned ', paste(p2, collapse = ', '),
   '\nThe latter needs to be updated in the tinytex package.'
 )
-
-if (tinytex:::tl_list('framed', 'relocatable') != 0) {
-  stop('The command `tlmgr info --list --data relocatable` failed. It might be a bug of TeX Live.')
-}
-
-if (tinytex::tlmgr_search('/framed.sty') != 0) {
-  stop('The command `tlmgr search` failed. It might be a bug of TeX Live.')
-}

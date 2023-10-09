@@ -1,3 +1,12 @@
+cmds = c(
+  "tlmgr info --list --data relocatable" = tinytex:::tl_list('framed', 'relocatable'),
+  "tlmgr search --file --global '/framed.sty'" = tinytex::tlmgr_search('/framed.sty')
+)
+if (any(i <- cmds != 0)) stop(
+  'The command(s) ', paste0('`', names(cmds)[i], '`', collapse = ', '),
+  ' failed. It might be a bug of TeX Live.'
+)
+
 for (i in c('tlmgr', 'pdflatex', 'xelatex', 'pandoc')) {
   cat('\nThe version of', i, '\n\n')
   system2(i, '--version')
