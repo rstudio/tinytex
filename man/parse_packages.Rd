@@ -6,7 +6,7 @@
 \usage{
 parse_packages(
   log,
-  text = readLines(log),
+  text = read_lines(log),
   files = detect_files(text),
   quiet = rep(FALSE, 3)
 )

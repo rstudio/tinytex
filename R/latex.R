@@ -248,7 +248,7 @@ latexmk_emu = function(
       build_bib = function() system2_quiet(bib_engine, shQuote(aux), error = {
         check_blg = function() {
           if (!file.exists(blg)) return(TRUE)
-          x = readLines(blg)
+          x = read_lines(blg)
           if (length(grep('error message', x)) == 0) return(TRUE)
           warn = function() {
             warning(
@@ -282,7 +282,7 @@ latexmk_emu = function(
 }
 
 require_bibtex = function(aux) {
-  x = readLines(aux)
+  x = read_lines(aux)
   r = length(grep('^\\\\citation\\{', x)) && length(grep('^\\\\bibdata\\{', x)) &&
     length(grep('^\\\\bibstyle\\{', x))
   if (r && !tlmgr_available() && os == 'windows') tweak_aux(aux, x)
@@ -291,7 +291,7 @@ require_bibtex = function(aux) {
 
 # remove the .bib extension in \bibdata{} in the .aux file, because bibtex on
 # Windows requires no .bib extension (sigh)
-tweak_aux = function(aux, x = readLines(aux)) {
+tweak_aux = function(aux, x = read_lines(aux)) {
   r = '^\\\\bibdata\\{.+\\}\\s*$'
   if (length(i <- grep(r, x)) == 0) return()
   x[i] = gsub('[.]bib([,}])', '\\1', x[i])
@@ -339,7 +339,7 @@ show_latex_error = function(
 ) {
   e = c('LaTeX failed to compile ', file, '. See https://yihui.org/tinytex/r/#debugging for debugging tips.')
   if (!file.exists(logfile)) stop(e, call. = FALSE)
-  x = readLines(logfile, warn = FALSE)
+  x = read_lines(logfile)
   b = grep('^\\s*$', x)  # blank lines
   b = c(b, which(x == "Here is how much of TeX's memory you used:"))
   m = NULL
@@ -388,7 +388,7 @@ latex_warning = function(file, show = getOption('tinytex.latexmk.warning', TRUE)
   if (!file.exists(file)) return()
   # if the option tinytex.latexmk.warning = FALSE, delete the log in latexmk_emu()
   if (!show && missing(show)) return()
-  x = readLines(file, warn = FALSE)
+  x = read_lines(file)
   if (length(i <- grep('^(LaTeX|Package [[:alnum:]]+) Warning:', x)) == 0) return()
   # these warnings may be okay (our Pandoc LaTeX template in rmarkdown may need an update)
   i = i[grep('^Package (fixltx2e|caption|hyperref) Warning:', x[i], invert = TRUE)]
@@ -503,7 +503,7 @@ file_rename = function(from, to) {
 #' @return A character vector of LaTeX package names.
 #' @export
 parse_packages = function(
-  log, text = readLines(log), files = detect_files(text), quiet = rep(FALSE, 3)
+  log, text = read_lines(log), files = detect_files(text), quiet = rep(FALSE, 3)
 ) {
   pkgs = character(); quiet = rep_len(quiet, length.out = 3)
   x = unique(c(files, miss_font()))
@@ -640,7 +640,7 @@ parse_install = function(...) {
 miss_font = function() {
   if (!file.exists(f <- 'missfont.log')) return()
   on.exit(unlink(f), add = TRUE)
-  x = gsub('\\s*$', '', readLines(f))
+  x = gsub('\\s*$', '', read_lines(f))
   x = grep('.+\\s+.+', x, value = TRUE)
   if (length(x) == 0) return()
   x1 = gsub('.+\\s+', '', x)  # possibly missing fonts

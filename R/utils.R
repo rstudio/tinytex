@@ -19,3 +19,4 @@ xfun_session_info = function() {
   paste(c('LaTeX version used: ', paste0('  ', info)), collapse = '\n')
 }
 
+read_lines = function(...) readLines(..., warn = FALSE)
