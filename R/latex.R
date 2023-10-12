@@ -298,7 +298,7 @@ tweak_aux = function(aux, x = read_lines(aux)) {
   writeLines(x, aux)
 }
 
-needs_rerun = function(log, text = xfun::read_utf8(log)) {
+needs_rerun = function(log, text = read_lines(log)) {
   any(grepl(
     '(Rerun to get |Please \\(?re\\)?run | Rerun LaTeX\\.)', text,
     useBytes = TRUE
@@ -314,7 +314,7 @@ system2_quiet = function(..., error = NULL, logfile = NULL, fail_rerun = TRUE) {
 
   # run the command quietly if possible
   res = system2(..., stdout = if (use_file_stdout()) f1 else FALSE, stderr = f2)
-  if (is.character(logfile) && file.exists(f2) && length(e <- xfun::read_utf8(f2))) {
+  if (is.character(logfile) && file.exists(f2) && length(e <- read_lines(f2))) {
     i = grep('^\\s*$', e, invert = TRUE)
     e[i] = paste('!', e[i])  # prepend ! to non-empty error messages
     cat('', e, file = logfile, sep = '\n', append = TRUE)

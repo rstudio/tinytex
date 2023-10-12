@@ -19,4 +19,11 @@ xfun_session_info = function() {
   paste(c('LaTeX version used: ', paste0('  ', info)), collapse = '\n')
 }
 
-read_lines = function(...) readLines(..., warn = FALSE)
+# read a file without warning, and discard lines with invalid characters to
+# avoid warnings in the grep() family (invalid lines in log files should be safe
+# to discard in this package, although it isn't so in general)
+read_lines = function(...) {
+  x = readLines(..., warn = FALSE)
+  x[!validEnc(x)] = ''
+  x
+}
