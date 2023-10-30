@@ -27,3 +27,17 @@ read_lines = function(...) {
   x[!validEnc(x)] = ''
   x
 }
+
+# for some reason, some TeX Live utilities refuse to work if they are called by
+# their short paths (#427), in which case we switch to shell()
+if (xfun::is_windows()) system2 = function(command, args, ...) {
+  if (length(list(...)) > 0 || !is_short(command)) {
+    base::system2(command, args, ...)
+  } else shell(paste(c(command, args), collapse = ' '))
+}
+
+# test if a path would be shortened on Windows
+is_short = function(x) {
+  x = Sys.which(x)
+  (x != '') && (normalizePath(x) != shortPathName(x))
+}
