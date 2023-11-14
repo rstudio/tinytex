@@ -671,12 +671,12 @@ texhash = function() {
 
 updmap = function(usermode = FALSE) {
   tweak_path()
-  system2(if (usermode) 'updmap-user' else 'updmap-sys')
+  system2('updmap', if (usermode) '--user' else '--sys')
 }
 
 fmtutil = function(usermode = FALSE, ...) {
   tweak_path()
-  system2(if (usermode) 'fmtutil-user' else 'fmtutil-sys', '--all', ...)
+  system2('fmtutil', c(if (usermode) '--user' else '--sys', '--all'), ...)
 }
 
 fc_cache = function(args = c('-v', '-r')) {
