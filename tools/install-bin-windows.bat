@@ -9,6 +9,13 @@ for /d %%G in ("TinyTeX*") do rd /s /q "%%~G"
 
 if not defined TINYTEX_INSTALLER set TINYTEX_INSTALLER=TinyTeX-1
 
+rem install to APPDATA by default if it doesn't contain spaces or non-ASCII chars, otherwise use ProgramData
+if not defined TINYTEX_DIR (
+  set TINYTEX_DIR=%APPDATA%
+  if /i not "%CI%"=="true" (
+    powershell -Command "if ($Env:APPDATA -match '^[!-~]+$') {exit 0} else {exit 1}" || set TINYTEX_DIR=%ProgramData%
+  )
+)
 set BUNDLE_EXT=zip
 if "%TINYTEX_INSTALLER%" == "TinyTeX-2" set BUNDLE_EXT=exe
 
@@ -45,13 +52,15 @@ if %BUNDLE_EXT% == exe (
 )
 del %DOWNLOADED_FILE%
 
-echo Move to APPDATA folder
+rem in case it was installed to APPDATA previously
 rd /s /q "%APPDATA%\TinyTeX"
-rd /s /q "%APPDATA%\TinyTeX"
-move /y TinyTeX "%APPDATA%"
+
+rd /s /q "%TINYTEX_DIR%\TinyTeX"
+rd /s /q "%TINYTEX_DIR%\TinyTeX"
+move /y TinyTeX "%TINYTEX_DIR%"
 
 echo add tlmgr to PATH
-cd /d "%APPDATA%\TinyTeX\bin\win*"
+cd /d "%TINYTEX_DIR%\TinyTeX\bin\win*"
 call tlmgr path add
 if /i not "%CI%"=="true" call tlmgr option repository ctan
 call tlmgr postaction install script xetex

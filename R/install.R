@@ -200,13 +200,29 @@ auto_repo = function() {
   if (length(x) == 1) x else 'ctan'
 }
 
-win_app_dir = function(..., error = TRUE) {
+# use %APPDATA%/TinyTeX if it exists or doesn't contain spaces or non-ASCII
+# chars, otherwise use %ProgramData%, because TeX Live doesn't work when the
+# installation path contains non-ASCII chars
+win_app_dir = function(s) {
+  d = Sys.getenv('TINYTEX_DIR')
+  if (d != '') return(file.path(d, s))
   d = Sys.getenv('APPDATA')
   if (d == '') {
-    if (error) stop('Environment variable "APPDATA" not set.')
-    return(d)
+    d = Sys.getenv('ProgramData')
+    if (d == '') stop("The environment variable 'ProgramData' is not set.")
+  } else {
+    d2 = file.path(d, s)
+    if (dir_exists(d2)) {
+      if (!xfun::is_ascii(d2)) warning(
+        "TinyTeX will not work because its installation path '", d2,
+        "' contains non-ASCII characters. You are recommended to move it via ",
+        "tinytex::copy_tinytex(to = Sys.getenv('ProgramData'), move = TRUE)."
+      )
+      return(d2)
+    }
+    if (grepl('^[!-~]+$', d)) return(d2)  # path is pure ASCII and has no spaces
   }
-  file.path(d, ...)
+  file.path(d, s)
 }
 
 # check if /usr/local/bin on macOS is writable
