@@ -516,14 +516,24 @@ download_installer = function(file, version) {
 #' @param to The destination directory where you want to make a copy of TinyTeX.
 #'   Like \code{from} in \code{use_tinytex()}, a dialog will pop up if \code{to}
 #'   is not provided in \code{copy_tinytex()}.
+#' @param move Whether to use the new copy and delete the original copy of
+#'   TinyTeX after copying it.
 #' @note You can only copy TinyTeX and use it in the same system, e.g., the
 #'   Windows version of TinyTeX only works on Windows.
 #' @export
-copy_tinytex = function(from = tinytex_root(), to = select_dir('Select Destination Directory')) {
+copy_tinytex = function(
+  from = tinytex_root(), to = select_dir('Select Destination Directory'), move = FALSE
+) {
   if (!dir_exists(from)) stop('TinyTeX does not seem to be installed.')
   if (length(to) != 1 || !dir_exists(to))
     stop("The destination directory '", to, "' does not exist.")
-  file.copy(from, to, recursive = TRUE)
+  target = file.path(to, basename(from))
+  if (!move || !(res <- file.rename(from, target))) {
+    res = file.copy(from, to, recursive = TRUE)
+    if (res && move) uninstall_tinytex(dir = from)
+  }
+  if (res && move) use_tinytex(target)
+  res
 }
 
 #' @rdname copy_tinytex
