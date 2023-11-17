@@ -207,10 +207,7 @@ win_app_dir = function(s) {
   d = Sys.getenv('TINYTEX_DIR')
   if (d != '') return(file.path(d, s))
   d = Sys.getenv('APPDATA')
-  if (d == '') {
-    d = Sys.getenv('ProgramData')
-    if (d == '') stop("The environment variable 'ProgramData' is not set.")
-  } else {
+  if (d != '') {
     d2 = file.path(d, s)
     if (dir_exists(d2)) {
       if (!xfun::is_ascii(d2)) warning(
@@ -223,6 +220,8 @@ win_app_dir = function(s) {
     }
     if (grepl('^[!-~]+$', d)) return(d2)  # path is pure ASCII and has no spaces
   }
+  d = Sys.getenv('ProgramData')
+  if (d == '') stop("The environment variable 'ProgramData' is not set.")
   file.path(d, s)
 }
 
