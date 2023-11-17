@@ -540,7 +540,7 @@ download_installer = function(file, version) {
 copy_tinytex = function(
   from = tinytex_root(), to = select_dir('Select Destination Directory'), move = FALSE
 ) {
-  if (!dir_exists(from)) stop('TinyTeX does not seem to be installed.')
+  if (!dir_exists(suppressWarnings(from))) stop('TinyTeX does not seem to be installed.')
   if (length(to) != 1 || !dir_exists(to))
     stop("The destination directory '", to, "' does not exist.")
   target = file.path(to, basename(from))
