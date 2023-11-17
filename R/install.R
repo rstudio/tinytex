@@ -210,7 +210,7 @@ win_app_dir = function(s) {
   if (d != '') {
     d2 = file.path(d, s)
     if (dir_exists(d2)) {
-      if (!xfun::is_ascii(d2)) warning(
+      if (getOption('tinytex.warn.appdata', TRUE) && !xfun::is_ascii(d2)) warning(
         "You are recommended to move TinyTeX via\n\n",
         "  tinytex::copy_tinytex(to = Sys.getenv('ProgramData'), move = TRUE)\n\n",
         "TinyTeX will not work because its installation path '", normalizePath(d2),
@@ -540,7 +540,8 @@ download_installer = function(file, version) {
 copy_tinytex = function(
   from = tinytex_root(), to = select_dir('Select Destination Directory'), move = FALSE
 ) {
-  if (!dir_exists(suppressWarnings(from))) stop('TinyTeX does not seem to be installed.')
+  op = options(tinytex.warn.appdata = FALSE); on.exit(options(op), add = TRUE)
+  if (!dir_exists(from)) stop('TinyTeX does not seem to be installed.')
   if (length(to) != 1 || !dir_exists(to))
     stop("The destination directory '", to, "' does not exist.")
   target = file.path(to, basename(from))
