@@ -7,7 +7,8 @@
 \usage{
 copy_tinytex(
   from = tinytex_root(),
-  to = select_dir("Select Destination Directory")
+  to = select_dir("Select Destination Directory"),
+  move = FALSE
 )
 
 use_tinytex(from = select_dir("Select TinyTeX Directory"))
@@ -22,6 +23,9 @@ the directory interactively will pop up.}
 \item{to}{The destination directory where you want to make a copy of TinyTeX.
 Like \code{from} in \code{use_tinytex()}, a dialog will pop up if \code{to}
 is not provided in \code{copy_tinytex()}.}
+
+\item{move}{Whether to use the new copy and delete the original copy of
+TinyTeX after copying it.}
 }
 \description{
 The function \code{copy_tinytex()} copies the existing TinyTeX installation
