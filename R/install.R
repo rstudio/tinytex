@@ -544,9 +544,12 @@ copy_tinytex = function(
   if (length(to) != 1 || !dir_exists(to))
     stop("The destination directory '", to, "' does not exist.")
   target = file.path(to, basename(from))
-  if (!move || !(res <- file.rename(from, target))) {
+  if (!move || !{tlmgr_path('remove'); res <- file.rename(from, target)}) {
     res = file.copy(from, to, recursive = TRUE)
-    if (res && move) uninstall_tinytex(dir = from)
+    if (res && move) {
+      tlmgr_path('remove')
+      unlink(from, recursive = TRUE)
+    }
   }
   if (res && move) use_tinytex(target)
   res
