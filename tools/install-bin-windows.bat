@@ -9,7 +9,7 @@ for /d %%G in ("TinyTeX*") do rd /s /q "%%~G"
 
 if not defined TINYTEX_INSTALLER set TINYTEX_INSTALLER=TinyTeX-1
 
-rem install to APPDATA by default if it doesn't contain spaces or non-ASCII chars, otherwise use ProgramData
+rem install to TINYTEX_DIR, which is APPDATA by default if it doesn't contain spaces or non-ASCII chars, otherwise use ProgramData
 if not defined TINYTEX_DIR (
   set TINYTEX_DIR=%APPDATA%
   powershell -Command "if ($Env:APPDATA -match '^[!-~]+$') {exit 0} else {exit 1}" || set TINYTEX_DIR=%ProgramData%
