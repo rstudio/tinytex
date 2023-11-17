@@ -211,10 +211,10 @@ win_app_dir = function(s) {
     d2 = file.path(d, s)
     if (dir_exists(d2)) {
       if (!xfun::is_ascii(d2)) warning(
-        "You are recommended to move TinyTeX via ",
-        "tinytex::copy_tinytex(to = Sys.getenv('ProgramData'), move = TRUE). ",
-        "TinyTeX will not work because its installation path '", d2,
-        "' contains non-ASCII characters. .", call. = FALSE
+        "You are recommended to move TinyTeX via\n\n",
+        "  tinytex::copy_tinytex(to = Sys.getenv('ProgramData'), move = TRUE)\n\n",
+        "TinyTeX will not work because its installation path '", normalizePath(d2),
+        "' contains non-ASCII characters.", call. = FALSE
       )
       return(d2)
     }
