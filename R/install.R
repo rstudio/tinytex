@@ -569,6 +569,7 @@ use_tinytex = function(from = select_dir('Select TinyTeX Directory')) {
     "Failed to add '", d, "' to your system's environment variable PATH. You may ",
     "consider the fallback approach, i.e., set options(tinytex.tlmgr.path = '", p, "')."
   )
+  op = options(tinytex.tlmgr.path = p); on.exit(options(op), add = TRUE)
   post_install_config(FALSE)
   message('Restart R and your editor and check if tinytex::tinytex_root() points to ', from)
 }
