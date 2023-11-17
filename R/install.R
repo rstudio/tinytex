@@ -488,7 +488,7 @@ install_prebuilt = function(
 }
 
 # post-install configurations
-post_install_config = function(add_path, extra_packages, repo, hash = FALSE) {
+post_install_config = function(add_path = TRUE, extra_packages = NULL, repo = 'ctan', hash = FALSE) {
   if (os_index == 2) {
     if (!dir_exists(bin_dir <- '~/.local/bin')) dir.create(bin_dir <- '~/bin', FALSE, TRUE)
     tlmgr(c('option', 'sys_bin', bin_dir))
@@ -569,6 +569,7 @@ use_tinytex = function(from = select_dir('Select TinyTeX Directory')) {
     "Failed to add '", d, "' to your system's environment variable PATH. You may ",
     "consider the fallback approach, i.e., set options(tinytex.tlmgr.path = '", p, "')."
   )
+  post_install_config(FALSE)
   message('Restart R and your editor and check if tinytex::tinytex_root() points to ', from)
 }
 
