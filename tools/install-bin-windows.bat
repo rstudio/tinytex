@@ -12,9 +12,7 @@ if not defined TINYTEX_INSTALLER set TINYTEX_INSTALLER=TinyTeX-1
 rem install to APPDATA by default if it doesn't contain spaces or non-ASCII chars, otherwise use ProgramData
 if not defined TINYTEX_DIR (
   set TINYTEX_DIR=%APPDATA%
-  if /i not "%CI%"=="true" (
-    powershell -Command "if ($Env:APPDATA -match '^[!-~]+$') {exit 0} else {exit 1}" || set TINYTEX_DIR=%ProgramData%
-  )
+  powershell -Command "if ($Env:APPDATA -match '^[!-~]+$') {exit 0} else {exit 1}" || set TINYTEX_DIR=%ProgramData%
 )
 set BUNDLE_EXT=zip
 if "%TINYTEX_INSTALLER%" == "TinyTeX-2" set BUNDLE_EXT=exe
