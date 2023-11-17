@@ -52,6 +52,9 @@ install_tinytex = function(
     "the installation is aborted."
   )
   if (!is.logical(force)) stop('The argument "force" must take a logical value.')
+  continue_inst = function() {
+    tolower(substr(readline('Continue the installation anyway? (Y/N) '), 1, 1)) == 'y'
+  }
   # if tlmgr is detected in the system, ask in interactive mode whether to
   # continue the installation, and stop in non-interactive() mode
   p = which_bin(c('tlmgr', 'pdftex', 'xetex', 'luatex'))
@@ -59,8 +62,7 @@ install_tinytex = function(
   if (!force && length(p)) {
     message("Found '", p[1], "', which indicates a LaTeX distribution may have existed in the system.")
     if (interactive()) {
-      if (tolower(substr(readline('Continue the installation anyway? (Y/N) '), 1, 1)) != 'y')
-        return(invisible(''))
+      if (!continue_inst()) return(invisible(''))
     } else stop(
       'If you want to force installing TinyTeX anyway, use tinytex::install_tinytex(force = TRUE).'
     )
@@ -77,8 +79,17 @@ install_tinytex = function(
   if (dir != '') {
     dir = gsub('[/\\]+$', '', dir)  # remove trailing slashes
     check_dir(dir)
+    dir = xfun::normalize_path(dir)
+    if (is_windows() && !valid_path(dir)) {
+      warning(
+        "The directory path '", dir, "' contains spaces or non-ASCII characters, ",
+        "and TinyTeX may not work. Please use a path with pure ASCII characters and no spaces.",
+        immediate. = TRUE
+      )
+      if (!force && !(interactive() && continue_inst())) return(invisible(dir))
+    }
     unlink(dir, recursive = TRUE)
-    user_dir = normalizePath(dir, mustWork = FALSE)
+    user_dir = dir
   }
 
   repository = normalize_repo(repository)
@@ -218,12 +229,15 @@ win_app_dir = function(s) {
       )
       return(d2)
     }
-    if (grepl('^[!-~]+$', d)) return(d2)  # path is pure ASCII and has no spaces
+    if (valid_path(d)) return(d2)
   }
   d = Sys.getenv('ProgramData')
   if (d == '') stop("The environment variable 'ProgramData' is not set.")
   file.path(d, s)
 }
+
+# test if path is pure ASCII and has no spaces
+valid_path = function(x) grepl('^[!-~]+$', x)
 
 # check if /usr/local/bin on macOS is writable
 check_local_bin = function() {
