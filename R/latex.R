@@ -692,7 +692,7 @@ refresh_all = function(...) {
 }
 
 # look up files in the Kpathsea library, e.g., kpsewhich('Sweave.sty')
-kpsewhich = function(filename, options = character()) {
+kpsewhich = function(filename, options = character(), ...) {
   tweak_path()
-  system2('kpsewhich', c(options, shQuote(filename)))
+  system2('kpsewhich', c(options, shQuote(filename)), ...)
 }
