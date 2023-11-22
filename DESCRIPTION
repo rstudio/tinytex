@@ -1,7 +1,7 @@
 Package: tinytex
 Type: Package
 Title: Helper Functions to Install and Maintain TeX Live, and Compile LaTeX Documents
-Version: 0.48.4
+Version: 0.49
 Authors@R: c(
   person("Yihui", "Xie", role = c("aut", "cre", "cph"), email = "xie@yihui.name", comment = c(ORCID = "0000-0003-0645-5666")),
   person(given = "Posit Software, PBC", role = c("cph", "fnd")),
