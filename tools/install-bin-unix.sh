@@ -2,6 +2,9 @@
 
 set -e
 
+perl -mFile::Find /dev/null ||
+  (echo "perl is required but not found (https://github.com/rstudio/tinytex/issues/419)" && exit 1)
+
 cd ${TMPDIR:-/tmp}
 
 [ -z $(which tlmgr) ] || TL_INSTALLED_PKGS=$(tlmgr info --list --only-installed --data name | tr '\n' ' ')
