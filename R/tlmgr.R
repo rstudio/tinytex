@@ -112,7 +112,7 @@ tlmgr_install = function(pkgs = character(), usermode = FALSE, path = !usermode 
   update_pkgs = function(...) tlmgr_update(..., usermode = usermode)
 
   # if any packages have been installed, update packages first
-  if (any(check_installed(pkgs))) update_pkgs()
+  if (getOption('tinytex.tlmgr_update', TRUE) && any(check_installed(pkgs))) update_pkgs()
 
   res = tlmgr(c('install', pkgs), usermode, ...)
   if (res != 0 || any(!check_installed(pkgs))) {
