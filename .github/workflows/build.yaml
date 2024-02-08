@@ -95,7 +95,7 @@ jobs:
         shell: cmd
 
       - name: Upload bundles
-        uses: nick-fields/retry@v2
+        uses: nick-fields/retry@v3
         with:
           timeout_minutes: 5
           max_attempts: 5
@@ -191,7 +191,7 @@ jobs:
       - name: Upload bundles
         # this specific action is used at some issues have been observe with gh while uploading assets
         # This allows to not fail the workflow on upload, but retry a few time
-        uses: nick-fields/retry@v2
+        uses: nick-fields/retry@v3
         with:
           timeout_minutes: 5
           max_attempts: 5
@@ -262,7 +262,7 @@ jobs:
       - run: ls -lisa
 
       - name: Upload bundles
-        uses: nick-fields/retry@v2
+        uses: nick-fields/retry@v3
         with:
           timeout_minutes: 5
           max_attempts: 5
@@ -293,7 +293,7 @@ jobs:
       - run: ls -lisa tinitex
 
       - name: Upload bundles
-        uses: nick-fields/retry@v2
+        uses: nick-fields/retry@v3
         with:
           timeout_minutes: 5
           max_attempts: 5
