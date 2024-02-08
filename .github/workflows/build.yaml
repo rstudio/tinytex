@@ -143,6 +143,9 @@ jobs:
         run: |
           sed -i 's|# finished base|cp $OLDPWD/install-tl-unx.tar.gz tools/; Rscript tools/clean-tlpdb.R; tar zcf TinyTeX-0.tar.gz -C ~ .TinyTeX|' tools/install-unx.sh
           ./tools/install-unx.sh
+          # tlmgr path add will add in this folder which is not on PATH by default
+          # (can be checked with tlmgr options sys_bin)
+          echo "~/bin" >> $GITHUB_PATH
 
       - name: Build TinyTeX-1.zip with new package installed
         run: |
