@@ -40,7 +40,7 @@ jobs:
 
     steps:
       - name: Clone repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install Pandoc
         uses: r-lib/actions/setup-pandoc@v2
@@ -116,7 +116,7 @@ jobs:
 
     steps:
       - name: Clone repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install Pandoc
         uses: r-lib/actions/setup-pandoc@v2
@@ -211,7 +211,7 @@ jobs:
 
     steps:
       - name: Clone repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install Pandoc
         uses: r-lib/actions/setup-pandoc@v2
