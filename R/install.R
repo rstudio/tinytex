@@ -206,7 +206,7 @@ auto_repo = function() {
     curlGetHeaders('https://mirror.ctan.org/systems/texlive/tlnet'),
     error = function(e) character()
   )
-  x = xfun::grep_sub('^location: ([^[:space:]]+)\\s*$', '\\1', x, ignore.case = TRUE)
+  x = xfun::grep_sub('^location: (https://[^[:space:]]+)\\s*$', '\\1', x, ignore.case = TRUE)
   x = tail(x, 1)
   if (length(x) == 1) x else 'ctan'
 }
