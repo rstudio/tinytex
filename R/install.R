@@ -27,7 +27,8 @@
 #'   \code{'http://mirrors.tuna.tsinghua.edu.cn/CTAN/'}, or
 #'   \code{'https://mirror.las.iastate.edu/tex-archive/'}. In theory, this
 #'   argument should end with the path \file{/systems/texlive/tlnet}, and if it
-#'   does not, the path will be automatically appended.
+#'   does not, the path will be automatically appended. You can get a full list
+#'   of CTAN mirrors via \code{tinytex:::ctan_mirrors()}.
 #' @param extra_packages A character vector of extra LaTeX packages to be
 #'   installed. By default, a vector of all currently installed LaTeX packages
 #'   if an existing installation of TinyTeX is found. If you want a fresh
@@ -209,6 +210,13 @@ auto_repo = function() {
   x = xfun::grep_sub('^location: (https://[^[:space:]]+)\\s*$', '\\1', x, ignore.case = TRUE)
   x = tail(x, 1)
   if (length(x) == 1) x else 'ctan'
+}
+
+# retrieve all CTAN (https) mirrors
+ctan_mirrors = function() {
+  x = readLines('https://ctan.org/mirrors/mirmon')
+  u = xfun::grep_sub('.*<TD ALIGN=RIGHT><A HREF="(https://[^"]+)".*', '\\1', x)
+  xfun::raw_string(u)
 }
 
 # use %APPDATA%/TinyTeX if it exists or doesn't contain spaces or non-ASCII

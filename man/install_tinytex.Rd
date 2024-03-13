@@ -50,7 +50,8 @@ repositories at \code{https://ctan.org/mirrors}), e.g.,
 \code{'http://mirrors.tuna.tsinghua.edu.cn/CTAN/'}, or
 \code{'https://mirror.las.iastate.edu/tex-archive/'}. In theory, this
 argument should end with the path \file{/systems/texlive/tlnet}, and if it
-does not, the path will be automatically appended.}
+does not, the path will be automatically appended. You can get a full list
+of CTAN mirrors via \code{tinytex:::ctan_mirrors()}.}
 
 \item{extra_packages}{A character vector of extra LaTeX packages to be
 installed. By default, a vector of all currently installed LaTeX packages
