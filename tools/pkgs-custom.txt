@@ -8,6 +8,7 @@ babel
 bibtex
 bigintcalc
 bitset
+bookmark
 booktabs
 cm
 ctablestack
