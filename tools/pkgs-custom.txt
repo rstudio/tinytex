@@ -21,7 +21,6 @@ etex
 etexcmds
 etoolbox
 euenc
-everyshi
 fancyvrb
 filehook
 firstaid
