@@ -175,19 +175,19 @@ jobs:
           echo "tlmgr install $(cat pkgs-custom.txt | tr '\n' ' ')" >> install.sh
           tar zcf ../installer-unix.tar.gz install-tl-unx.tar.gz tinytex.profile install.sh
 
-      - name: Test Installation script
-        env:
-          TINYTEX_INSTALLER: TinyTeX-0
-        run: ./tools/install-bin-unix.sh
-
-      - run: ls -lisa
-
       - name: Get Version information for daily build
         id: tlmgr-version
         run: |
           echo "TLMGR_VERSION<<EOFTLMGR" >> $GITHUB_OUTPUT
           ~/bin/tlmgr version | sed -n '1p;3p' >> $GITHUB_OUTPUT
           echo "EOFTLMGR" >> $GITHUB_OUTPUT
+
+      - name: Test Installation script
+        env:
+          TINYTEX_INSTALLER: TinyTeX-0
+        run: ./tools/install-bin-unix.sh
+
+      - run: ls -lisa
 
       - name: Upload bundles
         # this specific action is used at some issues have been observe with gh while uploading assets
