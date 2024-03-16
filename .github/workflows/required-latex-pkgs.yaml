@@ -16,7 +16,7 @@ jobs:
   LateX-Packages:
     runs-on: ubuntu-latest
 
-    name: Ubuntu 18-04 (release)
+    name: Ubuntu (release)
 
     env:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
