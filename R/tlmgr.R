@@ -225,16 +225,27 @@ tlmgr_update = function(
 # check if a new version of TeX Live has been released and give instructions on
 # how to upgrade
 check_tl_version = function(x) {
-  if (length(x) == 0) return()
   i = grep('Local TeX Live \\([0-9]+) is older than remote repository \\([0-9]+)', x)
-  if (length(i) == 0) return()
-  message(
+  if (length(i) > 0) auto_upgrade()
+  .global$update_noted = TRUE
+}
+
+# provide a way options(tinytex.upgrade = TRUE) to automatically upgrade TinyTeX
+# (this is an ugly workaround for rstudio/revdepcheck-cloud/#115)
+auto_upgrade = function() {
+  up = is_tinytex() && getOption(
+    'tinytex.upgrade',
+    all(Sys.getenv(c('DEV_PACKAGE_TARBALL', 'OUTPUT_S3_PATH')) != '')
+  )
+  if (!up) return(message(
     'A new version of TeX Live has been released. If you need to install or update ',
     'any LaTeX packages, you have to upgrade ', if (!is_tinytex()) 'TeX Live.' else c(
       'TinyTeX with tinytex::reinstall_tinytex(repository = "illinois").'
     )
-  )
-  .global$update_noted = TRUE
+  ))
+  root = tinytex_root()
+  message('Trying to upgrade TinyTeX automatically now...')
+  reinstall_tinytex(force = TRUE, dir = if (file.access(root, 2) == 0) root else default_inst())
 }
 
 delete_tlpdb_files = function() {
