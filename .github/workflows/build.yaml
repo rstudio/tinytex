@@ -288,7 +288,7 @@ jobs:
         working-directory: tinitex
         run: |
           7z a -o.. tinitex.zip x86_64-pc-windows-msvc/.
-          7z a -ttar -so tinitex.tar x86_64-apple-darwin/. | 7z a -si -o.. tinitex.tgz
+          7z a -ttar -so tinitex.tar aarch64-apple-darwin/. | 7z a -si -o.. tinitex.tgz
           7z a -ttar -so tinitex.tar x86_64-unknown-linux-gnu/. | 7z a -si -o.. tinitex.tar.gz
 
       - run: ls -lisa tinitex
