@@ -231,7 +231,7 @@ check_tl_version = function(x) {
 }
 
 # provide a way options(tinytex.upgrade = TRUE) to automatically upgrade TinyTeX
-# (this is an ugly workaround for rstudio/revdepcheck-cloud/#115)
+# (this is an ugly workaround for rstudio/revdepcheck-cloud#115)
 auto_upgrade = function() {
   up = is_tinytex() && getOption(
     'tinytex.upgrade',
