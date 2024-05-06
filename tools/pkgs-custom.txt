@@ -16,6 +16,7 @@ dehyph
 dvipdfmx
 dvips
 ec
+epstopdf
 epstopdf-pkg
 etex
 etexcmds
