@@ -264,6 +264,8 @@ jobs:
 
       - name: Upload bundles
         uses: nick-fields/retry@v3
+        env:
+          GH_DEBUG: api
         with:
           timeout_minutes: 5
           max_attempts: 5
