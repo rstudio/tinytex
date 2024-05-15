@@ -267,7 +267,7 @@ jobs:
         env:
           GH_DEBUG: api
         with:
-          timeout_minutes: 5
+          timeout_minutes: 10
           max_attempts: 5
           retry_wait_seconds: 10
           command: |
