@@ -27,6 +27,7 @@ cleveref
 collectbox
 colortbl
 comment
+count1to
 courier
 crop
 csquotes
@@ -46,6 +47,7 @@ esvect
 etex-pkg
 eurosym
 everysel
+everyshi
 expex
 extsizes
 fancyhdr
@@ -91,8 +93,8 @@ mnras
 modes
 morefloats
 moreverb
-ms
 multirow
+multitoc
 mweights
 ncntrsbk
 needspace
@@ -109,6 +111,7 @@ pdfsync
 pgf
 picinpar
 polyglossia
+prelim2e
 preprint
 preview
 psfrag
