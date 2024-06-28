@@ -1,6 +1,7 @@
 amscls
 amsfonts
 amsmath
+anyfontsize
 atbegshi
 atveryend
 auxhook
