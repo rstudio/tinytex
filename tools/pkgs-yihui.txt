@@ -5,6 +5,7 @@ ae
 algorithmicx
 algorithms
 amscls
+anyfontsize
 apacite
 appendix
 awesomebox
