@@ -142,7 +142,7 @@ need_add_path = function() {
 
 is_writable = function(p) file.access(p, 2) == 0
 
-tlmgr_writable = function() is_writable(Sys.which('tlmgr'))
+tlmgr_writable = function() is_tinytex() && is_writable(Sys.which('tlmgr'))
 
 #' Check if certain LaTeX packages are installed
 #'
