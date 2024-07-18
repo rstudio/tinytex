@@ -83,6 +83,7 @@ selnolig
 stringenc
 tex
 tex-ini-files
+texlive-scripts-extra
 times
 tipa
 tools
