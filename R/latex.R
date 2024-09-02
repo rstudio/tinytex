@@ -561,6 +561,7 @@ regex_errors = function() {
   # ! I can't find file `hyph-de-1901.ec.tex'.
   # ! Package pdfx Error: No color profile sRGB_IEC61966-2-1_black_scaled.icc found
   # No file LGRcmr.fd. ! LaTeX Error: This NFSS system isn't set up properly.
+  # (fontspec)                The font "LibertinusSerif-Regular" cannot be
   list(
     font = c(
       # error messages about missing fonts (don't move the first item below, as
@@ -569,7 +570,8 @@ regex_errors = function() {
       ".*! Font [^=]+=([^ ]+).+ not loadable.*",
       '.*! .*The font "([^"]+)" cannot be found.*',
       '.*!.+ error:.+\\(file ([^)]+)\\): .*',
-      '.*Unable to find TFM file "([^"]+)".*'
+      '.*Unable to find TFM file "([^"]+)".*',
+      '.*\\(fontspec\\)\\s+The font "([^"]+)" cannot be.*'
     ),
     fd = c(
       # font definition files
