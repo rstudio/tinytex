@@ -283,15 +283,21 @@ jobs:
         run: |
           echo ">> Will retrieve artifact from Quarto latexmk workflow"
           runId=$(gh run -R quarto-dev/quarto-cli list -w 'Test quarto-latexmk' --json 'headBranch,conclusion,databaseId' --jq 'map(select(.conclusion == "success" and .headBranch == "main")) | .[0].databaseId')
-          gh run -R quarto-dev/quarto-cli download $runId --name tinitex --dir tinitex
+          gh run -R quarto-dev/quarto-cli download $runId -p tinitex-* --dir tinitex
         shell: bash
 
       - name: Repackage in per OS bundle
         working-directory: tinitex
         run: |
+          pushd $(find . -maxdepth 1 -type d -name "windows")
           7z a -o.. tinitex.zip x86_64-pc-windows-msvc/.
+          popd
+          pushd $(find . -maxdepth 1 -type d -name "macOS")
           7z a -ttar -so tinitex.tar aarch64-apple-darwin/. | 7z a -si -o.. tinitex.tgz
+          popd
+          pushd $(find . -maxdepth 1 -type d -name "linux")
           7z a -ttar -so tinitex.tar x86_64-unknown-linux-gnu/. | 7z a -si -o.. tinitex.tar.gz
+          popd
 
       - run: ls -lisa tinitex
 
