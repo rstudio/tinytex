@@ -291,12 +291,15 @@ jobs:
         run: |
           pushd $(find . -maxdepth 1 -type d -name "*windows*")
           7z a -o.. tinitex.zip x86_64-pc-windows-msvc/.
+          mv tinitex.zip ..
           popd
           pushd $(find . -maxdepth 1 -type d -name "*macOS*")
           7z a -ttar -so tinitex.tar aarch64-apple-darwin/. | 7z a -si -o.. tinitex.tgz
+          mv tinitex.tgz ..
           popd
           pushd $(find . -maxdepth 1 -type d -name "*ubuntu*")
           7z a -ttar -so tinitex.tar x86_64-unknown-linux-gnu/. | 7z a -si -o.. tinitex.tar.gz
+          mv tinitex.tar.gz ..
           popd
 
       - run: ls -lisa tinitex
