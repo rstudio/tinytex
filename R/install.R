@@ -214,9 +214,39 @@ auto_repo = function() {
 
 # retrieve all CTAN (https) mirrors
 ctan_mirrors = function() {
-  x = readLines('https://ctan.org/mirrors/mirmon')
-  u = xfun::grep_sub('.*<TD ALIGN=RIGHT><A HREF="(https://[^"]+)".*', '\\1', x)
-  xfun::raw_string(u)
+  html = xfun::file_string('https://ctan.org/mirrors/')
+  r = function(i) sprintf('^(.*>)?\\s*([^<]+)</h%d>\\s*(.*)$', i)
+  res = unlist(lapply(unlist(strsplit(html, '<h2[^>]*>')), function(x) {
+    x = unlist(strsplit(x, '<h3[^>]*>'))
+    if (length(x) < 2 || !grepl('</h2>', x[1])) return()
+    r2 = r(2)
+    continent = gsub(r2, '\\2', x[1])
+    x[1] = gsub(r2, '\\3', x[1])
+    x = x[!grepl('^\\s*$', x)]
+    r3 = r(3)
+    if (!grepl(r3, x[1])) return()
+    country = gsub(r3, '\\2', x)
+    x = gsub(r3, '\\3', x)
+    r4 = r(4)
+    x = lapply(x, function(z) {
+      z = unlist(strsplit(z, '<h4[^>]*>'))
+      m = regexec('<a href="(https://[^"]+)"[^>]*>https</a>', z)
+      link = unlist(lapply(regmatches(z, m), `[`, 2))
+      names(link) = gsub(r4, '\\2', z)
+      link[!is.na(link)]
+    })
+    structure(list(structure(x, names = country)), names = continent)
+  }))
+  nm = lapply(strsplit(names(res), '.', fixed = TRUE), function(x) {
+    x3 = paste(x[-(1:2)], collapse = '.')
+    r5 = '.*\\(|\\).*'
+    x3 = if (grepl(r5, x3)) gsub(r5, '', x3) else ''
+    c(x[1], x[2], x3)
+  })
+  nm = do.call(rbind, nm)
+  res = cbind(nm, unname(res))
+  colnames(res) = c('Continent', 'Country/Region', 'City', 'URL')
+  as.data.frame(res)
 }
 
 # use %APPDATA%/TinyTeX if it exists or doesn't contain spaces or non-ASCII
