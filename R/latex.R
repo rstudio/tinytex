@@ -113,7 +113,7 @@ latexmk = function(
   if (is_latex) pdf_file = with_ext(pdf_file, 'dvi')
   check_pdf = function() {
     if (!file.exists(pdf)) show_latex_error(file, with_ext(pdf, 'log'), TRUE)
-    file_rename(pdf, pdf_file)
+    xfun::file_rename(pdf, pdf_file)
     pdf_file
   }
   if (engine == 'tectonic') {
@@ -472,14 +472,6 @@ check_latexmk_version = function() {
 # return file paths that exist
 exist_files = function(files) {
   files[utils::file_test('-f', files)]
-}
-
-# use file.copy() if file.rename() fails
-file_rename = function(from, to) {
-  if (from == to) return(TRUE)
-  if (!suppressWarnings(file.rename(from, to))) {
-    if (file.copy(from, to, overwrite = TRUE)) file.remove(from)
-  }
 }
 
 #' Find missing LaTeX packages from a LaTeX log file
