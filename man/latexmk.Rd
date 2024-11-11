@@ -16,7 +16,7 @@ latexmk(
   min_times = 1,
   max_times = 10,
   install_packages = emulation && tlmgr_writable(),
-  pdf_file = gsub("tex$", "pdf", file),
+  pdf_file = NULL,
   clean = TRUE
 )
 
@@ -55,7 +55,8 @@ set via the global option \code{tinytex.install_packages}, e.g.,
 
 \item{pdf_file}{Path to the PDF output file. By default, it is under the same
 directory as the input \code{file} and also has the same base name. When
-\code{engine == 'latex'}, this will be a DVI file.}
+\code{engine == 'latex'} or \code{engine_args} contains \verb{--no-pdf} or
+\code{--output-format=dvi}, this will be a DVI file.}
 
 \item{clean}{Whether to clean up auxiliary files after compilation (can be
 set in the global option \code{tinytex.clean}, which defaults to

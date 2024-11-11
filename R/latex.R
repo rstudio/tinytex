@@ -62,7 +62,8 @@
 #'   \code{options(tinytex.install_packages = FALSE)}.
 #' @param pdf_file Path to the PDF output file. By default, it is under the same
 #'   directory as the input \code{file} and also has the same base name. When
-#'   \code{engine == 'latex'}, this will be a DVI file.
+#'   \code{engine == 'latex'} or \code{engine_args} contains \verb{--no-pdf} or
+#'   \code{--output-format=dvi}, this will be a DVI file.
 #' @param clean Whether to clean up auxiliary files after compilation (can be
 #'   set in the global option \code{tinytex.clean}, which defaults to
 #'   \code{TRUE}).
@@ -73,7 +74,7 @@ latexmk = function(
   file, engine = c('pdflatex', 'xelatex', 'lualatex', 'latex', 'tectonic'),
   bib_engine = c('bibtex', 'biber'), engine_args = NULL, emulation = TRUE,
   min_times = 1, max_times = 10, install_packages = emulation && tlmgr_writable(),
-  pdf_file = gsub('tex$', 'pdf', file), clean = TRUE
+  pdf_file = NULL, clean = TRUE
 ) {
   if (!grepl('[.]tex$', file))
     stop("The input file '", file, "' does not have the .tex extension")
@@ -81,7 +82,9 @@ latexmk = function(
   if (missing(engine)) engine = getOption('tinytex.engine', engine)
   engine = gsub('^(pdf|xe|lua)(tex)$', '\\1la\\2', engine)  # normalize *tex to *latex
   engine = match.arg(engine)
-  is_latex = engine == 'latex'
+  is_dvi = engine == 'latex' ||
+    any(grepl('(^| )(--output-format=dvi|--no-pdf)( |$)', engine_args))
+  ext = if (is_dvi) { if (engine == 'xelatex') 'xdv' else 'dvi' } else 'pdf'
   tweak_path()
   if (missing(emulation)) emulation = getOption('tinytex.latexmk.emulation', emulation)
   if (!emulation) {
@@ -100,20 +103,19 @@ latexmk = function(
   if (missing(bib_engine)) bib_engine = getOption('tinytex.bib_engine', bib_engine)
   if (missing(engine_args)) engine_args = getOption('tinytex.engine_args', engine_args)
   if (missing(clean)) clean = getOption('tinytex.clean', TRUE)
-  pdf = gsub('tex$', if (is_latex) 'dvi' else 'pdf', basename(file))
+  out = with_ext(basename(file), ext)
   if (!is.null(output_dir <- getOption('tinytex.output_dir'))) {
     output_dir_arg = shQuote(paste0(if (emulation) '-', '-output-directory=', output_dir))
     if (length(grep(output_dir_arg, engine_args, fixed = TRUE)) == 0) stop(
       "When you set the global option 'tinytex.output_dir', the argument 'engine_args' ",
       "must contain this value: ", capture.output(dput(output_dir_arg))
     )
-    pdf = file.path(output_dir, pdf)
-    if (missing(pdf_file)) pdf_file = file.path(output_dir, basename(pdf_file))
+    if (is.null(pdf_file)) out = file.path(output_dir, out)
   }
-  if (is_latex) pdf_file = with_ext(pdf_file, 'dvi')
+  if (is.null(pdf_file)) pdf_file = out
   check_pdf = function() {
-    if (!file.exists(pdf)) show_latex_error(file, with_ext(pdf, 'log'), TRUE)
-    xfun::file_rename(pdf, pdf_file)
+    if (!file.exists(out)) show_latex_error(file, with_ext(out, 'log'), TRUE)
+    xfun::file_rename(out, pdf_file)
     pdf_file
   }
   if (engine == 'tectonic') {
@@ -129,7 +131,7 @@ latexmk = function(
   }
   system2_quiet('latexmk', c(
     '-latexoption=-halt-on-error -interaction=batchmode',
-    if (is_latex) '-latex=latex' else paste0('-pdf -pdflatex=', engine),
+    if (is_dvi) '-latex=latex' else paste0('-pdf -pdflatex=', engine),
     engine_args, shQuote(file)
   ), error = {
     if (install_packages) warning(
