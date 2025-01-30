@@ -4,6 +4,8 @@
 xfun::in_dir('..', xfun::install_dir('tinytex'))
 if (!tinytex:::tlmgr_available()) stop("tlmgr not available")
 
+system2('git', c('checkout', '--', '.'))  # drop changes if exist
+
 owd = setwd('tools')
 
 x0 = tinytex::tl_pkgs()  # packages from the minimal installation
@@ -35,30 +37,24 @@ x1 = sort(unique(c(
   'ec', 'inconsolata', 'times', 'tex', 'helvetic', 'dvips', 'metafont', 'mfware', 'xkeyval'
 )))
 tinytex::tlmgr_install(x1)
-x2 = sort(readLines('pkgs-custom.txt'))
-if (!identical(x1, x2)) stop(
-  'pkgs-custom.txt needs to be updated.\n\nPackages required are:\n',
-  paste(x1, collapse = '\n')
-)
+writeLines(x1, 'pkgs-custom.txt')
 
 # any new packages need to be added to pkgs-yihui.txt?
 tinytex::tlmgr_install(readLines('pkgs-yihui.txt'))
-x3 = tinytex::tl_pkgs()
 build_more = function() {
   render('test-basic.Rmd', 'beamer_presentation', quiet = TRUE)
   render('test-kableExtra.Rmd', quiet = TRUE)
 }
 build_more()
 # were there any new packages installed?
-x4 = tinytex::tl_pkgs()
-if (length(x5 <- setdiff(x4, x3))) stop(
-  'pkgs-yihui.txt needs to include:\n', paste(x5, collapse = '\n')
-)
+x2 = tinytex::tl_pkgs()
+writeLines(x2, 'pkgs-yihui.txt')
 
 setwd(owd)
 
-if (!identical(p1 <- tinytex:::tl_platforms(), p2 <- tinytex:::.tl_platforms)) stop(
-  'tl_platforms() returned: ', paste(p1, collapse = ', '),
-  '\n.tl_platforms returned ', paste(p2, collapse = ', '),
-  '\nThe latter needs to be updated in the tinytex package.'
-)
+p = tinytex:::tl_platforms()
+writeLines(c(
+  '# a copy of the returned result from tl_platform() is saved here because',
+  '# tl_platforms() is a little slow and requires Internet connection',
+  strwrap(sprintf('.tl_platforms = c(%s)', paste0("'", p, "'", collapse = ', ')), 80, exdent = 2)
+), 'R/platforms.R')
