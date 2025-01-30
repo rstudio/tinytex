@@ -139,8 +139,8 @@ symbol
 tabto-ltx
 tabu
 tcolorbox
-texcount
 tex-gyre
+texcount
 textcase
 thmtools
 threeparttable
@@ -164,8 +164,8 @@ vruler
 wallpaper
 wrapfig
 xargs
-xpatch
 xltxtra
+xpatch
 xstring
 xwatermark
 xypic
