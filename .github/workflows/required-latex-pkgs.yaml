@@ -37,12 +37,14 @@ jobs:
         with:
           extra-packages: any::curl
 
-      - name: Find required LateX packages
+      - name: Find required LaTeX packages
         run: Rscript tools/test-packages.R
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v5
         with:
+          title: Update the list of LaTeX packages
+          body: New results by running `tools/test-packages.R`.
           add-paths: |
             R/platforms.R
             tools/pkgs-custom.txt

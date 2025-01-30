@@ -40,15 +40,17 @@ tinytex::tlmgr_install(x1)
 writeLines(x1, 'pkgs-custom.txt')
 
 # any new packages need to be added to pkgs-yihui.txt?
-tinytex::tlmgr_install(readLines('pkgs-yihui.txt'))
+x2 = readLines('pkgs-yihui.txt')
+tinytex::tlmgr_install(x2)
+x3 = tinytex::tl_pkgs()
 build_more = function() {
   render('test-basic.Rmd', 'beamer_presentation', quiet = TRUE)
   render('test-kableExtra.Rmd', quiet = TRUE)
 }
 build_more()
 # were there any new packages installed?
-x2 = tinytex::tl_pkgs()
-writeLines(x2, 'pkgs-yihui.txt')
+x4 = setdiff(tinytex::tl_pkgs(), x3)
+writeLines(sort(c(x2, x4)), 'pkgs-yihui.txt')
 
 setwd(owd)
 
