@@ -38,6 +38,10 @@ rm -rf $TEXDIR
 if [ -z $TINYTEX_VERSION ]; then
   TINYTEX_URL="https://github.com/rstudio/tinytex-releases/releases/download/daily/$TINYTEX_INSTALLER"
 else
+  # the installer was accidentally named "install-unix" instead of "installer-unix" before v2025.01
+  if [ "$TINYTEX_INSTALLER" = "installer-unix" ] && [[ "$TINYTEX_VERSION" -le "2025.01" ]]; then
+    TINYTEX_INSTALLER="install-unix"
+  fi
   TINYTEX_URL="https://github.com/rstudio/tinytex-releases/releases/download/v$TINYTEX_VERSION/$TINYTEX_INSTALLER-v$TINYTEX_VERSION"
 fi
 
@@ -45,7 +49,7 @@ if [ $OSNAME = 'Darwin' ]; then
     curl -L -f --retry 10 --retry-delay 30 ${TINYTEX_URL}.tgz -o TinyTeX.tgz
     tar xf TinyTeX.tgz -C $(dirname $TEXDIR)
     rm TinyTeX.tgz
-else if [ $TINYTEX_INSTALLER != 'installer-unix' ]; then
+else if [[ "$TINYTEX_INSTALLER" =~ ^"TinyTeX-" ]]; then
     wget --retry-connrefused --progress=dot:giga -O TinyTeX.tar.gz ${TINYTEX_URL}.tar.gz
     tar xf TinyTeX.tar.gz -C $(dirname $TEXDIR)
     rm TinyTeX.tar.gz
