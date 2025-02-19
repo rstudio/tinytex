@@ -45,6 +45,7 @@ jobs:
         with:
           title: Update the list of LaTeX packages
           body: New results by running `tools/test-packages.R`.
+          commit-message: Update the list of LaTeX packages
           add-paths: |
             R/platforms.R
             tools/pkgs-custom.txt
