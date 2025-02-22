@@ -112,7 +112,7 @@ latexmk = function(
     )
     if (is.null(pdf_file)) out = file.path(output_dir, out)
   }
-  if (is.null(pdf_file)) pdf_file = out
+  if (is.null(pdf_file)) pdf_file = with_ext(file, ext)
   check_pdf = function() {
     if (!file.exists(out)) show_latex_error(file, with_ext(out, 'log'), TRUE)
     xfun::file_rename(out, pdf_file)
