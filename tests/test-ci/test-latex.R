@@ -6,3 +6,9 @@ assert('latexmk() can generate DVI output', {
   (latexmk2('xelatex', '--no-pdf') %==% 'test-dvi.xdv')
   (latexmk2('lualatex', '--output-format=dvi') %==% 'test-dvi.dvi')
 })
+
+assert('latexmk() generates the PDF output to the dir of the .tex file by default', {
+  (latexmk('sub/test.tex') %==% 'sub/test.pdf')
+  # can also specify a custom pdf output path
+  (latexmk('sub/test.tex', pdf_file = 'foo.pdf') %==% 'foo.pdf')
+})
