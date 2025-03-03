@@ -625,6 +625,7 @@ detect_files = function(text) {
     }
     if (p == r$fd) v = tolower(v)  # LGRcmr.fd -> lgrcmr.fd
     if (!(p %in% r$font)) return(v)
+    v = gsub('^.*?:|:.*$', '', v)  # https://github.com/rstudio/tinytex/issues/465
     if (p == r$font[1]) paste0(v, '.sty') else font_ext(v)
   })))
 }

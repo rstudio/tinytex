@@ -1,11 +1,12 @@
 library(testit)
 
 assert('detect_files() can detect filenames from LaTeX log', {
-  # Fonts are tested in test-tlmgr.R also
+  # Fonts are also tested in test-tlmgr.R
   (detect_files("! Font U/psy/m/n/10=psyr at 10.0pt not loadable: Metric (TFM) file not found") %==% font_ext("psyr"))
   (detect_files('! The font "FandolSong-Regular" cannot be found.') %==% font_ext("FandolSong-Regular"))
   (detect_files('!pdfTeX error: /usr/local/bin/pdflatex (file tcrm0700): Font tcrm0700 at 600 not found') %==% font_ext('tcrm0700'))
   (detect_files('(fontspec)                The font "LibertinusSerif-Regular" cannot be') %==% font_ext('LibertinusSerif-Regular'))
+  (detect_files('! Font \\JY3/mc/m/n/10=file:HaranoAjiMincho-Regular.otf:-kern;jfm=ujis at 9.24713pt not loadable: metric data not found or bad.') %==% 'HaranoAjiMincho-Regular.otf')
 
   (length(detect_files("asdf qwer")) == 0)
   (detect_files("! LaTeX Error: File `framed.sty' not found.") %==% 'framed.sty')
