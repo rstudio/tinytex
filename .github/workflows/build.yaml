@@ -139,6 +139,13 @@ jobs:
           try(update.packages(ask = FALSE, checkBuilt = TRUE))
         shell: Rscript {0}
 
+      - name: Build texlive-local-deb
+        run: |
+          sudo apt install -y equivs
+          wget https://cdn.jsdelivr.net/gh/scottkosty/install-tl-ubuntu/debian-control-texlive-in.txt
+          equivs-build debian-*
+          mv texlive-local*.deb texlive-local.deb
+
       - name: Build TinyTeX-0.zip & install more package
         run: |
           sed -i 's|# finished base|cp $OLDPWD/install-tl-unx.tar.gz tools/; Rscript tools/clean-tlpdb.R; tar zcf TinyTeX-0.tar.gz -C ~ .TinyTeX|' tools/install-unx.sh
@@ -198,7 +205,7 @@ jobs:
           max_attempts: 5
           retry_wait_seconds: 10
           command: |
-            gh release upload ${{needs.new-release.outputs.draft-tag}} TinyTeX-0.tar.gz TinyTeX-1.tar.gz TinyTeX.tar.gz TinyTeX-2.tar.gz installer-unix.tar.gz regex.tar.gz --clobber
+            gh release upload ${{needs.new-release.outputs.draft-tag}} TinyTeX-0.tar.gz TinyTeX-1.tar.gz TinyTeX.tar.gz TinyTeX-2.tar.gz installer-unix.tar.gz regex.tar.gz texlive-local.deb --clobber
 
   build-mac:
     needs: [new-release]
@@ -328,7 +335,7 @@ jobs:
           echo "## TeX Live version" >> notes.md
           echo "" >> notes.md
           echo '```' >> notes.md
-          cat <<EOF >> notes.md 
+          cat <<EOF >> notes.md
           ${{ needs.build-linux.outputs.tlmgr-version }}
           EOF
           echo '```' >> notes.md
