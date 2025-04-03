@@ -15,6 +15,15 @@ tlmgr install $TL_INSTALLED_PKGS
 
 "
 
+TAR_FLAGS=""
+if tar --version 2>/dev/null | grep -q 'GNU tar'; then
+    TAR_FLAGS="--no-same-owner"
+elif tar --version 2>/dev/null | grep -q 'bsdtar'; then
+    TAR_FLAGS="--no-same-permissions"
+elif tar --version 2>/dev/null | grep -q 'busybox'; then
+    TAR_FLAGS="-o"
+fi
+
 OSNAME=$(uname)
 [ -z $OSNAME ] && echo "This operating system is not supported." && exit 1
 
@@ -47,17 +56,17 @@ fi
 
 if [ $OSNAME = 'Darwin' ]; then
     curl -L -f --retry 10 --retry-delay 30 ${TINYTEX_URL}.tgz -o TinyTeX.tgz
-    tar xf TinyTeX.tgz -C $(dirname $TEXDIR)
+    tar -x ${TAR_FLAGS} -f TinyTeX.tgz -C $(dirname $TEXDIR)
     rm TinyTeX.tgz
 else if [ "${TINYTEX_INSTALLER#"TinyTeX"}" != "$TINYTEX_INSTALLER" ]; then
     wget --retry-connrefused --progress=dot:giga -O TinyTeX.tar.gz ${TINYTEX_URL}.tar.gz
-    tar xf TinyTeX.tar.gz -C $(dirname $TEXDIR)
+    tar -x ${TAR_FLAGS} -f TinyTeX.tar.gz -C $(dirname $TEXDIR)
     rm TinyTeX.tar.gz
   else
     echo "We do not have a prebuilt TinyTeX package for this operating system ${OSTYPE}."
     echo "I will try to install from source for you instead."
     wget --retry-connrefused -O ${TINYTEX_INSTALLER}.tar.gz ${TINYTEX_URL}.tar.gz
-    tar xf ${TINYTEX_INSTALLER}.tar.gz
+    tar -x ${TAR_FLAGS} -f ${TINYTEX_INSTALLER}.tar.gz
     ./install.sh
     mkdir -p $TEXDIR
     mv texlive/* $TEXDIR
