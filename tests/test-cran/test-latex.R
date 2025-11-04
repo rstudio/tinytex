@@ -12,6 +12,7 @@ assert('detect_files() can detect filenames from LaTeX log', {
   (detect_files("! LaTeX Error: File `framed.sty' not found.") %==% 'framed.sty')
   (detect_files("/usr/local/bin/mktexpk: line 123: mf: command not found") %==% 'mf')
   (detect_files("or the language definition file ngerman.ldf was not found") %==% 'ngerman.ldf')
+  (detect_files("! Package babel Error: Unknown option 'english'.") %==% 'english.ldf')
   (detect_files("!pdfTeX error: pdflatex (file 8r.enc): cannot open encoding file for reading") %==% '8r.enc')
   (detect_files("! CTeX fontset `fandol' is unavailable in current mode") %==% 'fandol')
   (detect_files('Package widetext error: Install the flushend package which is a part of sttools') %==% 'flushend.sty')

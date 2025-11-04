@@ -590,6 +590,10 @@ regex_errors = function() {
       # L3 programming layer mismatch (#424)
       '^File: ([^ ]+) \\d{4,}-\\d{2}-\\d{2} .*$'
     ),
+    babel = c(
+      # babel language definition files
+      ".*! Package babel Error: Unknown option [`']([^'`]+)'.*"
+    ),
     style = c(
       # missing .sty or commands
       ".* Loading '([^']+)' aborted!",
@@ -619,6 +623,8 @@ detect_files = function(text) {
     if (p == r$l3backend) return(
       if (length(grep('^! Undefined control sequence', text)) > 0) tail(v, 1)
     )
+    # babel language definition files
+    if (p %in% r$babel) return(paste0(v, '.ldf'))
     # these are some known filenames
     for (i in c('epstopdf', grep('[.]', names(r), value = TRUE))) {
       if (p %in% r[[i]]) return(i)
