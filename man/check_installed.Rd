@@ -23,7 +23,7 @@ This function only works with LaTeX distributions based on TeX Live,
   such as TinyTeX.
 }
 \examples{
-\dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (interactive()) withAutoprint(\{ # examplesIf}
 tinytex::check_installed('framed')
 \dontshow{\}) # examplesIf}
 }

@@ -123,7 +123,7 @@ options repository} to query or set the CTAN repository. Please consult the
 \pkg{tlmgr} manual for full details.
 }
 \examples{
-\dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (interactive()) withAutoprint(\{ # examplesIf}
 # search for a package that contains titling.sty
 tlmgr_search('titling.sty')
 
