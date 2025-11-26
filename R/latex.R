@@ -662,6 +662,7 @@ miss_font = function() {
 
 font_ext = function(x) {
   i = !grepl('[.]', x)
+  x[i] = gsub('\\s+', '\\\\s*', x[i])  # Replace spaces with \s*
   x[i] = paste0(x[i], '(-(Bold|Italic|Regular).*)?[.](tfm|afm|mf|otf|ttf)')
   x
 }
