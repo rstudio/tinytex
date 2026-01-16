@@ -6,7 +6,7 @@ TLREPO=${CTAN_REPO:-http://mirror.ctan.org/systems/texlive/tlnet}
 TLINST="install-tl-unx.tar.gz"
 TLURL=$TLREPO/$TLINST
 PRNAME="tinytex.profile"
-PRURL="https://yihui.org/gh/tinytex/tools"
+PRURL="https://tinytex.yihui.org"
 if [ $(uname) = 'Darwin' ]; then
   alias sedi="sed -i ''"
   [ -e $TLINST ] || curl -LO $TLURL

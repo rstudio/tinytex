@@ -14,7 +14,7 @@ else
 fi
 
 rm -f install-tl-unx.tar.gz tinytex.profile
-download https://yihui.org/gh/tinytex/tools/install-base.sh | sh -s - "$@"
+download https://tinytex.yihui.org/install-base.sh | sh -s - "$@"
 
 rm -rf $TEXDIR
 mkdir -p $TEXDIR
@@ -27,7 +27,7 @@ cd $PREVWD
 
 rm -r $OLDPWD/install-tl-*
 
-$TEXDIR/bin/*/tlmgr install $(download https://yihui.org/gh/tinytex/tools/pkgs-custom.txt | tr '\n' ' ')
+$TEXDIR/bin/*/tlmgr install $(download https://tinytex.yihui.org/pkgs-custom.txt | tr '\n' ' ')
 
 if [ "$1" = '--admin' ]; then
   if [ "$2" != '--no-path' ]; then

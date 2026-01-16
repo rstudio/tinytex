@@ -129,7 +129,7 @@ install_tinytex = function(
     extra_packages = switch(
       bundle,
       'TinyTeX-2' = 'scheme-full',
-      'TinyTeX' = read_lines('https://yihui.org/gh/tinytex/tools/pkgs-custom.txt'),
+      'TinyTeX' = read_lines('https://tinytex.yihui.org/pkgs-custom.txt'),
       'TinyTeX-0' = {
         warning("bundle = 'TinyTeX-0' is not supported for your system"); NULL
       }
@@ -307,7 +307,7 @@ install_tinytex_source = function(repo = '', dir, version, add_path, extra_packa
     Sys.setenv(CTAN_REPO = repo)
     on.exit(Sys.unsetenv('CTAN_REPO'), add = TRUE)
   }
-  download_file('https://yihui.org/gh/tinytex/tools/install-unx.sh')
+  download_file('https://tinytex.yihui.org/install-unx.sh')
   res = system2('sh', c(
     'install-unx.sh', if (repo != 'ctan') c('--no-admin', '--path', shQuote(repo))
   ))
@@ -472,7 +472,7 @@ dir_copy = function(from, to) {
 
 # LaTeX packages that I use
 install_yihui_pkgs = function() {
-  pkgs = read_lines('https://yihui.org/gh/tinytex/tools/pkgs-yihui.txt')
+  pkgs = read_lines('https://tinytex.yihui.org/pkgs-yihui.txt')
   tlmgr_install(pkgs)
 }
 
