@@ -497,8 +497,6 @@ install_prebuilt = function(
       version = xfun::github_releases('rstudio/tinytex-releases', version)
     } else if (version == 'daily-github') {
       version = ''
-      opts = options(tinytex.install.url = 'https://github.com/rstudio/tinytex-releases/releases/download/daily/')
-      on.exit(options(opts), add = TRUE)
     }
     version = gsub('^v', '', version)
     installer = if (pkg == '') 'TinyTeX' else pkg
@@ -562,10 +560,9 @@ post_install_config = function(add_path = TRUE, extra_packages = NULL, repo = 'c
 }
 
 download_installer = function(file, version) {
-  url = if (version != '') sprintf(
-    'https://github.com/rstudio/tinytex-releases/releases/download/v%s/%s', version, file
-  ) else paste0(getOption('tinytex.install.url', 'https://yihui.org/tinytex/'), file)
-  download_file(url, file, mode = 'wb')
+  v = if (version == '') 'daily' else paste0('v', version)
+  u = sprintf('https://github.com/rstudio/tinytex-releases/releases/download/%s/%s', v, file)
+  download_file(u, file, mode = 'wb')
 }
 
 #' Copy TinyTeX to another location and use it in another system
