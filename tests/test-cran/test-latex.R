@@ -31,6 +31,9 @@ assert('detect_files() can detect filenames from LaTeX log', {
   (detect_files("! Package fontenc Error: Encoding file `t2aenc.def' not found.") %==% 't2aenc.def')
   (detect_files("! I can't find file `hyph-de-1901.ec.tex'.") %==% 'hyph-de-1901.ec.tex')
   (detect_files("luaotfload-features.lua:835: module 'lua-uni-normalize' not found:") %==% 'lua-uni-algos.lua')
+  # PDF standard support packages (latex-lab and colorprofiles)
+  (detect_files("No support files for \\DocumentMetadata found.") %==% 'latex-lab')
+  (detect_files("(pdf backend): cannot open file for embedding") %==% 'colorprofiles.sty')
 })
 
 

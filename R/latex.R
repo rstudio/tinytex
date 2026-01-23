@@ -511,7 +511,10 @@ parse_packages = function(
   for (j in seq_along(x)) {
     l = tlmgr_search(paste0('/', x[j]), stdout = TRUE, .quiet = quiet[2])
     if (length(l) == 0) next
-    if (x[j] == 'fandol') return(x[j])  # a known package
+    # Known packages where tlmgr search returns results but no file path ends
+    # with the exact package name (e.g., no file ends with "/latex-lab").
+    # These packages are returned directly without further tlmgr search parsing.
+    if (x[j] %in% c('fandol', 'latex-lab')) return(x[j])
     # why $? e.g. searching for mf returns a list like this
     # metafont.x86_64-darwin:
     #     bin/x86_64-darwin/mf       <- what we want
@@ -577,7 +580,13 @@ regex_errors = function() {
       ".*xdvipdfmx:fatal: pdf_ref_obj.*"
     ),
     colorprofiles.sty = c(
-      '.* Package pdfx Error: No color profile ([^ ]+).*'
+      # PDF/A requires embedded color profiles
+      '.* Package pdfx Error: No color profile ([^ ]+).*',
+      '.*\\(pdf backend\\): cannot open file for embedding.*'
+    ),
+    `latex-lab` = c(
+      # PDF standard support requires latex-lab package for \\DocumentMetadata
+      '.*No support files for \\\\DocumentMetadata found.*'
     ),
     `lua-uni-algos.lua` = c(
       ".* module '(lua-uni-normalize)' not found:.*"
@@ -625,8 +634,10 @@ detect_files = function(text) {
     )
     # babel language definition files
     if (p %in% r$babel) return(paste0(v, '.ldf'))
-    # these are some known filenames
-    for (i in c('epstopdf', grep('[.]', names(r), value = TRUE))) {
+    # Known package names to return directly when their regex matches.
+    # The grep('[.]', ...) automatically includes entries with '.' in their name
+    # (e.g., 'lua-uni-algos.lua'). Others must be listed explicitly.
+    for (i in c('epstopdf', 'latex-lab', grep('[.]', names(r), value = TRUE))) {
       if (p %in% r[[i]]) return(i)
     }
     if (p == r$fd) v = tolower(v)  # LGRcmr.fd -> lgrcmr.fd
