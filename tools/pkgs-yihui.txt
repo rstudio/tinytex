@@ -26,6 +26,7 @@ chemgreek
 cite
 cleveref
 collectbox
+colorprofiles
 colortbl
 comment
 count1to
@@ -68,6 +69,7 @@ koma-script
 langsci
 lastpage
 latexindent
+latex-lab
 lettrine
 libertine
 lineno
