@@ -68,8 +68,8 @@ jknapltx
 koma-script
 langsci
 lastpage
-latexindent
 latex-lab
+latexindent
 lettrine
 libertine
 lineno
