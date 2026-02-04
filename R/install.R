@@ -332,10 +332,11 @@ default_inst = function() switch(
   os_index, win_app_dir('TinyTeX'), '~/.TinyTeX', '~/Library/TinyTeX'
 )
 
-find_tlmgr = function(dir = default_inst()) {
+find_tlmgr = function(dir = default_inst(), extra = FALSE) {
   bin = file.path(list.files(file.path(dir, 'bin'), full.names = TRUE), 'tlmgr')
   if (is_windows()) bin = paste0(bin, '.bat')
-  bin[file_test('-x', bin)][1]
+  if (is_macos() && extra) bin = c(bin, '/Library/TeX/texbin/tlmgr')
+  head(bin[file_test('-x', bin)], 1)
 }
 
 #' @rdname install_tinytex
