@@ -109,6 +109,7 @@ parskip
 pbox
 pdfcol
 pdflscape
+pdfmanagement-testphase
 pdfpages
 pdfsync
 pgf
