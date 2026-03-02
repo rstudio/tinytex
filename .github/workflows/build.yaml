@@ -1,5 +1,11 @@
 on:
   workflow_dispatch:
+    inputs:
+      ctan_repo:
+        description: 'CTAN repository URL (e.g., https://ctan.math.illinois.edu/systems/texlive/tlnet). See https://ctan.org/mirrors/mirmon for available mirrors.'
+        required: false
+        type: string
+        default: 'https://ctan.math.illinois.edu/systems/texlive/tlnet'
   schedule:
     - cron: '5 3 * * *'
 
@@ -11,9 +17,68 @@ env:
   # required for GH to run on another repo (-R option)
   # https://cli.github.com/manual/gh_help_environment
   GH_REPO: rstudio/tinytex-releases
+  # CTAN repository URL for TeX Live packages
+  CTAN_REPO: ${{ inputs.ctan_repo || 'https://ctan.math.illinois.edu/systems/texlive/tlnet' }}
 
 jobs:
+  validate-ctan:
+    runs-on: ubuntu-latest
+    name: Validate CTAN repository
+    outputs:
+      texlive-year: ${{ steps.check-repo.outputs.texlive-year }}
+    steps:
+      - name: Check CTAN repository accessibility
+        id: check-repo
+        run: |
+          echo "Validating CTAN repository: $CTAN_REPO"
+
+          # Check if the repository is accessible by fetching the texlive.tlpdb file
+          if ! curl --fail --silent --show-error --head "$CTAN_REPO/tlpkg/texlive.tlpdb" > /dev/null; then
+            echo "✗ CTAN repository is not accessible or invalid"
+            echo "Please check the URL: $CTAN_REPO"
+            exit 1
+          fi
+
+          echo "✓ CTAN repository is valid and accessible"
+
+          # Detect TeX Live version by checking for TEXLIVE_YYYY files
+          echo "Detecting TeX Live version..."
+          CURRENT_YEAR=$(date +%Y)
+          TEXLIVE_YEAR=""
+
+          # Check current year first, then previous year
+          for year in $CURRENT_YEAR $((CURRENT_YEAR - 1)); do
+            if curl --fail --silent --show-error --head "$CTAN_REPO/TEXLIVE_$year" > /dev/null 2>&1; then
+              TEXLIVE_YEAR=$year
+              break
+            fi
+          done
+
+          if [ -n "$TEXLIVE_YEAR" ]; then
+            echo "✓ TeX Live version: $TEXLIVE_YEAR"
+            echo "texlive-year=$TEXLIVE_YEAR" >> $GITHUB_OUTPUT
+          else
+            echo "⚠ Could not detect version with current/previous year, checking older versions..."
+            # Check for older TEXLIVE_YYYY files (going back 5 years)
+            for offset in {2..5}; do
+              year=$((CURRENT_YEAR - offset))
+              if curl --fail --silent --show-error --head "$CTAN_REPO/TEXLIVE_$year" > /dev/null 2>&1; then
+                TEXLIVE_YEAR=$year
+                break
+              fi
+            done
+
+            if [ -n "$TEXLIVE_YEAR" ]; then
+              echo "✓ TeX Live version: $TEXLIVE_YEAR"
+              echo "texlive-year=$TEXLIVE_YEAR" >> $GITHUB_OUTPUT
+            else
+              echo "⚠ Warning: Could not detect TeX Live version (no TEXLIVE_YYYY file found)"
+              echo "texlive-year=unknown" >> $GITHUB_OUTPUT
+            fi
+          fi
+
   new-release:
+    needs: [validate-ctan]
     runs-on: ubuntu-latest
     name: Create new daily draft release
     outputs:
@@ -35,7 +100,6 @@ jobs:
     name: Build Bundles For Windows
 
     env:
-      CTAN_REPO: https://ctan.math.illinois.edu/systems/texlive/tlnet
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
@@ -111,7 +175,6 @@ jobs:
       tlmgr-version: ${{ steps.tlmgr-version.outputs.TLMGR_VERSION }}
 
     env:
-      CTAN_REPO: https://ctan.math.illinois.edu/systems/texlive/tlnet
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
@@ -213,7 +276,6 @@ jobs:
     name: Build Bundles For macOS
 
     env:
-      CTAN_REPO: https://ctan.math.illinois.edu/systems/texlive/tlnet
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
@@ -322,7 +384,7 @@ jobs:
             gh release upload ${{needs.new-release.outputs.draft-tag}} tinitex.zip tinitex.tgz tinitex.tar.gz --clobber
 
   deploy:
-    needs: [new-release, build-windows, build-linux, build-mac, tinitex]
+    needs: [validate-ctan, new-release, build-windows, build-linux, build-mac, tinitex]
     runs-on: ubuntu-latest
     name: Publish new daily release
 
@@ -339,6 +401,12 @@ jobs:
           ${{ needs.build-linux.outputs.tlmgr-version }}
           EOF
           echo '```' >> notes.md
+          echo "" >> notes.md
+          if [ "${{ needs.validate-ctan.outputs.texlive-year }}" != "unknown" ]; then
+            echo "Built from CTAN repository: \`$CTAN_REPO\` (TeX Live ${{ needs.validate-ctan.outputs.texlive-year }})" >> notes.md
+          else
+            echo "Built from CTAN repository: \`$CTAN_REPO\`" >> notes.md
+          fi
 
       - name: Publish new release
         run: |
