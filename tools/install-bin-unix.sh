@@ -28,7 +28,11 @@ if [ $OSNAME = 'Darwin' ]; then
   TEXDIR=${TINYTEX_DIR:-~/Library}/TinyTeX
 else
   TEXDIR=${TINYTEX_DIR:-~}/.TinyTeX
-  if [ $OSNAME != 'Linux' -o $(uname -m) != 'x86_64' -o "$OSTYPE" != 'linux-gnu' ]; then
+  if [ $OSNAME != 'Linux' -o "$OSTYPE" != 'linux-gnu' ]; then
+    TINYTEX_INSTALLER="installer-unix"
+  elif [ $(uname -m) = 'aarch64' ]; then
+    TINYTEX_INSTALLER="${TINYTEX_INSTALLER}-arm64"
+  elif [ $(uname -m) != 'x86_64' ]; then
     TINYTEX_INSTALLER="installer-unix"
   fi
 fi
