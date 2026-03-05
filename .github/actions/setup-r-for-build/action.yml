@@ -7,6 +7,10 @@ runs:
     - name: Clone repo
       uses: actions/checkout@v4
 
+    - name: Clean up any existing TinyTeX bundles
+      run: rm -f TinyTeX-*.*
+      shell: bash
+
     - name: Install Pandoc
       uses: r-lib/actions/setup-pandoc@v2
       with:
