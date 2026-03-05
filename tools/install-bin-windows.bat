@@ -14,13 +14,27 @@ if not defined TINYTEX_DIR (
   set TINYTEX_DIR=%APPDATA%
   powershell -Command "if ($Env:APPDATA -match '^[!-~]+$') {exit 0} else {exit 1}" || set TINYTEX_DIR=%ProgramData%
 )
-set BUNDLE_EXT=zip
-if "%TINYTEX_INSTALLER%" == "TinyTeX-2" set BUNDLE_EXT=exe
+
+rem new naming scheme: TinyTeX-{N}-windows.exe for daily and versions after v2026.03.02
+set USE_NEW_NAMES=1
+if defined TINYTEX_VERSION (
+  powershell -Command "if ([string]::CompareOrdinal($Env:TINYTEX_VERSION, '2026.03.02') -le 0) {exit 1} else {exit 0}"
+  if errorlevel 1 set USE_NEW_NAMES=0
+)
+
+if %USE_NEW_NAMES% == 1 (
+  set TINYTEX_FILENAME=%TINYTEX_INSTALLER%-windows
+  set BUNDLE_EXT=exe
+) else (
+  set TINYTEX_FILENAME=%TINYTEX_INSTALLER%
+  set BUNDLE_EXT=zip
+  if "%TINYTEX_INSTALLER%" == "TinyTeX-2" set BUNDLE_EXT=exe
+)
 
 if not defined TINYTEX_VERSION (
-  set TINYTEX_URL=https://github.com/rstudio/tinytex-releases/releases/download/daily/%TINYTEX_INSTALLER%.%BUNDLE_EXT%
+  set TINYTEX_URL=https://github.com/rstudio/tinytex-releases/releases/download/daily/%TINYTEX_FILENAME%.%BUNDLE_EXT%
 ) else (
-  set TINYTEX_URL=https://github.com/rstudio/tinytex-releases/releases/download/v%TINYTEX_VERSION%/%TINYTEX_INSTALLER%-v%TINYTEX_VERSION%.%BUNDLE_EXT%
+  set TINYTEX_URL=https://github.com/rstudio/tinytex-releases/releases/download/v%TINYTEX_VERSION%/%TINYTEX_FILENAME%-v%TINYTEX_VERSION%.%BUNDLE_EXT%
 )
 
 set DOWNLOADED_FILE=install.%BUNDLE_EXT%

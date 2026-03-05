@@ -123,7 +123,7 @@ install_tinytex = function(
     stop('Sorry, but tinytex::install_tinytex() does not support this platform: ', os)
   )
 
-  src_install = getOption('tinytex.source.install', need_source_install())
+  src_install = getOption('tinytex.source.install', need_source_install(version))
   # if needs to install from source, set `extra_packages` according to `bundle`
   if (src_install && missing(extra_packages)) {
     extra_packages = switch(
@@ -179,10 +179,19 @@ install_tinytex = function(
   invisible(user_dir)
 }
 
-# TinyTeX has to be installed from source for OSes that are not Linux or
-# non-x86_64 Linux machines
-need_source_install = function() {
-  os_index == 0 || (os_index == 2 && !identical(Sys.info()[['machine']], 'x86_64'))
+# TinyTeX has to be installed from source for OSes without a prebuilt binary.
+# arm64 Linux (aarch64) gained prebuilt support after v2026.03.02.
+need_source_install = function(version = '') {
+  if (os_index == 0) return(TRUE)
+  if (os_index == 2) {
+    machine = Sys.info()[['machine']]
+    if (machine == 'x86_64') return(FALSE)
+    # aarch64: supported with new naming (daily or version > '2026.03.02' or 'latest')
+    if (machine == 'aarch64')
+      return(!version %in% c('', 'daily', 'latest', 'daily-github') && version <= '2026.03.02')
+    return(TRUE)  # other Linux architectures need source install
+  }
+  FALSE
 }
 
 # append /systems/texlive/tlnet to the repo url if necessary
@@ -482,7 +491,7 @@ install_prebuilt = function(
   pkg = '', dir = '', version = '', add_path = TRUE, extra_packages = NULL,
   repo = 'ctan', hash = FALSE, cache = NA
 ) {
-  if (need_source_install()) stop(
+  if (need_source_install(version)) stop(
     'There is no prebuilt version of TinyTeX for this platform: ',
     paste(Sys.info()[c('sysname', 'machine')], collapse = ' '), '.'
   )
@@ -501,13 +510,27 @@ install_prebuilt = function(
     }
     version = gsub('^v', '', version)
     installer = if (pkg == '') 'TinyTeX' else pkg
-    # e.g., TinyTeX-0.zip, TinyTeX-1-v2020.10.tar.gz, ...
-    pkg = paste0(
-      installer, if (version != '') paste0('-v', version), '.',
-      c('zip', 'tar.gz', 'tgz')[os_index]
-    )
-    # Full scheme is bundled as a self extracting archive on Windows
-    if (os_index == 1 && installer == 'TinyTeX-2') pkg = xfun::with_ext(pkg, "exe")
+    # new naming scheme introduced after v2026.03.02: TinyTeX-{N}-{os}[-{arch}][-v{VERSION}].{ext}
+    # daily installs (version == '') always use the new naming
+    if (version == '' || version > '2026.03.02') {
+      # e.g., TinyTeX-1-darwin.tar.xz, TinyTeX-1-linux-x86_64-v2026.04.tar.xz, ...
+      os_arch = c('-windows', '-linux-x86_64', '-darwin')[os_index]
+      if (os_index == 2 && identical(Sys.info()[['machine']], 'aarch64'))
+        os_arch = '-linux-arm64'
+      pkg = paste0(
+        installer, os_arch,
+        if (version != '') paste0('-v', version), '.',
+        c('exe', 'tar.xz', 'tar.xz')[os_index]
+      )
+    } else {
+      # old naming: e.g., TinyTeX-0.zip, TinyTeX-1-v2020.10.tar.gz, TinyTeX-1.tgz, ...
+      pkg = paste0(
+        installer, if (version != '') paste0('-v', version), '.',
+        c('zip', 'tar.gz', 'tgz')[os_index]
+      )
+      # Full scheme is bundled as a self extracting archive on Windows
+      if (os_index == 1 && installer == 'TinyTeX-2') pkg = xfun::with_ext(pkg, "exe")
+    }
     if (file.exists(pkg) && is.na(cache)) {
       # invalidate cache (if unspecified) when the installer is more than one day old
       if (as.numeric(difftime(Sys.time(), file.mtime(pkg), units = 'days')) > 1)

@@ -24,39 +24,74 @@ fi
 
 TINYTEX_INSTALLER=${TINYTEX_INSTALLER:-"TinyTeX-1"}
 
+# new naming scheme: TinyTeX-{N}-{os}[-{arch}][-v{VERSION}].tar.xz
+# introduced after v2026.03.02; daily installs always use the new naming
+USE_NEW_NAMES=true
+if [ -n "$TINYTEX_VERSION" ] && [ ! "$TINYTEX_VERSION" \> "2026.03.02" ]; then
+  USE_NEW_NAMES=false
+fi
+
+ARCH=$(uname -m)
+
 if [ $OSNAME = 'Darwin' ]; then
   TEXDIR=${TINYTEX_DIR:-~/Library}/TinyTeX
 else
   TEXDIR=${TINYTEX_DIR:-~}/.TinyTeX
-  if [ $OSNAME != 'Linux' -o $(uname -m) != 'x86_64' -o "$OSTYPE" != 'linux-gnu' ]; then
+  if [ $OSNAME != 'Linux' -o "$OSTYPE" != 'linux-gnu' ]; then
     TINYTEX_INSTALLER="installer-unix"
+  elif [ "$USE_NEW_NAMES" = true ]; then
+    # new naming supports x86_64 and aarch64 (arm64) on linux-gnu
+    [ "$ARCH" != 'x86_64' -a "$ARCH" != 'aarch64' ] && TINYTEX_INSTALLER="installer-unix"
+  else
+    # old naming only supports x86_64
+    [ "$ARCH" != 'x86_64' ] && TINYTEX_INSTALLER="installer-unix"
   fi
 fi
 
 rm -rf $TEXDIR
 
-if [ -z $TINYTEX_VERSION ]; then
-  TINYTEX_URL="https://github.com/rstudio/tinytex-releases/releases/download/daily/$TINYTEX_INSTALLER"
+# determine the OS/arch suffix and file extension based on the naming scheme
+if [ "$USE_NEW_NAMES" = true ] && [ "${TINYTEX_INSTALLER#"TinyTeX"}" != "$TINYTEX_INSTALLER" ]; then
+  # new naming: TinyTeX-{N}-{os}[-{arch}].tar.xz
+  if [ $OSNAME = 'Darwin' ]; then
+    OS_ARCH="-darwin"
+  elif [ "$ARCH" = 'aarch64' ]; then
+    OS_ARCH="-linux-arm64"
+  else
+    OS_ARCH="-linux-x86_64"
+  fi
+  EXT="tar.xz"
+else
+  OS_ARCH=""
+  if [ $OSNAME = 'Darwin' ]; then
+    EXT="tgz"
+  else
+    EXT="tar.gz"
+  fi
+fi
+
+if [ -z "$TINYTEX_VERSION" ]; then
+  TINYTEX_URL="https://github.com/rstudio/tinytex-releases/releases/download/daily/${TINYTEX_INSTALLER}${OS_ARCH}.${EXT}"
 else
   # the installer was accidentally named "install-unix" instead of "installer-unix" before v2025.01
   if [ "$TINYTEX_INSTALLER" = "installer-unix" ] && [ "$TINYTEX_VERSION" \< "2025.02" ]; then
     TINYTEX_INSTALLER="install-unix"
   fi
-  TINYTEX_URL="https://github.com/rstudio/tinytex-releases/releases/download/v$TINYTEX_VERSION/$TINYTEX_INSTALLER-v$TINYTEX_VERSION"
+  TINYTEX_URL="https://github.com/rstudio/tinytex-releases/releases/download/v$TINYTEX_VERSION/${TINYTEX_INSTALLER}${OS_ARCH}-v$TINYTEX_VERSION.${EXT}"
 fi
 
 if [ $OSNAME = 'Darwin' ]; then
-    curl -L -f --retry 10 --retry-delay 30 ${TINYTEX_URL}.tgz -o TinyTeX.tgz
-    tar xf TinyTeX.tgz -C $(dirname $TEXDIR)
-    rm TinyTeX.tgz
+    curl -L -f --retry 10 --retry-delay 30 ${TINYTEX_URL} -o TinyTeX.${EXT}
+    tar xf TinyTeX.${EXT} -C $(dirname $TEXDIR)
+    rm TinyTeX.${EXT}
 else if [ "${TINYTEX_INSTALLER#"TinyTeX"}" != "$TINYTEX_INSTALLER" ]; then
-    wget --retry-connrefused --progress=dot:giga -O TinyTeX.tar.gz ${TINYTEX_URL}.tar.gz
-    tar xf TinyTeX.tar.gz -C $(dirname $TEXDIR)
-    rm TinyTeX.tar.gz
+    wget --retry-connrefused --progress=dot:giga -O TinyTeX.${EXT} ${TINYTEX_URL}
+    tar xf TinyTeX.${EXT} -C $(dirname $TEXDIR)
+    rm TinyTeX.${EXT}
   else
     echo "We do not have a prebuilt TinyTeX package for this operating system ${OSTYPE}."
     echo "I will try to install from source for you instead."
-    wget --retry-connrefused -O ${TINYTEX_INSTALLER}.tar.gz ${TINYTEX_URL}.tar.gz
+    wget --retry-connrefused -O ${TINYTEX_INSTALLER}.tar.gz ${TINYTEX_URL}
     tar xf ${TINYTEX_INSTALLER}.tar.gz
     ./install.sh
     mkdir -p $TEXDIR
