@@ -1,0 +1,29 @@
+name: Setup R for TinyTeX build
+description: Common setup steps shared across TinyTeX build jobs
+
+runs:
+  using: composite
+  steps:
+    - name: Clone repo
+      uses: actions/checkout@v4
+
+    - name: Install Pandoc
+      uses: r-lib/actions/setup-pandoc@v2
+      with:
+        pandoc-version: '2.19.2'
+
+    - name: Install R
+      uses: r-lib/actions/setup-r@v2
+      with:
+        r-version: release
+        use-public-rspm: true
+
+    - name: Install tinytex package and its deps
+      uses: r-lib/actions/setup-r-dependencies@v2
+      with:
+        extra-packages: local::., any::rmarkdown
+
+    - name: Update all packages
+      run: |
+        try(update.packages(ask = FALSE, checkBuilt = TRUE))
+      shell: Rscript {0}
