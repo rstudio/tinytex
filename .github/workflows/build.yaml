@@ -111,25 +111,25 @@ jobs:
           echo "$APPDATA\TinyTeX\bin\windows" >> $GITHUB_PATH
         shell: bash
 
-      - name: Build TinyTeX-0-windows.exe
+      - name: Build TinyTeX-0
         run: |
           Rscript "tools/install-windows-base.R" # the infraonly scheme
           7z a -sfx TinyTeX-0-windows.exe $Env:APPDATA\\TinyTeX
           7z a TinyTeX-0.zip $Env:APPDATA\\TinyTeX
 
-      - name: Build TinyTeX-1-windows.exe
+      - name: Build TinyTeX-1
         run: |
           Rscript "tools/install-windows-more.R"  # extra packages for compiling R Markdown
           7z a -sfx TinyTeX-1-windows.exe $Env:APPDATA\\TinyTeX
           7z a TinyTeX-1.zip $Env:APPDATA\\TinyTeX
 
-      - name: Build TinyTeX-windows.exe
+      - name: Build TinyTeX
         run: |
           Rscript "tools/test-basic.R"  # even more LaTeX packages
           7z a -sfx TinyTeX-windows.exe $Env:APPDATA\\TinyTeX
           7z a TinyTeX.zip $Env:APPDATA\\TinyTeX
 
-      - name: Build TinyTeX-2-windows.exe (scheme-full)
+      - name: Build TinyTeX-2
         run: |
           Rscript "tools/build-scheme-full.R"
           7z a -sfx TinyTeX-2-windows.exe $Env:APPDATA\\TinyTeX
@@ -171,7 +171,7 @@ jobs:
           equivs-build debian-*
           mv texlive-local*.deb texlive-local.deb
 
-      - name: Build TinyTeX-0-linux-x86_64.tar.xz & install more packages
+      - name: Build TinyTeX-0
         run: |
           sed -i 's|# finished base|cp $OLDPWD/install-tl-unx.tar.gz tools/; Rscript tools/clean-tlpdb.R; tar Jcf TinyTeX-0-linux-x86_64.tar.xz -C ~ .TinyTeX; cp TinyTeX-0-linux-x86_64.tar.xz TinyTeX-0.tar.gz|' tools/install-unx.sh
           ./tools/install-unx.sh
@@ -180,19 +180,19 @@ jobs:
           echo "$HOME/bin" >> $GITHUB_PATH
           ls -lisa "$HOME/bin"
 
-      - name: Build TinyTeX-1-linux-x86_64.tar.xz with new packages installed
+      - name: Build TinyTeX-1
         run: |
           Rscript "tools/clean-tlpdb.R"
           tar Jcf TinyTeX-1-linux-x86_64.tar.xz -C ~ .TinyTeX
           cp TinyTeX-1-linux-x86_64.tar.xz TinyTeX-1.tar.gz
 
-      - name: Build TinyTeX-linux-x86_64.tar.xz
+      - name: Build TinyTeX
         run: |
           Rscript "tools/test-basic.R"
           tar Jcf TinyTeX-linux-x86_64.tar.xz -C ~ .TinyTeX
           cp TinyTeX-linux-x86_64.tar.xz TinyTeX.tar.gz
 
-      - name: Build TinyTeX-2-linux-x86_64.tar.xz (scheme-full)
+      - name: Build TinyTeX-2
         run: |
           Rscript "tools/build-scheme-full.R"
           tar Jcf TinyTeX-2-linux-x86_64.tar.xz -C ~ .TinyTeX
@@ -247,26 +247,26 @@ jobs:
       - name: Setup R for build
         uses: ./.github/actions/setup-r-for-build
 
-      - name: Build TinyTeX-0-linux-arm64.tar.xz & install more packages
+      - name: Build TinyTeX-0
         run: |
           sed -i 's|# finished base|cp $OLDPWD/install-tl-unx.tar.gz tools/; Rscript tools/clean-tlpdb.R; tar Jcf TinyTeX-0-linux-arm64.tar.xz -C ~ .TinyTeX; cp TinyTeX-0-linux-arm64.tar.xz TinyTeX-0-arm64.tar.gz|' tools/install-unx.sh
           ./tools/install-unx.sh
           echo "$HOME/bin" >> $GITHUB_PATH
           ls -lisa "$HOME/bin"
 
-      - name: Build TinyTeX-1-linux-arm64.tar.xz with new packages installed
+      - name: Build TinyTeX-1
         run: |
           Rscript "tools/clean-tlpdb.R"
           tar Jcf TinyTeX-1-linux-arm64.tar.xz -C ~ .TinyTeX
           cp TinyTeX-1-linux-arm64.tar.xz TinyTeX-1-arm64.tar.gz
 
-      - name: Build TinyTeX-linux-arm64.tar.xz
+      - name: Build TinyTeX
         run: |
           Rscript "tools/test-basic.R"
           tar Jcf TinyTeX-linux-arm64.tar.xz -C ~ .TinyTeX
           cp TinyTeX-linux-arm64.tar.xz TinyTeX-arm64.tar.gz
 
-      - name: Build TinyTeX-2-linux-arm64.tar.xz (scheme-full)
+      - name: Build TinyTeX-2
         run: |
           Rscript "tools/build-scheme-full.R"
           tar Jcf TinyTeX-2-linux-arm64.tar.xz -C ~ .TinyTeX
@@ -300,24 +300,24 @@ jobs:
       - name: Setup R for build
         uses: ./.github/actions/setup-r-for-build
 
-      - name: Build TinyTeX-0-darwin.tar.xz & install more packages
+      - name: Build TinyTeX-0
         run: |
           sed -i '' 's|# finished base|Rscript tools/clean-tlpdb.R; tar Jcf TinyTeX-0-darwin.tar.xz -C ~/Library TinyTeX; cp TinyTeX-0-darwin.tar.xz TinyTeX-0.tgz|' tools/install-unx.sh
           ./tools/install-unx.sh
 
-      - name: Build TinyTeX-1-darwin.tar.xz with new packages installed
+      - name: Build TinyTeX-1
         run: |
           Rscript "tools/clean-tlpdb.R"
           tar Jcf TinyTeX-1-darwin.tar.xz -C ~/Library TinyTeX
           cp TinyTeX-1-darwin.tar.xz TinyTeX-1.tgz
 
-      - name: Build TinyTeX-darwin.tar.xz
+      - name: Build TinyTeX
         run: |
           Rscript "tools/test-basic.R"
           tar Jcf TinyTeX-darwin.tar.xz -C ~/Library TinyTeX
           cp TinyTeX-darwin.tar.xz TinyTeX.tgz
 
-      - name: Build TinyTeX-2-darwin.tar.xz (scheme-full)
+      - name: Build TinyTeX-2
         run: |
           Rscript "tools/build-scheme-full.R"
           tar Jcf TinyTeX-2-darwin.tar.xz -C ~/Library TinyTeX
