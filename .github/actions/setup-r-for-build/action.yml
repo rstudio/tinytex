@@ -4,9 +4,6 @@ description: Common setup steps shared across TinyTeX build jobs
 runs:
   using: composite
   steps:
-    - name: Clone repo
-      uses: actions/checkout@v4
-
     - name: Clean up any existing TinyTeX bundles
       run: rm -f TinyTeX-*.*
       shell: bash

@@ -103,6 +103,9 @@ jobs:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
+      - name: Clone repo
+        uses: actions/checkout@v4
+
       - name: Setup R for build
         uses: ./.github/actions/setup-r-for-build
 
@@ -157,6 +160,9 @@ jobs:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
+      - name: Clone repo
+        uses: actions/checkout@v4
+
       - name: Setup R for build
         uses: ./.github/actions/setup-r-for-build
 
@@ -234,6 +240,9 @@ jobs:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
+      - name: Clone repo
+        uses: actions/checkout@v4
+
       - name: Setup R for build
         uses: ./.github/actions/setup-r-for-build
 
@@ -283,6 +292,9 @@ jobs:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
+      - name: Clone repo
+        uses: actions/checkout@v4
+
       - name: Setup R for build
         uses: ./.github/actions/setup-r-for-build
 
