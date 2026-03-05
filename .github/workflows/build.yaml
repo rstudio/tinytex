@@ -325,13 +325,6 @@ jobs:
           Rscript "tools/build-scheme-full.R"
           tar Jcf TinyTeX-2-arm64.tar.gz -C ~ .TinyTeX
 
-      - name: Build *nix ARM64 installer bundle
-        working-directory: tools
-        run: |
-          cp install-base.sh install.sh
-          echo "tlmgr install $(cat pkgs-custom.txt | tr '\n' ' ')" >> install.sh
-          tar zcf ../installer-unix-arm64.tar.gz install-tl-unx.tar.gz tinytex.profile install.sh
-
       - name: Test Installation script
         env:
           TINYTEX_INSTALLER: TinyTeX-0-arm64
@@ -346,7 +339,7 @@ jobs:
           max_attempts: 5
           retry_wait_seconds: 10
           command: |
-            gh release upload ${{needs.new-release.outputs.draft-tag}} TinyTeX-0-arm64.tar.gz TinyTeX-1-arm64.tar.gz TinyTeX-arm64.tar.gz TinyTeX-2-arm64.tar.gz installer-unix-arm64.tar.gz --clobber
+            gh release upload ${{needs.new-release.outputs.draft-tag}} TinyTeX-0-arm64.tar.gz TinyTeX-1-arm64.tar.gz TinyTeX-arm64.tar.gz TinyTeX-2-arm64.tar.gz --clobber
 
   build-mac:
     needs: [new-release]
