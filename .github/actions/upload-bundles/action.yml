@@ -1,0 +1,40 @@
+name: Upload TinyTeX bundles to release
+description: Dynamically find and upload TinyTeX bundle files to a GitHub release
+
+inputs:
+  draft-tag:
+    description: The draft release tag to upload assets to
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Upload bundles
+      shell: bash
+      env:
+        DRAFT_TAG: ${{ inputs.draft-tag }}
+      run: |
+        shopt -s nullglob
+        FILES=""
+        for pattern in "TinyTeX-*.*" "installer-unix.tar.*" "tinitex.*" "texlive-local.deb" "regex.tar.gz"; do
+          for f in $pattern; do
+            [ -f "$f" ] && FILES="$FILES $f"
+          done
+        done
+        FILES="${FILES# }"  # trim leading space
+        if [ -z "$FILES" ]; then
+          echo "No bundle files found to upload"
+          exit 0
+        fi
+        echo "Uploading: $FILES"
+        for attempt in 1 2 3 4 5; do
+          if gh release upload "$DRAFT_TAG" $FILES --clobber; then
+            break
+          elif [ "$attempt" -lt 5 ]; then
+            echo "Upload failed (attempt $attempt/5), retrying in 10s..."
+            sleep 10
+          else
+            echo "Upload failed after 5 attempts"
+            exit 1
+          fi
+        done

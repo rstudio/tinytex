@@ -103,54 +103,37 @@ jobs:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
-      - name: Clone repo
-        uses: actions/checkout@v4
-
-      - name: Install Pandoc
-        uses: r-lib/actions/setup-pandoc@v2
-        with:
-          pandoc-version: '2.19.2'
-
-      - name: Install R
-        uses: r-lib/actions/setup-r@v2
-        with:
-          r-version: release
-          use-public-rspm: true
-
-      - name: Install tinytex package and its deps
-        uses: r-lib/actions/setup-r-dependencies@v2
-        with:
-          extra-packages: local::., any::rmarkdown
-
-      - name: Update all packages
-        run: |
-          try(update.packages(ask = FALSE, checkBuilt = TRUE))
-        shell: Rscript {0}
+      - name: Setup R for build
+        uses: ./.github/actions/setup-r-for-build
 
       - name: Add TinyTeX to PATH
         run: |
           echo "$APPDATA\TinyTeX\bin\windows" >> $GITHUB_PATH
         shell: bash
 
-      - name: Build TinyTeX-0.zip
+      - name: Build TinyTeX-0
         run: |
           Rscript "tools/install-windows-base.R" # the infraonly scheme
+          7z a -sfx TinyTeX-0-windows.exe $Env:APPDATA\\TinyTeX
           7z a TinyTeX-0.zip $Env:APPDATA\\TinyTeX
 
-      - name: Build TinyTeX-1.zip
+      - name: Build TinyTeX-1
         run: |
           Rscript "tools/install-windows-more.R"  # extra packages for compiling R Markdown
+          7z a -sfx TinyTeX-1-windows.exe $Env:APPDATA\\TinyTeX
           7z a TinyTeX-1.zip $Env:APPDATA\\TinyTeX
 
-      - name: Build TinyTeX.zip
+      - name: Build TinyTeX
         run: |
           Rscript "tools/test-basic.R"  # even more LaTeX packages
+          7z a -sfx TinyTeX-windows.exe $Env:APPDATA\\TinyTeX
           7z a TinyTeX.zip $Env:APPDATA\\TinyTeX
 
-      - name: Build TinyTeX-2 (scheme-full)
+      - name: Build TinyTeX-2
         run: |
           Rscript "tools/build-scheme-full.R"
-          7z a -sfx TinyTeX-2.exe $Env:APPDATA\\TinyTeX
+          7z a -sfx TinyTeX-2-windows.exe $Env:APPDATA\\TinyTeX
+          Copy-Item TinyTeX-2-windows.exe TinyTeX-2.exe
 
       - name: Test Installation script
         env:
@@ -159,13 +142,9 @@ jobs:
         shell: cmd
 
       - name: Upload bundles
-        uses: nick-fields/retry@v3
+        uses: ./.github/actions/upload-bundles
         with:
-          timeout_minutes: 5
-          max_attempts: 5
-          retry_wait_seconds: 10
-          command: |
-            gh release upload ${{needs.new-release.outputs.draft-tag}} TinyTeX-0.zip TinyTeX-1.zip TinyTeX.zip TinyTeX-2.exe --clobber
+          draft-tag: ${{ needs.new-release.outputs.draft-tag }}
 
   build-linux:
     needs: [new-release]
@@ -178,29 +157,8 @@ jobs:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
-      - name: Clone repo
-        uses: actions/checkout@v4
-
-      - name: Install Pandoc
-        uses: r-lib/actions/setup-pandoc@v2
-        with:
-          pandoc-version: '2.19.2'
-
-      - name: Install R
-        uses: r-lib/actions/setup-r@v2
-        with:
-          r-version: release
-          use-public-rspm: true
-
-      - name: Install tinytex package and its deps
-        uses: r-lib/actions/setup-r-dependencies@v2
-        with:
-          extra-packages: local::., any::rmarkdown
-
-      - name: Update all packages
-        run: |
-          try(update.packages(ask = FALSE, checkBuilt = TRUE))
-        shell: Rscript {0}
+      - name: Setup R for build
+        uses: ./.github/actions/setup-r-for-build
 
       - name: Build texlive-local-deb
         run: |
@@ -209,29 +167,32 @@ jobs:
           equivs-build debian-*
           mv texlive-local*.deb texlive-local.deb
 
-      - name: Build TinyTeX-0.zip & install more package
+      - name: Build TinyTeX-0
         run: |
-          sed -i 's|# finished base|cp $OLDPWD/install-tl-unx.tar.gz tools/; Rscript tools/clean-tlpdb.R; tar zcf TinyTeX-0.tar.gz -C ~ .TinyTeX|' tools/install-unx.sh
+          sed -i 's|# finished base|cp $OLDPWD/install-tl-unx.tar.gz tools/; Rscript tools/clean-tlpdb.R; tar Jcf TinyTeX-0-linux-x86_64.tar.xz -C ~ .TinyTeX; cp TinyTeX-0-linux-x86_64.tar.xz TinyTeX-0.tar.gz|' tools/install-unx.sh
           ./tools/install-unx.sh
           # tlmgr path add will add in this folder which is not on PATH by default
           # (can be checked with tlmgr options sys_bin)
           echo "$HOME/bin" >> $GITHUB_PATH
           ls -lisa "$HOME/bin"
 
-      - name: Build TinyTeX-1.zip with new package installed
+      - name: Build TinyTeX-1
         run: |
           Rscript "tools/clean-tlpdb.R"
-          tar zcf TinyTeX-1.tar.gz -C ~ .TinyTeX
+          tar Jcf TinyTeX-1-linux-x86_64.tar.xz -C ~ .TinyTeX
+          cp TinyTeX-1-linux-x86_64.tar.xz TinyTeX-1.tar.gz
 
-      - name: Build TinyTeX.zip
+      - name: Build TinyTeX
         run: |
           Rscript "tools/test-basic.R"
-          tar zcf TinyTeX.tar.gz -C ~ .TinyTeX
+          tar Jcf TinyTeX-linux-x86_64.tar.xz -C ~ .TinyTeX
+          cp TinyTeX-linux-x86_64.tar.xz TinyTeX.tar.gz
 
-      - name: Build TinyTeX-2 (scheme-full)
+      - name: Build TinyTeX-2
         run: |
           Rscript "tools/build-scheme-full.R"
-          tar Jcf TinyTeX-2.tar.gz -C ~ .TinyTeX
+          tar Jcf TinyTeX-2-linux-x86_64.tar.xz -C ~ .TinyTeX
+          cp TinyTeX-2-linux-x86_64.tar.xz TinyTeX-2.tar.gz
 
       - name: Export Regex file
         run: |
@@ -260,15 +221,9 @@ jobs:
       - run: ls -lisa
 
       - name: Upload bundles
-        # this specific action is used at some issues have been observe with gh while uploading assets
-        # This allows to not fail the workflow on upload, but retry a few time
-        uses: nick-fields/retry@v3
+        uses: ./.github/actions/upload-bundles
         with:
-          timeout_minutes: 5
-          max_attempts: 5
-          retry_wait_seconds: 10
-          command: |
-            gh release upload ${{needs.new-release.outputs.draft-tag}} TinyTeX-0.tar.gz TinyTeX-1.tar.gz TinyTeX.tar.gz TinyTeX-2.tar.gz installer-unix.tar.gz regex.tar.gz texlive-local.deb --clobber
+          draft-tag: ${{ needs.new-release.outputs.draft-tag }}
 
   build-linux-arm64:
     needs: [new-release]
@@ -279,51 +234,33 @@ jobs:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
-      - name: Clone repo
-        uses: actions/checkout@v4
+      - name: Setup R for build
+        uses: ./.github/actions/setup-r-for-build
 
-      - name: Install Pandoc
-        uses: r-lib/actions/setup-pandoc@v2
-        with:
-          pandoc-version: '2.19.2'
-
-      - name: Install R
-        uses: r-lib/actions/setup-r@v2
-        with:
-          r-version: release
-          use-public-rspm: true
-
-      - name: Install tinytex package and its deps
-        uses: r-lib/actions/setup-r-dependencies@v2
-        with:
-          extra-packages: local::., any::rmarkdown
-
-      - name: Update all packages
+      - name: Build TinyTeX-0
         run: |
-          try(update.packages(ask = FALSE, checkBuilt = TRUE))
-        shell: Rscript {0}
-
-      - name: Build TinyTeX-0-arm64.tar.gz & install more packages
-        run: |
-          sed -i 's|# finished base|cp $OLDPWD/install-tl-unx.tar.gz tools/; Rscript tools/clean-tlpdb.R; tar zcf TinyTeX-0-arm64.tar.gz -C ~ .TinyTeX|' tools/install-unx.sh
+          sed -i 's|# finished base|cp $OLDPWD/install-tl-unx.tar.gz tools/; Rscript tools/clean-tlpdb.R; tar Jcf TinyTeX-0-linux-arm64.tar.xz -C ~ .TinyTeX; cp TinyTeX-0-linux-arm64.tar.xz TinyTeX-0-arm64.tar.gz|' tools/install-unx.sh
           ./tools/install-unx.sh
           echo "$HOME/bin" >> $GITHUB_PATH
           ls -lisa "$HOME/bin"
 
-      - name: Build TinyTeX-1-arm64.tar.gz with new packages installed
+      - name: Build TinyTeX-1
         run: |
           Rscript "tools/clean-tlpdb.R"
-          tar zcf TinyTeX-1-arm64.tar.gz -C ~ .TinyTeX
+          tar Jcf TinyTeX-1-linux-arm64.tar.xz -C ~ .TinyTeX
+          cp TinyTeX-1-linux-arm64.tar.xz TinyTeX-1-arm64.tar.gz
 
-      - name: Build TinyTeX-arm64.tar.gz
+      - name: Build TinyTeX
         run: |
           Rscript "tools/test-basic.R"
-          tar zcf TinyTeX-arm64.tar.gz -C ~ .TinyTeX
+          tar Jcf TinyTeX-linux-arm64.tar.xz -C ~ .TinyTeX
+          cp TinyTeX-linux-arm64.tar.xz TinyTeX-arm64.tar.gz
 
-      - name: Build TinyTeX-2-arm64 (scheme-full)
+      - name: Build TinyTeX-2
         run: |
           Rscript "tools/build-scheme-full.R"
-          tar Jcf TinyTeX-2-arm64.tar.gz -C ~ .TinyTeX
+          tar Jcf TinyTeX-2-linux-arm64.tar.xz -C ~ .TinyTeX
+          cp TinyTeX-2-linux-arm64.tar.xz TinyTeX-2-arm64.tar.gz
 
       - name: Test Installation script
         env:
@@ -333,13 +270,9 @@ jobs:
       - run: ls -lisa
 
       - name: Upload bundles
-        uses: nick-fields/retry@v3
+        uses: ./.github/actions/upload-bundles
         with:
-          timeout_minutes: 5
-          max_attempts: 5
-          retry_wait_seconds: 10
-          command: |
-            gh release upload ${{needs.new-release.outputs.draft-tag}} TinyTeX-0-arm64.tar.gz TinyTeX-1-arm64.tar.gz TinyTeX-arm64.tar.gz TinyTeX-2-arm64.tar.gz --clobber
+          draft-tag: ${{ needs.new-release.outputs.draft-tag }}
 
   build-mac:
     needs: [new-release]
@@ -350,50 +283,31 @@ jobs:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
-      - name: Clone repo
-        uses: actions/checkout@v4
+      - name: Setup R for build
+        uses: ./.github/actions/setup-r-for-build
 
-      - name: Install Pandoc
-        uses: r-lib/actions/setup-pandoc@v2
-        with:
-          pandoc-version: '2.19.2'
-
-      - name: Install R
-        uses: r-lib/actions/setup-r@v2
-        with:
-          r-version: release
-          use-public-rspm: true
-
-      - name: Install tinytex package and its deps
-        uses: r-lib/actions/setup-r-dependencies@v2
-        with:
-          extra-packages: local::., any::rmarkdown
-
-      - name: Update all packages
+      - name: Build TinyTeX-0
         run: |
-          try(update.packages(ask = FALSE, checkBuilt = TRUE))
-        shell: Rscript {0}
-
-      - name: Build TinyTeX-0.zip & install more package
-        run: |
-          sed -i '' 's|# finished base|Rscript tools/clean-tlpdb.R; tar zcf TinyTeX-0.tgz -C ~/Library TinyTeX|' tools/install-unx.sh
+          sed -i '' 's|# finished base|Rscript tools/clean-tlpdb.R; tar Jcf TinyTeX-0-darwin.tar.xz -C ~/Library TinyTeX; cp TinyTeX-0-darwin.tar.xz TinyTeX-0.tgz|' tools/install-unx.sh
           ./tools/install-unx.sh
 
-      - name: Build TinyTeX-1.zip with new package installed
+      - name: Build TinyTeX-1
         run: |
           Rscript "tools/clean-tlpdb.R"
-          tar zcf TinyTeX-1.tgz -C ~/Library TinyTeX
+          tar Jcf TinyTeX-1-darwin.tar.xz -C ~/Library TinyTeX
+          cp TinyTeX-1-darwin.tar.xz TinyTeX-1.tgz
 
-      - name: Build TinyTeX.zip
+      - name: Build TinyTeX
         run: |
           Rscript "tools/test-basic.R"
-          tar zcf TinyTeX.tgz -C ~/Library TinyTeX
+          tar Jcf TinyTeX-darwin.tar.xz -C ~/Library TinyTeX
+          cp TinyTeX-darwin.tar.xz TinyTeX.tgz
 
-      - name: Build TinyTeX-2 (scheme-full)
+      - name: Build TinyTeX-2
         run: |
           Rscript "tools/build-scheme-full.R"
-          # this really is the xz format (for smaller archive size) but `tar xf` can recognize it automatically regardless of file extension
-          tar Jcf TinyTeX-2.tgz -C ~/Library TinyTeX
+          tar Jcf TinyTeX-2-darwin.tar.xz -C ~/Library TinyTeX
+          cp TinyTeX-2-darwin.tar.xz TinyTeX-2.tgz
 
       - name: Test Installation script
         env:
@@ -403,15 +317,9 @@ jobs:
       - run: ls -lisa
 
       - name: Upload bundles
-        uses: nick-fields/retry@v3
-        env:
-          GH_DEBUG: api
+        uses: ./.github/actions/upload-bundles
         with:
-          timeout_minutes: 10
-          max_attempts: 5
-          retry_wait_seconds: 10
-          command: |
-            gh release upload ${{needs.new-release.outputs.draft-tag}} TinyTeX-0.tgz TinyTeX-1.tgz TinyTeX.tgz TinyTeX-2.tgz --clobber
+          draft-tag: ${{ needs.new-release.outputs.draft-tag }}
 
   tinitex:
     needs: [new-release]
@@ -419,6 +327,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Clone repo
+        uses: actions/checkout@v4
+
       - name: Get tinytex artifacts
         run: |
           echo ">> Will retrieve artifact from Quarto latexmk workflow"
@@ -430,29 +341,24 @@ jobs:
         working-directory: tinitex
         run: |
           pushd $(find . -maxdepth 1 -type d -name "*windows*")
-          7z a -o.. tinitex.zip x86_64-pc-windows-msvc/.
-          mv tinitex.zip ..
+          7z a tinitex.zip x86_64-pc-windows-msvc/.
+          mv tinitex.zip ../..
           popd
           pushd $(find . -maxdepth 1 -type d -name "*macOS*")
-          7z a -ttar -so tinitex.tar aarch64-apple-darwin/. | 7z a -si -o.. tinitex.tgz
-          mv tinitex.tgz ..
+          7z a -ttar -so tinitex.tar aarch64-apple-darwin/. | 7z a -si tinitex.tgz
+          mv tinitex.tgz ../..
           popd
           pushd $(find . -maxdepth 1 -type d -name "*ubuntu*")
-          7z a -ttar -so tinitex.tar x86_64-unknown-linux-gnu/. | 7z a -si -o.. tinitex.tar.gz
-          mv tinitex.tar.gz ..
+          7z a -ttar -so tinitex.tar x86_64-unknown-linux-gnu/. | 7z a -si tinitex.tar.gz
+          mv tinitex.tar.gz ../..
           popd
 
-      - run: ls -lisa tinitex
+      - run: ls -lisa
 
       - name: Upload bundles
-        uses: nick-fields/retry@v3
+        uses: ./.github/actions/upload-bundles
         with:
-          timeout_minutes: 5
-          max_attempts: 5
-          retry_wait_seconds: 10
-          command: |
-            cd tinitex/
-            gh release upload ${{needs.new-release.outputs.draft-tag}} tinitex.zip tinitex.tgz tinitex.tar.gz --clobber
+          draft-tag: ${{ needs.new-release.outputs.draft-tag }}
 
   deploy:
     needs: [validate-ctan, new-release, build-windows, build-linux, build-linux-arm64, build-mac, tinitex]
