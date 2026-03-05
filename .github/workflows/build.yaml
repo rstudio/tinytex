@@ -248,7 +248,7 @@ jobs:
 
       - name: Build TinyTeX-0
         run: |
-          sed -i 's|# finished base|cp $OLDPWD/install-tl-unx.tar.gz tools/; Rscript tools/clean-tlpdb.R; tar Jcf TinyTeX-0-linux-arm64.tar.xz -C ~ .TinyTeX; cp TinyTeX-0-linux-arm64.tar.xz TinyTeX-0-arm64.tar.gz|' tools/install-unx.sh
+          sed -i 's|# finished base|cp $OLDPWD/install-tl-unx.tar.gz tools/; Rscript tools/clean-tlpdb.R; tar Jcf TinyTeX-0-linux-arm64.tar.xz -C ~ .TinyTeX|' tools/install-unx.sh
           ./tools/install-unx.sh
           echo "$HOME/bin" >> $GITHUB_PATH
           ls -lisa "$HOME/bin"
@@ -257,19 +257,16 @@ jobs:
         run: |
           Rscript "tools/clean-tlpdb.R"
           tar Jcf TinyTeX-1-linux-arm64.tar.xz -C ~ .TinyTeX
-          cp TinyTeX-1-linux-arm64.tar.xz TinyTeX-1-arm64.tar.gz
 
       - name: Build TinyTeX
         run: |
           Rscript "tools/test-basic.R"
           tar Jcf TinyTeX-linux-arm64.tar.xz -C ~ .TinyTeX
-          cp TinyTeX-linux-arm64.tar.xz TinyTeX-arm64.tar.gz
 
       - name: Build TinyTeX-2
         run: |
           Rscript "tools/build-scheme-full.R"
           tar Jcf TinyTeX-2-linux-arm64.tar.xz -C ~ .TinyTeX
-          cp TinyTeX-2-linux-arm64.tar.xz TinyTeX-2-arm64.tar.gz
 
       - name: Test Installation script
         env:
