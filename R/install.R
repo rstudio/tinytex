@@ -127,7 +127,7 @@ install_tinytex = function(
     version = xfun::github_releases('rstudio/tinytex-releases', version)
   }
   version = gsub('^v([0-9]+[.][0-9]+.*)', '\\1', version)  # pure number
-  src_install = getOption('tinytex.source.install', need_source_install(version))
+  src_install = getOption('tinytex.source.install', !binary_supported(version))
   # if needs to install from source, set `extra_packages` according to `bundle`
   if (src_install && missing(extra_packages)) {
     extra_packages = switch(
@@ -169,17 +169,14 @@ install_tinytex = function(
 
 # TinyTeX has to be installed from source for OSes without a prebuilt binary.
 # arm64 Linux (aarch64) gained prebuilt support after v2026.03.02.
-need_source_install = function(version = '') {
-  if (os_index == 0) return(TRUE)
-  if (os_index == 2) {
-    machine = Sys.info()[['machine']]
-    if (machine == 'x86_64') return(FALSE)
-    # aarch64: supported with new naming (daily or version > '2026.03.02' or 'latest')
-    if (machine == 'aarch64')
-      return(!version %in% c('', 'daily', 'latest', 'daily-github') && version <= '2026.03.02')
-    return(TRUE)  # other Linux architectures need source install
-  }
-  FALSE
+binary_supported = function(version = '') {
+  os_index != 0 && (os_index != 2 || {
+    arch = Sys.info()[['machine']]
+    # x86_64 is supported; arm64: supported with daily or version > '2026.03.02'
+    arch == 'x86_64' || arch %in% c('aarch64', 'arm64') && (
+      version == 'daily' || grepl('^[0-9]+[.][0-9]+', version) && version > '2026.03.02'
+    )
+  })
 }
 
 # append /systems/texlive/tlnet to the repo url if necessary
