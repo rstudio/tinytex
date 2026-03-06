@@ -123,6 +123,9 @@ install_tinytex = function(
     stop('Sorry, but tinytex::install_tinytex() does not support this platform: ', os)
   )
 
+  if (version == 'latest') {
+    version = xfun::github_releases('rstudio/tinytex-releases', version)
+  }
   version = gsub('^v([0-9]+[.][0-9]+.*)', '\\1', version)  # pure number
   src_install = getOption('tinytex.source.install', need_source_install(version))
   # if needs to install from source, set `extra_packages` according to `bundle`
@@ -491,11 +494,6 @@ install_prebuilt = function(
   dir2 = file.path(target, b)  # path to (.)TinyTeX/ after extraction
 
   if (xfun::file_ext(pkg) == '') {
-    if (version == 'latest') {
-      version = xfun::github_releases('rstudio/tinytex-releases', version)
-    } else if (version == 'daily-github') {
-      version = ''
-    }
     installer = if (pkg == '') 'TinyTeX' else pkg
     # new naming scheme introduced after v2026.03.02: TinyTeX-{N}-{os}[-{arch}][-v{VERSION}].{ext}
     # daily installs (version == '') always use the new naming
