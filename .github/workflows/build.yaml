@@ -134,7 +134,21 @@ jobs:
 
       - name: Build TinyTeX-2
         run: |
-          Rscript "tools/build-scheme-full.R"
+          $currentYearMatch = (tlmgr --version 2>&1 | Select-String 'version (\d{4})')
+          $currentYear = if ($currentYearMatch) { $currentYearMatch.Matches.Groups[1].Value } else { '' }
+          $releaseBodyLines = (gh release view daily -R rstudio/tinytex-releases --json body -q '.body' 2>&1) -split '\r?\n'
+          $releaseYearMatch = ($releaseBodyLines | Select-String 'version (\d{4})' | Select-Object -First 1)
+          $releaseYear = if ($releaseYearMatch) { $releaseYearMatch.Matches.Groups[1].Value } else { '' }
+          if ($releaseYear -ne '' -and $releaseYear -eq $currentYear) {
+            $env:TINYTEX_INSTALLER = 'TinyTeX-2'
+            cmd /c "tools\install-bin-windows.bat"
+            tlmgr option repository $env:CTAN_REPO
+            tlmgr update --self --all
+            tlmgr install scheme-full
+            Rscript "tools/clean-tlpdb.R"
+          } else {
+            Rscript "tools/build-scheme-full.R"
+          }
           7z a -sfx TinyTeX-2-windows.exe $Env:APPDATA\\TinyTeX
           Copy-Item TinyTeX-2-windows.exe TinyTeX-2.exe
 
@@ -196,7 +210,17 @@ jobs:
 
       - name: Build TinyTeX-2
         run: |
-          Rscript "tools/build-scheme-full.R"
+          CURRENT_YEAR=$(tlmgr --version | grep -oE 'version [0-9][0-9][0-9][0-9]' | grep -oE '[0-9][0-9][0-9][0-9]')
+          RELEASE_YEAR=$(gh release view daily -R rstudio/tinytex-releases --json body -q '.body' | grep -oE 'version [0-9][0-9][0-9][0-9]' | grep -oE '[0-9][0-9][0-9][0-9]' | head -1)
+          if [ -n "$RELEASE_YEAR" ] && [ "$RELEASE_YEAR" = "$CURRENT_YEAR" ]; then
+            TINYTEX_INSTALLER=TinyTeX-2 tools/install-bin-unix.sh
+            Rscript -e "tinytex::tlmgr(c('option', 'repository', Sys.getenv('CTAN_REPO')))"
+            Rscript -e "tinytex::tlmgr(c('update', '--self', '--all'))"
+            Rscript -e "tinytex::tlmgr(c('install', 'scheme-full'))"
+            Rscript "tools/clean-tlpdb.R"
+          else
+            Rscript "tools/build-scheme-full.R"
+          fi
           tar Jcf TinyTeX-2-linux-x86_64.tar.xz -C ~ .TinyTeX
           cp TinyTeX-2-linux-x86_64.tar.xz TinyTeX-2.tar.gz
 
@@ -260,7 +284,17 @@ jobs:
 
       - name: Build TinyTeX-2
         run: |
-          Rscript "tools/build-scheme-full.R"
+          CURRENT_YEAR=$(tlmgr --version | grep -oE 'version [0-9][0-9][0-9][0-9]' | grep -oE '[0-9][0-9][0-9][0-9]')
+          RELEASE_YEAR=$(gh release view daily -R rstudio/tinytex-releases --json body -q '.body' | grep -oE 'version [0-9][0-9][0-9][0-9]' | grep -oE '[0-9][0-9][0-9][0-9]' | head -1)
+          if [ -n "$RELEASE_YEAR" ] && [ "$RELEASE_YEAR" = "$CURRENT_YEAR" ]; then
+            TINYTEX_INSTALLER=TinyTeX-2 tools/install-bin-unix.sh
+            Rscript -e "tinytex::tlmgr(c('option', 'repository', Sys.getenv('CTAN_REPO')))"
+            Rscript -e "tinytex::tlmgr(c('update', '--self', '--all'))"
+            Rscript -e "tinytex::tlmgr(c('install', 'scheme-full'))"
+            Rscript "tools/clean-tlpdb.R"
+          else
+            Rscript "tools/build-scheme-full.R"
+          fi
           tar Jcf TinyTeX-2-linux-arm64.tar.xz -C ~ .TinyTeX
 
       - run: ls -lisa
@@ -318,7 +352,17 @@ jobs:
 
       - name: Build TinyTeX-2
         run: |
-          Rscript "tools/build-scheme-full.R"
+          CURRENT_YEAR=$(tlmgr --version | grep -oE 'version [0-9][0-9][0-9][0-9]' | grep -oE '[0-9][0-9][0-9][0-9]')
+          RELEASE_YEAR=$(gh release view daily -R rstudio/tinytex-releases --json body -q '.body' | grep -oE 'version [0-9][0-9][0-9][0-9]' | grep -oE '[0-9][0-9][0-9][0-9]' | head -1)
+          if [ -n "$RELEASE_YEAR" ] && [ "$RELEASE_YEAR" = "$CURRENT_YEAR" ]; then
+            TINYTEX_INSTALLER=TinyTeX-2 tools/install-bin-unix.sh
+            Rscript -e "tinytex::tlmgr(c('option', 'repository', Sys.getenv('CTAN_REPO')))"
+            Rscript -e "tinytex::tlmgr(c('update', '--self', '--all'))"
+            Rscript -e "tinytex::tlmgr(c('install', 'scheme-full'))"
+            Rscript "tools/clean-tlpdb.R"
+          else
+            Rscript "tools/build-scheme-full.R"
+          fi
           tar Jcf TinyTeX-2-linuxmusl-x86_64.tar.xz -C ~ .TinyTeX
 
       - run: ls -lisa
@@ -362,7 +406,17 @@ jobs:
 
       - name: Build TinyTeX-2
         run: |
-          Rscript "tools/build-scheme-full.R"
+          CURRENT_YEAR=$(tlmgr --version | grep -oE 'version [0-9][0-9][0-9][0-9]' | grep -oE '[0-9][0-9][0-9][0-9]')
+          RELEASE_YEAR=$(gh release view daily -R rstudio/tinytex-releases --json body -q '.body' | grep -oE 'version [0-9][0-9][0-9][0-9]' | grep -oE '[0-9][0-9][0-9][0-9]' | head -1)
+          if [ -n "$RELEASE_YEAR" ] && [ "$RELEASE_YEAR" = "$CURRENT_YEAR" ]; then
+            TINYTEX_INSTALLER=TinyTeX-2 tools/install-bin-unix.sh
+            Rscript -e "tinytex::tlmgr(c('option', 'repository', Sys.getenv('CTAN_REPO')))"
+            Rscript -e "tinytex::tlmgr(c('update', '--self', '--all'))"
+            Rscript -e "tinytex::tlmgr(c('install', 'scheme-full'))"
+            Rscript "tools/clean-tlpdb.R"
+          else
+            Rscript "tools/build-scheme-full.R"
+          fi
           tar Jcf TinyTeX-2-darwin.tar.xz -C ~/Library TinyTeX
           cp TinyTeX-2-darwin.tar.xz TinyTeX-2.tgz
 
