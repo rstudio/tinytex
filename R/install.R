@@ -170,7 +170,7 @@ install_tinytex = function(
 # TinyTeX has to be installed from source for OSes without a prebuilt binary.
 # arm64 Linux (aarch64) gained prebuilt support after v2026.03.02.
 binary_supported = function(version = '') {
-  new_version = version == 'daily' || grepl('^[0-9]+[.][0-9]+', version) && version > '2026.03.02'
+  new_version = version == 'daily' || (grepl('^[0-9]+[.][0-9]+', version) && version > '2026.03.02')
   os_index != 0 && (os_index != 2 || {
     arch = Sys.info()[['machine']]
     # x86_64 is supported; arm64: supported with daily or version > '2026.03.02'
@@ -185,9 +185,9 @@ is_arm64 = function(arch = Sys.info()[['machine']]) {
 }
 
 is_musl = function() {
-  xfun::is_linux() && length(Sys.glob('/lib/libc.musl-*.so.1')) > 0 || isTRUE(suppressWarnings(
+  xfun::is_linux() && (length(Sys.glob('/lib/libc.musl-*.so.1')) > 0 || isTRUE(suppressWarnings(
     grepl('musl', system2('ldd', '--version', stdout = TRUE, stderr = TRUE)[1], ignore.case = TRUE)
-  ))
+  )))
 }
 
 # append /systems/texlive/tlnet to the repo url if necessary
