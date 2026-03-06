@@ -6,6 +6,11 @@ on:
         required: false
         type: string
         default: 'https://ctan.math.illinois.edu/systems/texlive/tlnet'
+      force_rebuild_tinytex2:
+        description: 'Force a full rebuild of TinyTeX-2 (ignore existing daily bundle)'
+        required: false
+        type: boolean
+        default: false
   schedule:
     - cron: '5 3 * * *'
 
@@ -19,6 +24,8 @@ env:
   GH_REPO: rstudio/tinytex-releases
   # CTAN repository URL for TeX Live packages
   CTAN_REPO: ${{ inputs.ctan_repo || 'https://ctan.math.illinois.edu/systems/texlive/tlnet' }}
+  # Force full rebuild of TinyTeX-2 even if the daily bundle year matches
+  FORCE_REBUILD: ${{ inputs.force_rebuild_tinytex2 == true && 'true' || 'false' }}
 
 jobs:
   validate-ctan:
@@ -95,7 +102,7 @@ jobs:
           echo "tag=${tag}" >> $GITHUB_OUTPUT
 
   build-windows:
-    needs: [new-release]
+    needs: [validate-ctan, new-release]
     runs-on: windows-latest
     name: Build Bundles For Windows
 
@@ -133,8 +140,10 @@ jobs:
           7z a TinyTeX.zip $Env:APPDATA\\TinyTeX
 
       - name: Build TinyTeX-2
+        env:
+          TEXLIVE_YEAR: ${{ needs.validate-ctan.outputs.texlive-year }}
         run: |
-          Rscript "tools/build-scheme-full.R"
+          & tools/build-tinytex-2.ps1
           7z a -sfx TinyTeX-2-windows.exe $Env:APPDATA\\TinyTeX
           Copy-Item TinyTeX-2-windows.exe TinyTeX-2.exe
 
@@ -150,7 +159,7 @@ jobs:
           draft-tag: ${{ needs.new-release.outputs.draft-tag }}
 
   build-linux:
-    needs: [new-release]
+    needs: [validate-ctan, new-release]
     name: Build Bundles For Linux
     runs-on: ubuntu-latest
     outputs:
@@ -195,8 +204,10 @@ jobs:
           cp TinyTeX-linux-x86_64.tar.xz TinyTeX.tar.gz
 
       - name: Build TinyTeX-2
+        env:
+          TEXLIVE_YEAR: ${{ needs.validate-ctan.outputs.texlive-year }}
         run: |
-          Rscript "tools/build-scheme-full.R"
+          sh tools/build-tinytex-2.sh
           tar Jcf TinyTeX-2-linux-x86_64.tar.xz -C ~ .TinyTeX
           cp TinyTeX-2-linux-x86_64.tar.xz TinyTeX-2.tar.gz
 
@@ -227,7 +238,7 @@ jobs:
           draft-tag: ${{ needs.new-release.outputs.draft-tag }}
 
   build-linux-arm64:
-    needs: [new-release]
+    needs: [validate-ctan, new-release]
     name: Build Bundles For Linux ARM64
     runs-on: ubuntu-24.04-arm
 
@@ -259,8 +270,10 @@ jobs:
           tar Jcf TinyTeX-linux-arm64.tar.xz -C ~ .TinyTeX
 
       - name: Build TinyTeX-2
+        env:
+          TEXLIVE_YEAR: ${{ needs.validate-ctan.outputs.texlive-year }}
         run: |
-          Rscript "tools/build-scheme-full.R"
+          sh tools/build-tinytex-2.sh
           tar Jcf TinyTeX-2-linux-arm64.tar.xz -C ~ .TinyTeX
 
       - run: ls -lisa
@@ -271,7 +284,7 @@ jobs:
           draft-tag: ${{ needs.new-release.outputs.draft-tag }}
 
   build-linux-musl:
-    needs: [new-release]
+    needs: [validate-ctan, new-release]
     name: Build Bundles For Linux (musl/Alpine)
     runs-on: ubuntu-latest
     permissions:
@@ -317,8 +330,10 @@ jobs:
           tar Jcf TinyTeX-linuxmusl-x86_64.tar.xz -C ~ .TinyTeX
 
       - name: Build TinyTeX-2
+        env:
+          TEXLIVE_YEAR: ${{ needs.validate-ctan.outputs.texlive-year }}
         run: |
-          Rscript "tools/build-scheme-full.R"
+          sh tools/build-tinytex-2.sh
           tar Jcf TinyTeX-2-linuxmusl-x86_64.tar.xz -C ~ .TinyTeX
 
       - run: ls -lisa
@@ -329,7 +344,7 @@ jobs:
           draft-tag: ${{ needs.new-release.outputs.draft-tag }}
 
   build-mac:
-    needs: [new-release]
+    needs: [validate-ctan, new-release]
     runs-on: macos-latest
     name: Build Bundles For macOS
 
@@ -361,8 +376,10 @@ jobs:
           cp TinyTeX-darwin.tar.xz TinyTeX.tgz
 
       - name: Build TinyTeX-2
+        env:
+          TEXLIVE_YEAR: ${{ needs.validate-ctan.outputs.texlive-year }}
         run: |
-          Rscript "tools/build-scheme-full.R"
+          sh tools/build-tinytex-2.sh
           tar Jcf TinyTeX-2-darwin.tar.xz -C ~/Library TinyTeX
           cp TinyTeX-2-darwin.tar.xz TinyTeX-2.tgz
 
