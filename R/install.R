@@ -170,17 +170,13 @@ install_tinytex = function(
 # TinyTeX has to be installed from source for OSes without a prebuilt binary.
 # arm64 Linux (aarch64) gained prebuilt support after v2026.03.02.
 binary_supported = function(version = '') {
+  new_version = version == 'daily' || grepl('^[0-9]+[.][0-9]+', version) && version > '2026.03.02'
   os_index != 0 && (os_index != 2 || {
     arch = Sys.info()[['machine']]
     # x86_64 is supported; arm64: supported with daily or version > '2026.03.02'
     # musl linux: only x86_64 is supported (with new naming: daily or version > '2026.03.02')
-    if (is_musl()) {
-      arch == 'x86_64' && (version == 'daily' || grepl('^[0-9]+[.][0-9]+', version) && version > '2026.03.02')
-    } else {
-      arch == 'x86_64' || is_arm64(arch) && (
-        version == 'daily' || grepl('^[0-9]+[.][0-9]+', version) && version > '2026.03.02'
-      )
-    }
+    if (is_musl()) arch == 'x86_64' && new_version
+    else arch == 'x86_64' || is_arm64(arch) && new_version
   })
 }
 
@@ -189,8 +185,7 @@ is_arm64 = function(arch = Sys.info()[['machine']]) {
 }
 
 is_musl = function() {
-  if (.Platform$OS.type != 'unix' || Sys.info()[['sysname']] != 'Linux') return(FALSE)
-  length(Sys.glob('/lib/libc.musl-*.so.1')) > 0 || isTRUE(suppressWarnings(
+  xfun::is_linux() && length(Sys.glob('/lib/libc.musl-*.so.1')) > 0 || isTRUE(suppressWarnings(
     grepl('musl', system2('ldd', '--version', stdout = TRUE, stderr = TRUE)[1], ignore.case = TRUE)
   ))
 }
@@ -511,8 +506,10 @@ install_prebuilt = function(
     if (version == 'daily' || version > '2026.03.02') {
       # e.g., TinyTeX-1-darwin.tar.xz, TinyTeX-1-linux-x86_64-v2026.04.tar.xz, ...
       os_arch = c('-windows', '-linux-x86_64', '-darwin')[os_index]
-      if (os_index == 2 && is_musl()) os_arch = '-linuxmusl-x86_64'
-      else if (os_index == 2 && is_arm64()) os_arch = '-linux-arm64'
+      if (os_index == 2) {
+        if (is_musl()) os_arch = '-linuxmusl-x86_64'
+        else if (is_arm64()) os_arch = '-linux-arm64'
+      }
       pkg = paste0(installer, os_arch, ver, '.', c('exe', 'tar.xz', 'tar.xz')[os_index])
     } else {
       # old naming: e.g., TinyTeX-0.zip, TinyTeX-1-v2020.10.tar.gz, TinyTeX-1.tgz, ...

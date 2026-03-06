@@ -288,6 +288,7 @@ jobs:
       contents: read
     container:
       image: alpine:latest
+      options: --user root
 
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
