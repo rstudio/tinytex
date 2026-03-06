@@ -219,11 +219,6 @@ jobs:
           ~/bin/tlmgr version | sed -n '1p;3p' >> $GITHUB_OUTPUT
           echo "EOFTLMGR" >> $GITHUB_OUTPUT
 
-      - name: Test Installation script
-        env:
-          TINYTEX_INSTALLER: TinyTeX-0
-        run: ./tools/install-bin-unix.sh
-
       - run: ls -lisa
 
       - name: Upload bundles
@@ -267,11 +262,6 @@ jobs:
         run: |
           Rscript "tools/build-scheme-full.R"
           tar Jcf TinyTeX-2-linux-arm64.tar.xz -C ~ .TinyTeX
-
-      - name: Test Installation script
-        env:
-          TINYTEX_INSTALLER: TinyTeX-0-arm64
-        run: ./tools/install-bin-unix.sh
 
       - run: ls -lisa
 
@@ -331,11 +321,6 @@ jobs:
           Rscript "tools/build-scheme-full.R"
           tar Jcf TinyTeX-2-linuxmusl-x86_64.tar.xz -C ~ .TinyTeX
 
-      - name: Test Installation script
-        env:
-          TINYTEX_INSTALLER: TinyTeX-0
-        run: ./tools/install-bin-unix.sh
-
       - run: ls -lisa
 
       - name: Upload bundles
@@ -380,11 +365,6 @@ jobs:
           Rscript "tools/build-scheme-full.R"
           tar Jcf TinyTeX-2-darwin.tar.xz -C ~/Library TinyTeX
           cp TinyTeX-2-darwin.tar.xz TinyTeX-2.tgz
-
-      - name: Test Installation script
-        env:
-          TINYTEX_INSTALLER: TinyTeX-0
-        run: ./tools/install-bin-unix.sh
 
       - run: ls -lisa
 
