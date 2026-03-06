@@ -305,7 +305,8 @@ jobs:
 
       - name: Install R packages
         run: |
-          Rscript -e "install.packages(c('xfun', 'rmarkdown', 'testit'), repos = 'https://cloud.r-project.org')"
+          echo "options(repos = 'https://cloud.r-project.org')" >> ~/.Rprofile
+          Rscript -e "install.packages(c('xfun', 'rmarkdown', 'testit'))"
           Rscript -e "install.packages('.', repos = NULL, type = 'source')"
 
       - name: Build TinyTeX-0
