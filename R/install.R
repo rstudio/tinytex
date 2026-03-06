@@ -123,6 +123,7 @@ install_tinytex = function(
     stop('Sorry, but tinytex::install_tinytex() does not support this platform: ', os)
   )
 
+  version = gsub('^v([0-9]+[.][0-9]+.*)', '\\1', version)  # pure number
   src_install = getOption('tinytex.source.install', need_source_install(version))
   # if needs to install from source, set `extra_packages` according to `bundle`
   if (src_install && missing(extra_packages)) {
@@ -508,7 +509,6 @@ install_prebuilt = function(
     } else if (version == 'daily-github') {
       version = ''
     }
-    version = gsub('^v', '', version)
     installer = if (pkg == '') 'TinyTeX' else pkg
     # new naming scheme introduced after v2026.03.02: TinyTeX-{N}-{os}[-{arch}][-v{VERSION}].{ext}
     # daily installs (version == '') always use the new naming
