@@ -145,21 +145,7 @@ install_tinytex = function(
     }
   }
   if (version == 'daily') {
-    version = ''
-    # test if https://yihui.org or github.com is accessible because the daily
-    # version is downloaded from there
-    determine_version = function() {
-      if (xfun::url_accessible('https://yihui.org')) return('')
-      if (xfun::url_accessible('https://github.com')) return('daily-github')
-      warning(
-        "The daily version of TinyTeX does not appear to be accessible. ",
-        "Switching to version = 'latest' instead. If you are sure to install ",
-        "the daily version, call tinytex::install_tinytex(version = 'daily') ",
-        "(which may fail)."
-      )
-      'latest'
-    }
-    if (missing(version) && !src_install) version = determine_version()
+    if (missing(version) && !src_install) version = ''
   }
   user_dir = install(user_dir, version, add_path, extra_packages)
 
