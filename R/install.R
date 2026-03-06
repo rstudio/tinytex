@@ -131,6 +131,7 @@ install_tinytex = function(
       bundle,
       'TinyTeX-2' = 'scheme-full',
       'TinyTeX' = read_lines('https://tinytex.yihui.org/pkgs-custom.txt'),
+      'TinyTeX-1' = read_lines('https://tinytex.yihui.org/pkgs-yihui.txt'),
       'TinyTeX-0' = {
         warning("bundle = 'TinyTeX-0' is not supported for your system"); NULL
       }
