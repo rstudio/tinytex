@@ -18,10 +18,6 @@ tlmgr install $TL_INSTALLED_PKGS
 OSNAME=$(uname)
 [ -z $OSNAME ] && echo "This operating system is not supported." && exit 1
 
-if [ -z $OSTYPE ]; then
-  OSTYPE=$([ -x "$(command -v bash)" ] && bash -c 'echo $OSTYPE')
-fi
-
 TINYTEX_INSTALLER=${TINYTEX_INSTALLER:-"TinyTeX-1"}
 
 # new naming scheme: TinyTeX-{N}-{os}[-{arch}][-v{VERSION}].tar.xz
@@ -33,12 +29,26 @@ fi
 
 ARCH=$(uname -m)
 
+# detect musl libc
+is_musl() {
+  if ls /lib/libc.musl-*.so.1 2>/dev/null | grep -q .; then
+    return 0
+  elif ldd --version 2>&1 | grep -qi musl; then
+    return 0
+  else
+    return 1
+  fi
+}
+
 if [ $OSNAME = 'Darwin' ]; then
   TEXDIR=${TINYTEX_DIR:-~/Library}/TinyTeX
 else
   TEXDIR=${TINYTEX_DIR:-~}/.TinyTeX
-  if [ $OSNAME != 'Linux' -o "$OSTYPE" != 'linux-gnu' ]; then
+  if [ $OSNAME != 'Linux' ]; then
     TINYTEX_INSTALLER="installer-unix"
+  elif is_musl; then
+    # musl linux: only x86_64 is supported with prebuilt binaries
+    [ "$ARCH" != 'x86_64' ] && TINYTEX_INSTALLER="installer-unix"
   elif [ "$USE_NEW_NAMES" = true ]; then
     # new naming supports x86_64 and aarch64 (arm64) on linux-gnu
     [ "$ARCH" != 'x86_64' -a "$ARCH" != 'aarch64' ] && TINYTEX_INSTALLER="installer-unix"
@@ -55,6 +65,8 @@ if [ "$USE_NEW_NAMES" = true ] && [ "${TINYTEX_INSTALLER#"TinyTeX"}" != "$TINYTE
   # new naming: TinyTeX-{N}-{os}[-{arch}].tar.xz
   if [ $OSNAME = 'Darwin' ]; then
     OS_ARCH="-darwin"
+  elif is_musl; then
+    OS_ARCH="-linuxmusl-x86_64"
   elif [ "$ARCH" = 'aarch64' ]; then
     OS_ARCH="-linux-arm64"
   else
@@ -89,7 +101,7 @@ else if [ "${TINYTEX_INSTALLER#"TinyTeX"}" != "$TINYTEX_INSTALLER" ]; then
     tar xf TinyTeX.${EXT} -C $(dirname $TEXDIR)
     rm TinyTeX.${EXT}
   else
-    echo "We do not have a prebuilt TinyTeX package for this operating system ${OSTYPE}."
+    echo "We do not have a prebuilt TinyTeX package for this operating system ($(uname -s) $(uname -m))."
     echo "I will try to install from source for you instead."
     wget --retry-connrefused -O ${TINYTEX_INSTALLER}.tar.gz ${TINYTEX_URL}
     tar xf ${TINYTEX_INSTALLER}.tar.gz
