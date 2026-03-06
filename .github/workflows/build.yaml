@@ -295,7 +295,7 @@ jobs:
 
     steps:
       - name: Install build dependencies
-        run: apk add --no-cache bash R R-dev perl wget xz tar curl git github-cli g++
+        run: apk add --no-cache bash R R-dev perl wget xz tar curl git github-cli g++ pandoc
 
       - name: Clean up any existing TinyTeX bundles
         run: rm -f TinyTeX-*.* TinyTeX.*
