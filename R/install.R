@@ -147,9 +147,6 @@ install_tinytex = function(
       install_prebuilt(bundle, ..., repo = repository)
     }
   }
-  if (version == 'daily') {
-    if (missing(version) && !src_install) version = ''
-  }
   user_dir = install(user_dir, version, add_path, extra_packages)
 
   opts = options(tinytex.tlmgr.path = find_tlmgr(user_dir))
@@ -299,9 +296,9 @@ osascript = function(cmd) {
 }
 
 install_tinytex_source = function(repo = '', dir, version, add_path, extra_packages) {
-  if (version != '') stop(
+  if (version != 'daily') stop(
     'tinytex::install_tinytex() does not support installing a specific version of ',
-    'TinyTeX for your platform. Please use the argument version = "".'
+    'TinyTeX for your platform. Please use the argument version = "daily".'
   )
   if (repo != 'ctan') {
     Sys.setenv(CTAN_REPO = repo)
