@@ -6,6 +6,11 @@ on:
         required: false
         type: string
         default: 'https://ctan.math.illinois.edu/systems/texlive/tlnet'
+      force_rebuild_tinytex2:
+        description: 'Force a full rebuild of TinyTeX-2 (ignore existing daily bundle)'
+        required: false
+        type: boolean
+        default: false
   schedule:
     - cron: '5 3 * * *'
 
@@ -19,6 +24,8 @@ env:
   GH_REPO: rstudio/tinytex-releases
   # CTAN repository URL for TeX Live packages
   CTAN_REPO: ${{ inputs.ctan_repo || 'https://ctan.math.illinois.edu/systems/texlive/tlnet' }}
+  # Force full rebuild of TinyTeX-2 even if the daily bundle year matches
+  FORCE_REBUILD: ${{ inputs.force_rebuild_tinytex2 == true && 'true' || 'false' }}
 
 jobs:
   validate-ctan:
