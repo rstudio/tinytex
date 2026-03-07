@@ -5,6 +5,7 @@ if (length(u)) {
   quit(status = 1)
 }
 if (!tinytex::check_installed('scheme-full')) {
-  message('Needs update: scheme-full is not installed')
+  message('Needs update: scheme-full is not installed; installing...')
+  tinytex::tlmgr_install('scheme-full')
   quit(status = 1)
 }
