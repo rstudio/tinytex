@@ -216,8 +216,10 @@ tlmgr_update = function(
     c('update', if (all) '--all', if (self && !usermode) '--self', more_args),
     usermode, ..., stdout = TRUE, stderr = TRUE
   ))
-  check_tl_version(res)
-  if (run_fmtutil) fmtutil(usermode, stdout = FALSE)
+  # run fmtutil only if there's no new version of TeX Live
+  if (!check_tl_version(res)) {
+    if (run_fmtutil) fmtutil(usermode, stdout = FALSE)
+  }
   if (delete_tlpdb) delete_tlpdb_files()
   invisible()
 }
@@ -226,8 +228,10 @@ tlmgr_update = function(
 # how to upgrade
 check_tl_version = function(x) {
   i = grep('Local TeX Live \\([0-9]+) is older than remote repository \\([0-9]+)', x)
-  if (length(i) > 0) auto_upgrade()
-  .global$update_noted = TRUE
+  length(i) > 0 && {
+    auto_upgrade()
+    .global$update_noted = TRUE
+  }
 }
 
 # provide a way options(tinytex.upgrade = TRUE) to automatically upgrade TinyTeX
