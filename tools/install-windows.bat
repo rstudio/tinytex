@@ -8,7 +8,7 @@ rem in case there is a leftover install-tl-* dir, delete it
 for /d %%G in ("install-tl-*") do rd /s /q "%%~G"
 
 if not defined CTAN_REPO (
-  set TLREPO=http://mirror.ctan.org/systems/texlive/tlnet
+  set TLREPO=https://tlnet.yihui.org
 ) else (
   set TLREPO=%CTAN_REPO%
 )

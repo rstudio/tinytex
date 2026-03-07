@@ -2,7 +2,7 @@
 
 set -e
 
-TLREPO=${CTAN_REPO:-http://mirror.ctan.org/systems/texlive/tlnet}
+TLREPO=${CTAN_REPO:-https://tlnet.yihui.org}
 TLINST="install-tl-unx.tar.gz"
 TLURL=$TLREPO/$TLINST
 PRNAME="tinytex.profile"

@@ -2,10 +2,10 @@ on:
   workflow_dispatch:
     inputs:
       ctan_repo:
-        description: 'CTAN repository URL (e.g., https://ctan.math.illinois.edu/systems/texlive/tlnet). See https://ctan.org/mirrors/mirmon for available mirrors.'
+        description: 'CTAN repository URL. See https://ctan.org/mirrors/mirmon for available mirrors.'
         required: false
         type: string
-        default: 'https://ctan.math.illinois.edu/systems/texlive/tlnet'
+        default: 'https://tlnet.yihui.org'
       force_rebuild_tinytex2:
         description: 'Force a full rebuild of TinyTeX-2 (ignore existing daily bundle)'
         required: false
@@ -23,7 +23,7 @@ env:
   # https://cli.github.com/manual/gh_help_environment
   GH_REPO: rstudio/tinytex-releases
   # CTAN repository URL for TeX Live packages
-  CTAN_REPO: ${{ inputs.ctan_repo || 'https://ctan.math.illinois.edu/systems/texlive/tlnet' }}
+  CTAN_REPO: ${{ inputs.ctan_repo || 'https://tlnet.yihui.org' }}
   # Force full rebuild of TinyTeX-2 even if the daily bundle year matches
   FORCE_REBUILD: ${{ inputs.force_rebuild_tinytex2 == true && 'true' || 'false' }}
 
