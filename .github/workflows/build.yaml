@@ -147,18 +147,10 @@ jobs:
 
       - name: Package TinyTeX-2
         if: steps.build-tinytex-2.outputs.tinytex2-changed != 'false'
-        run: |
-          7z a -sfx TinyTeX-2-windows.exe $Env:APPDATA\\TinyTeX
-          Copy-Item TinyTeX-2-windows.exe TinyTeX-2.exe
+        run: 7z a -sfx TinyTeX-2-windows.exe $Env:APPDATA\\TinyTeX
 
-      - name: Download existing TinyTeX-2 bundles (no changes)
-        if: steps.build-tinytex-2.outputs.tinytex2-changed == 'false'
-        shell: bash
-        run: |
-          gh release download daily -R rstudio/tinytex-releases \
-            --pattern "TinyTeX-2-windows.exe" \
-            --pattern "TinyTeX-2.exe" \
-            --clobber
+      - name: Copy TinyTeX-2 alias
+        run: Copy-Item TinyTeX-2-windows.exe TinyTeX-2.exe
 
       - name: Test Installation script
         env:
@@ -224,17 +216,10 @@ jobs:
 
       - name: Package TinyTeX-2
         if: steps.build-tinytex-2.outputs.tinytex2-changed != 'false'
-        run: |
-          tar Jcf TinyTeX-2-linux-x86_64.tar.xz -C ~ .TinyTeX
-          cp TinyTeX-2-linux-x86_64.tar.xz TinyTeX-2.tar.gz
+        run: tar Jcf TinyTeX-2-linux-x86_64.tar.xz -C ~ .TinyTeX
 
-      - name: Download existing TinyTeX-2 bundles (no changes)
-        if: steps.build-tinytex-2.outputs.tinytex2-changed == 'false'
-        run: |
-          gh release download daily -R rstudio/tinytex-releases \
-            --pattern "TinyTeX-2-linux-x86_64.tar.xz" \
-            --pattern "TinyTeX-2.tar.gz" \
-            --clobber
+      - name: Copy TinyTeX-2 alias
+        run: cp TinyTeX-2-linux-x86_64.tar.xz TinyTeX-2.tar.gz
 
       - name: Export Regex file
         run: |
@@ -304,13 +289,6 @@ jobs:
         if: steps.build-tinytex-2.outputs.tinytex2-changed != 'false'
         run: tar Jcf TinyTeX-2-linux-arm64.tar.xz -C ~ .TinyTeX
 
-      - name: Download existing TinyTeX-2 bundles (no changes)
-        if: steps.build-tinytex-2.outputs.tinytex2-changed == 'false'
-        run: |
-          gh release download daily -R rstudio/tinytex-releases \
-            --pattern "TinyTeX-2-linux-arm64.tar.xz" \
-            --clobber
-
       - run: ls -lisa
 
       - name: Upload bundles
@@ -374,13 +352,6 @@ jobs:
         if: steps.build-tinytex-2.outputs.tinytex2-changed != 'false'
         run: tar Jcf TinyTeX-2-linuxmusl-x86_64.tar.xz -C ~ .TinyTeX
 
-      - name: Download existing TinyTeX-2 bundles (no changes)
-        if: steps.build-tinytex-2.outputs.tinytex2-changed == 'false'
-        run: |
-          gh release download daily -R rstudio/tinytex-releases \
-            --pattern "TinyTeX-2-linuxmusl-x86_64.tar.xz" \
-            --clobber
-
       - run: ls -lisa
 
       - name: Upload bundles
@@ -428,17 +399,10 @@ jobs:
 
       - name: Package TinyTeX-2
         if: steps.build-tinytex-2.outputs.tinytex2-changed != 'false'
-        run: |
-          tar Jcf TinyTeX-2-darwin.tar.xz -C ~/Library TinyTeX
-          cp TinyTeX-2-darwin.tar.xz TinyTeX-2.tgz
+        run: tar Jcf TinyTeX-2-darwin.tar.xz -C ~/Library TinyTeX
 
-      - name: Download existing TinyTeX-2 bundles (no changes)
-        if: steps.build-tinytex-2.outputs.tinytex2-changed == 'false'
-        run: |
-          gh release download daily -R rstudio/tinytex-releases \
-            --pattern "TinyTeX-2-darwin.tar.xz" \
-            --pattern "TinyTeX-2.tgz" \
-            --clobber
+      - name: Copy TinyTeX-2 alias
+        run: cp TinyTeX-2-darwin.tar.xz TinyTeX-2.tgz
 
       - run: ls -lisa
 

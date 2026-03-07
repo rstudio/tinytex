@@ -16,7 +16,7 @@ RELEASE_YEAR=$(gh release view daily -R rstudio/tinytex-releases --json body -q 
 
 if [ "${FORCE_REBUILD}" != "true" ] && [ -n "$RELEASE_YEAR" ] && [ "$RELEASE_YEAR" = "$TEXLIVE_YEAR" ]; then
   echo ">> Years match (TeX Live $TEXLIVE_YEAR): reusing daily TinyTeX-2 bundle and applying incremental updates"
-  TINYTEX_INSTALLER=TinyTeX-2 sh "$TOOLS/install-bin-unix.sh"
+  TINYTEX_INSTALLER=TinyTeX-2 sh "$TOOLS/install-bin-unix.sh" "$(pwd)"
   Rscript -e "tinytex::tlmgr(c('option', 'repository', Sys.getenv('CTAN_REPO')))"
 
   # Capture installed packages before any changes

@@ -92,24 +92,26 @@ else
   TINYTEX_URL="https://github.com/rstudio/tinytex-releases/releases/download/v$TINYTEX_VERSION/${TINYTEX_INSTALLER}${OS_ARCH}-v$TINYTEX_VERSION.${EXT}"
 fi
 
-if [ $OSNAME = 'Darwin' ]; then
-    curl -L -f --retry 10 --retry-delay 30 ${TINYTEX_URL} -o TinyTeX.${EXT}
-    tar xf TinyTeX.${EXT} -C $(dirname $TEXDIR)
-    rm TinyTeX.${EXT}
-else if [ "${TINYTEX_INSTALLER#"TinyTeX"}" != "$TINYTEX_INSTALLER" ]; then
-    wget --retry-connrefused --progress=dot:giga -O TinyTeX.${EXT} ${TINYTEX_URL}
-    tar xf TinyTeX.${EXT} -C $(dirname $TEXDIR)
-    rm TinyTeX.${EXT}
+INSTALLER_FILE="${TINYTEX_INSTALLER}${OS_ARCH}.${EXT}"
+
+if [ "${TINYTEX_INSTALLER#"TinyTeX"}" != "$TINYTEX_INSTALLER" ]; then
+  # prebuilt TinyTeX bundle: download with platform-appropriate tool
+  if [ $OSNAME = 'Darwin' ]; then
+    curl -L -f --retry 10 --retry-delay 30 ${TINYTEX_URL} -o "${INSTALLER_FILE}"
   else
-    echo "We do not have a prebuilt TinyTeX package for this operating system ($(uname -s) $(uname -m))."
-    echo "I will try to install from source for you instead."
-    wget --retry-connrefused -O ${TINYTEX_INSTALLER}.tar.gz ${TINYTEX_URL}
-    tar xf ${TINYTEX_INSTALLER}.tar.gz
-    ./install.sh
-    mkdir -p $TEXDIR
-    mv texlive/* $TEXDIR
-    rm -r texlive ${TINYTEX_INSTALLER}.tar.gz install.sh
+    wget --retry-connrefused --progress=dot:giga -O "${INSTALLER_FILE}" ${TINYTEX_URL}
   fi
+  tar xf "${INSTALLER_FILE}" -C $(dirname $TEXDIR)
+  if [ -n "$1" ]; then mv "${INSTALLER_FILE}" "$1/"; else rm "${INSTALLER_FILE}"; fi
+else
+  echo "We do not have a prebuilt TinyTeX package for this operating system ($(uname -s) $(uname -m))."
+  echo "I will try to install from source for you instead."
+  wget --retry-connrefused -O "${INSTALLER_FILE}" ${TINYTEX_URL}
+  tar xf "${INSTALLER_FILE}"
+  ./install.sh
+  mkdir -p $TEXDIR
+  mv texlive/* $TEXDIR
+  rm -r texlive "${INSTALLER_FILE}" install.sh
 fi
 
 cd $TEXDIR/bin/*/
