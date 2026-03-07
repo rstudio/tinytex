@@ -21,8 +21,7 @@ if ($env:FORCE_REBUILD -ne 'true' -and $releaseYear -ne '' -and $releaseYear -eq
   # Capture installed packages before update so we can detect any removed from remote
   $pkgsBefore = @(Rscript -e "cat(tinytex::tl_pkgs(), sep = '\n')")
 
-  Rscript -e "tinytex::tlmgr(c('update', '--self', '--all'))"
-  Rscript -e "tinytex::tlmgr(c('install', 'scheme-full'))"
+  Rscript -e "tinytex::tlmgr_update()"
 
   # Remove packages that are no longer present in the remote repo
   $pkgsAfter = @(Rscript -e "cat(tinytex::tl_pkgs(), sep = '\n')")

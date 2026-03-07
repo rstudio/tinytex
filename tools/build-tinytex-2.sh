@@ -22,8 +22,7 @@ if [ "${FORCE_REBUILD}" != "true" ] && [ -n "$RELEASE_YEAR" ] && [ "$RELEASE_YEA
   # Capture installed packages before update so we can detect any removed from remote
   PKGS_BEFORE=$(Rscript -e "cat(tinytex::tl_pkgs(), sep = '\n')" | grep -v '^$' | sort)
 
-  Rscript -e "tinytex::tlmgr(c('update', '--self', '--all'))"
-  Rscript -e "tinytex::tlmgr(c('install', 'scheme-full'))"
+  Rscript -e "tinytex::tlmgr_update()"
 
   # Remove packages that are no longer present in the remote repo
   PKGS_AFTER=$(Rscript -e "cat(tinytex::tl_pkgs(), sep = '\n')" | grep -v '^$' | sort)
