@@ -155,7 +155,7 @@ install_tinytex = function(
   if (not_ctan) {
     # install tlgpg for Windows and macOS users if an HTTPS repo is preferred
     if (os_index %in% c(1, 3) && https) {
-      tlmgr(c('--repository', 'http://www.preining.info/tlgpg/', 'install', 'tlgpg'))
+      tlmgr(c('--repository', 'https://www.preining.info/tlgpg/', 'install', 'tlgpg'))
     }
     tlmgr_repo(repository)
     if (tlmgr(c('update', '--list')) != 0) {
