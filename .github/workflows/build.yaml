@@ -140,12 +140,17 @@ jobs:
           7z a TinyTeX.zip $Env:APPDATA\\TinyTeX
 
       - name: Build TinyTeX-2
+        id: build-tinytex-2
         env:
           TEXLIVE_YEAR: ${{ needs.validate-ctan.outputs.texlive-year }}
-        run: |
-          & tools/build-tinytex-2.ps1
-          7z a -sfx TinyTeX-2-windows.exe $Env:APPDATA\\TinyTeX
-          Copy-Item TinyTeX-2-windows.exe TinyTeX-2.exe
+        run: & tools/build-tinytex-2.ps1
+
+      - name: Package TinyTeX-2
+        if: steps.build-tinytex-2.outputs.tinytex2-changed != 'false'
+        run: 7z a -sfx TinyTeX-2-windows.exe $Env:APPDATA\\TinyTeX
+
+      - name: Copy TinyTeX-2 alias
+        run: Copy-Item TinyTeX-2-windows.exe TinyTeX-2.exe
 
       - name: Test Installation script
         env:
@@ -204,12 +209,17 @@ jobs:
           cp TinyTeX-linux-x86_64.tar.xz TinyTeX.tar.gz
 
       - name: Build TinyTeX-2
+        id: build-tinytex-2
         env:
           TEXLIVE_YEAR: ${{ needs.validate-ctan.outputs.texlive-year }}
-        run: |
-          sh tools/build-tinytex-2.sh
-          tar Jcf TinyTeX-2-linux-x86_64.tar.xz -C ~ .TinyTeX
-          cp TinyTeX-2-linux-x86_64.tar.xz TinyTeX-2.tar.gz
+        run: sh tools/build-tinytex-2.sh
+
+      - name: Package TinyTeX-2
+        if: steps.build-tinytex-2.outputs.tinytex2-changed != 'false'
+        run: tar Jcf TinyTeX-2-linux-x86_64.tar.xz -C ~ .TinyTeX
+
+      - name: Copy TinyTeX-2 alias
+        run: cp TinyTeX-2-linux-x86_64.tar.xz TinyTeX-2.tar.gz
 
       - name: Export Regex file
         run: |
@@ -270,11 +280,14 @@ jobs:
           tar Jcf TinyTeX-linux-arm64.tar.xz -C ~ .TinyTeX
 
       - name: Build TinyTeX-2
+        id: build-tinytex-2
         env:
           TEXLIVE_YEAR: ${{ needs.validate-ctan.outputs.texlive-year }}
-        run: |
-          sh tools/build-tinytex-2.sh
-          tar Jcf TinyTeX-2-linux-arm64.tar.xz -C ~ .TinyTeX
+        run: sh tools/build-tinytex-2.sh
+
+      - name: Package TinyTeX-2
+        if: steps.build-tinytex-2.outputs.tinytex2-changed != 'false'
+        run: tar Jcf TinyTeX-2-linux-arm64.tar.xz -C ~ .TinyTeX
 
       - run: ls -lisa
 
@@ -330,11 +343,14 @@ jobs:
           tar Jcf TinyTeX-linuxmusl-x86_64.tar.xz -C ~ .TinyTeX
 
       - name: Build TinyTeX-2
+        id: build-tinytex-2
         env:
           TEXLIVE_YEAR: ${{ needs.validate-ctan.outputs.texlive-year }}
-        run: |
-          sh tools/build-tinytex-2.sh
-          tar Jcf TinyTeX-2-linuxmusl-x86_64.tar.xz -C ~ .TinyTeX
+        run: sh tools/build-tinytex-2.sh
+
+      - name: Package TinyTeX-2
+        if: steps.build-tinytex-2.outputs.tinytex2-changed != 'false'
+        run: tar Jcf TinyTeX-2-linuxmusl-x86_64.tar.xz -C ~ .TinyTeX
 
       - run: ls -lisa
 
@@ -376,12 +392,17 @@ jobs:
           cp TinyTeX-darwin.tar.xz TinyTeX.tgz
 
       - name: Build TinyTeX-2
+        id: build-tinytex-2
         env:
           TEXLIVE_YEAR: ${{ needs.validate-ctan.outputs.texlive-year }}
-        run: |
-          sh tools/build-tinytex-2.sh
-          tar Jcf TinyTeX-2-darwin.tar.xz -C ~/Library TinyTeX
-          cp TinyTeX-2-darwin.tar.xz TinyTeX-2.tgz
+        run: sh tools/build-tinytex-2.sh
+
+      - name: Package TinyTeX-2
+        if: steps.build-tinytex-2.outputs.tinytex2-changed != 'false'
+        run: tar Jcf TinyTeX-2-darwin.tar.xz -C ~/Library TinyTeX
+
+      - name: Copy TinyTeX-2 alias
+        run: cp TinyTeX-2-darwin.tar.xz TinyTeX-2.tgz
 
       - run: ls -lisa
 

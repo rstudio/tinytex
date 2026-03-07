@@ -37,7 +37,7 @@ if not defined TINYTEX_VERSION (
   set TINYTEX_URL=https://github.com/rstudio/tinytex-releases/releases/download/v%TINYTEX_VERSION%/%TINYTEX_FILENAME%-v%TINYTEX_VERSION%.%BUNDLE_EXT%
 )
 
-set DOWNLOADED_FILE=install.%BUNDLE_EXT%
+set DOWNLOADED_FILE=%TINYTEX_FILENAME%.%BUNDLE_EXT%
 
 rem download the zip package - method 1
 echo Download %BUNDLE_EXT% file... Method 1
@@ -62,7 +62,11 @@ if %BUNDLE_EXT% == exe (
 ) ELSE (
   powershell -Command "& { Add-Type -A 'System.IO.Compression.FileSystem'; [IO.Compression.ZipFile]::ExtractToDirectory($Env:DOWNLOADED_FILE, '.'); }"
 )
-del %DOWNLOADED_FILE%
+if "%~1" == "" (
+  del %DOWNLOADED_FILE%
+) else (
+  move /y %DOWNLOADED_FILE% "%~1\%DOWNLOADED_FILE%"
+)
 
 rem in case it was installed to APPDATA previously
 rd /s /q "%APPDATA%\TinyTeX"
