@@ -19,10 +19,18 @@ if [ "${FORCE_REBUILD}" != "true" ] && [ -n "$RELEASE_YEAR" ] && [ "$RELEASE_YEA
   TINYTEX_INSTALLER=TinyTeX-2 sh "$TOOLS/install-bin-unix.sh"
   Rscript -e "tinytex::tlmgr(c('option', 'repository', Sys.getenv('CTAN_REPO')))"
 
-  # Capture installed packages before update so we can detect any removed from remote
+  # Capture installed packages before any changes
   PKGS_BEFORE=$(Rscript -e "cat(tinytex::tl_pkgs(), sep = '\n')" | grep -v '^$' | sort)
 
-  Rscript -e "tinytex::tlmgr_update()"
+  # Check if any updates are needed before running tlmgr_update()
+  TINYTEX2_CHANGED=false
+  if Rscript "$TOOLS/check-update.R"; then
+    echo ">> No updates needed, skipping tlmgr_update()"
+  else
+    echo ">> Updates available, running tlmgr_update()"
+    Rscript -e "tinytex::tlmgr_update()"
+    TINYTEX2_CHANGED=true
+  fi
 
   # Remove packages that are no longer present in the remote repo
   PKGS_AFTER=$(Rscript -e "cat(tinytex::tl_pkgs(), sep = '\n')" | grep -v '^$' | sort)
@@ -34,9 +42,13 @@ if [ "${FORCE_REBUILD}" != "true" ] && [ -n "$RELEASE_YEAR" ] && [ "$RELEASE_YEA
   if [ -n "$REMOVED" ]; then
     echo ">> Removing packages no longer in remote repo: $REMOVED"
     REMOVED_PKGS="$REMOVED" Rscript -e "tinytex::tlmgr(c('remove', scan(text=Sys.getenv('REMOVED_PKGS'), what='', quiet=TRUE)))"
+    TINYTEX2_CHANGED=true
   fi
 
   Rscript "$TOOLS/clean-tlpdb.R"
+
+  # Report to CI whether TinyTeX-2 was changed (allows skipping packaging)
+  [ -n "$GITHUB_OUTPUT" ] && echo "tinytex2-changed=$TINYTEX2_CHANGED" >> "$GITHUB_OUTPUT"
 else
   if [ "${FORCE_REBUILD}" = "true" ]; then
     echo ">> Force rebuild requested: installing TinyTeX-2 from scratch"
@@ -44,4 +56,5 @@ else
     echo ">> Years do not match (local: $TEXLIVE_YEAR, release: ${RELEASE_YEAR:-none}): installing TinyTeX-2 from scratch"
   fi
   Rscript "$TOOLS/build-scheme-full.R"
+  [ -n "$GITHUB_OUTPUT" ] && echo "tinytex2-changed=true" >> "$GITHUB_OUTPUT"
 fi
