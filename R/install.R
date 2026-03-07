@@ -578,7 +578,7 @@ post_install_config = function(add_path = TRUE, extra_packages = NULL, repo = 'c
 }
 
 download_installer = function(file, version) {
-  v = if (version == '') 'daily' else paste0('v', version)
+  v = paste0(if (version != 'daily') 'v', version)
   u = sprintf('https://github.com/rstudio/tinytex-releases/releases/download/%s/%s', v, file)
   download_file(u, file, mode = 'wb')
 }
