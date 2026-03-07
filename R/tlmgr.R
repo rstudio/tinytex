@@ -244,7 +244,7 @@ auto_upgrade = function() {
   if (!up) return(message(
     'A new version of TeX Live has been released. If you need to install or update ',
     'any LaTeX packages, you have to upgrade ', if (!is_tinytex()) 'TeX Live.' else c(
-      'TinyTeX with tinytex::reinstall_tinytex(repository = "illinois").'
+      'TinyTeX with tinytex::reinstall_tinytex().'
     )
   ))
   root = tinytex_root()
