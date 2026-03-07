@@ -143,7 +143,8 @@ jobs:
         id: build-tinytex-2
         env:
           TEXLIVE_YEAR: ${{ needs.validate-ctan.outputs.texlive-year }}
-        run: & tools/build-tinytex-2.ps1
+        run: "& tools/build-tinytex-2.ps1"
+        shell: pwsh
 
       - name: Package TinyTeX-2
         if: steps.build-tinytex-2.outputs.tinytex2-changed != 'false'
