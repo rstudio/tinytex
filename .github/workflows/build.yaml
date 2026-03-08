@@ -195,7 +195,7 @@ jobs:
           # tlmgr path add will add in this folder which is not on PATH by default
           # (can be checked with tlmgr options sys_bin)
           echo "$HOME/bin" >> $GITHUB_PATH
-          ls -lisa "$HOME/bin"
+          ls -lisah "$HOME/bin"
 
       - name: Build TinyTeX-1
         run: |
@@ -241,7 +241,7 @@ jobs:
           ~/bin/tlmgr version | sed -n '1p;3p' >> $GITHUB_OUTPUT
           echo "EOFTLMGR" >> $GITHUB_OUTPUT
 
-      - run: ls -lisa
+      - run: ls -lisah
 
       - name: Upload bundles
         uses: ./.github/actions/upload-bundles
@@ -268,7 +268,7 @@ jobs:
           sed -i 's|# finished base|cp $OLDPWD/install-tl-unx.tar.gz tools/; Rscript tools/clean-tlpdb.R; tar Jcf TinyTeX-0-linux-arm64.tar.xz -C ~ .TinyTeX|' tools/install-unx.sh
           ./tools/install-unx.sh
           echo "$HOME/bin" >> $GITHUB_PATH
-          ls -lisa "$HOME/bin"
+          ls -lisah "$HOME/bin"
 
       - name: Build TinyTeX-1
         run: |
@@ -290,7 +290,7 @@ jobs:
         if: steps.build-tinytex-2.outputs.tinytex2-changed != 'false'
         run: tar Jcf TinyTeX-2-linux-arm64.tar.xz -C ~ .TinyTeX
 
-      - run: ls -lisa
+      - run: ls -lisah
 
       - name: Upload bundles
         uses: ./.github/actions/upload-bundles
@@ -331,7 +331,7 @@ jobs:
           sed -i 's|# finished base|cp $OLDPWD/install-tl-unx.tar.gz tools/; Rscript tools/clean-tlpdb.R; tar Jcf TinyTeX-0-linuxmusl-x86_64.tar.xz -C ~ .TinyTeX|' tools/install-unx.sh
           ./tools/install-unx.sh
           echo "$HOME/bin" >> $GITHUB_PATH
-          ls -lisa "$HOME/bin"
+          ls -lisah "$HOME/bin"
 
       - name: Build TinyTeX-1
         run: |
@@ -353,7 +353,7 @@ jobs:
         if: steps.build-tinytex-2.outputs.tinytex2-changed != 'false'
         run: tar Jcf TinyTeX-2-linuxmusl-x86_64.tar.xz -C ~ .TinyTeX
 
-      - run: ls -lisa
+      - run: ls -lisah
 
       - name: Upload bundles
         uses: ./.github/actions/upload-bundles
@@ -405,7 +405,7 @@ jobs:
       - name: Copy TinyTeX-2 alias
         run: cp TinyTeX-2-darwin.tar.xz TinyTeX-2.tgz
 
-      - run: ls -lisa
+      - run: ls -lisah
 
       - name: Upload bundles
         uses: ./.github/actions/upload-bundles
@@ -444,7 +444,7 @@ jobs:
           mv tinitex.tar.gz ../..
           popd
 
-      - run: ls -lisa
+      - run: ls -lisah
 
       - name: Upload bundles
         uses: ./.github/actions/upload-bundles
