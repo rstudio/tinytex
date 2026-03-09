@@ -131,11 +131,18 @@ if [ $OSNAME = 'Darwin' ]; then
     echo "Admin privilege (password) is required to create the directory /usr/local/bin:"
     sudo mkdir -p /usr/local/bin
   fi
-  # change owner of the dir
+  # temporarily change owner of the dir to allow creating symlinks
   if [ ! -w /usr/local/bin ]; then
     echo "Admin privilege (password) is required to make /usr/local/bin writable:"
-    sudo chown -R `whoami`:admin /usr/local/bin
+    PREV_OWNER=$(stat -f "%Su:%Sg" /usr/local/bin)
+    sudo chown `whoami`:admin /usr/local/bin
   fi
 fi
 
 ./tlmgr path add
+
+# Restore original ownership of /usr/local/bin on macOS
+if [ "$OSNAME" = 'Darwin' ] && [ -n "${PREV_OWNER-}" ]; then
+  echo "Admin privilege (password) is required to restore ownership of /usr/local/bin:"
+  sudo chown ${PREV_OWNER} /usr/local/bin
+fi

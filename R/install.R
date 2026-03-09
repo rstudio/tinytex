@@ -113,7 +113,8 @@ install_tinytex = function(
   switch(
     os,
     'unix' = {
-      check_local_bin()
+      restore_local_bin = check_local_bin()
+      if (is.function(restore_local_bin)) on.exit(restore_local_bin(), add = TRUE)
       if (os_index != 3 && !any(dir_exists(c('~/bin', '~/.local/bin')))) on.exit(message(
         'You may have to restart your system after installing TinyTeX to make sure ',
         '~/bin appears in your PATH variable (https://github.com/rstudio/tinytex/issues/16).'
@@ -292,14 +293,19 @@ valid_path = function(x) grepl('^[!-~]+$', x)
 
 # check if /usr/local/bin on macOS is writable
 check_local_bin = function() {
-  if (os_index != 3 || is_writable(p <- '/usr/local/bin')) return()
+  if (os_index != 3 || is_writable(p <- '/usr/local/bin')) return(invisible(NULL))
   message(
     'The directory ', p, ' is not writable. I recommend that you make it writable. ',
     'See https://github.com/rstudio/tinytex/issues/24 for more info.'
   )
   if (!dir_exists(p)) osascript(paste('mkdir -p', p))
+  # save current ownership before changing it (to restore later)
+  prev_owner = system2('stat', c('-f', '%Su:%Sg', p), stdout = TRUE)
   user = system2('whoami', stdout = TRUE)
-  osascript(sprintf('chown -R %s:admin %s', user, p))
+  osascript(sprintf('chown %s:admin %s', user, p))
+  # return a cleanup function to restore the original ownership (only if prev_owner is valid)
+  if (length(prev_owner) == 1 && grepl('^[^:]+:[^:]+$', prev_owner))
+    function() osascript(sprintf('chown %s %s', prev_owner, p))
 }
 
 osascript = function(cmd) {
