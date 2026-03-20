@@ -181,7 +181,7 @@ tlmgr_remove = function(pkgs = character(), usermode = FALSE) {
 #' @importFrom xfun raw_string
 #' @export
 tlmgr_version = function(format = c('raw', 'string', 'list')) {
-  vers = tlmgr('--version', stdout = TRUE, .quiet = TRUE)
+  vers = suppressWarnings(tlmgr('--version', stdout = TRUE, .quiet = TRUE))
   format = match.arg(format)
   if (format != 'raw') {
     year = xfun::grep_sub('^TeX Live.* version (\\d+).*$', '\\1', vers)[1]
