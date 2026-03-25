@@ -313,7 +313,7 @@ jobs:
 
     steps:
       - name: Install build dependencies
-        run: apk add --no-cache bash R R-dev perl wget xz tar curl git github-cli g++ pandoc cmake
+        run: apk add --no-cache bash R R-dev perl wget xz tar curl git github-cli g++ pandoc cmake linux-headers
 
       - name: Clean up any existing TinyTeX bundles
         run: rm -f TinyTeX-*.* TinyTeX.*
