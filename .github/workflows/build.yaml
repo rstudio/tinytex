@@ -309,6 +309,7 @@ jobs:
 
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      USE_BUNDLED_LIBUV: 1
 
     steps:
       - name: Install build dependencies
