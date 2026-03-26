@@ -7,7 +7,7 @@ i = x == r"(& .\tlmgr.bat install @pkgs)"
 if (sum(i) != 1)
   stop('The script ', f, ' should contain a line to install extra LaTeX packages.')
 x = x[!i]
-x = x[!grepl("^Read-Host", x)]  # do not pause
+x = x[x != 'pause']  # do not pause
 writeLines(x, f)
 shell('powershell -ExecutionPolicy Bypass -File install-windows.ps1')
 setwd(owd)

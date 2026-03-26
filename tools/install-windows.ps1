@@ -54,4 +54,4 @@ pushd $env:APPDATA\TinyTeX\bin\win*
 if ($LASTEXITCODE -ne 0) { throw "tlmgr install failed" }
 popd
 
-Read-Host 'Press Enter to continue'
+pause
