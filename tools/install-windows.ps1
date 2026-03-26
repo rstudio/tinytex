@@ -29,7 +29,7 @@ cd install-tl-*
 cmd /c "echo. | install-tl-windows.bat -no-gui -profile=../tinytex.profile -repository $TLREPO"
 if ($LASTEXITCODE -ne 0) { throw "TeX Live installation failed" }
 
-del TinyTeX\install-tl.log, ..\tinytex.profile, install-tl, install-tl-windows.bat -ErrorAction SilentlyContinue
+del TinyTeX\install-tl.log ..\tinytex.profile install-tl install-tl-windows.bat -ErrorAction SilentlyContinue
 
 # a token to differentiate TinyTeX with other TeX Live distros
 ni TinyTeX\.tinytex | Out-Null
