@@ -26,7 +26,7 @@ Invoke-WebRequest 'https://tinytex.yihui.org/pkgs-custom.txt' -OutFile pkgs-cust
 
 # an automated installation of TeXLive (infrastructure only)
 cd install-tl-*
-cmd /c "echo. | install-tl-windows.bat -no-gui -profile=../tinytex.profile -repository $TLREPO"
+cmd /c "install-tl-windows.bat -no-gui -profile=../tinytex.profile -repository $TLREPO < nul"
 if ($LASTEXITCODE -ne 0) { throw "TeX Live installation failed" }
 
 del TinyTeX\install-tl.log ..\tinytex.profile install-tl install-tl-windows.bat -ErrorAction SilentlyContinue
