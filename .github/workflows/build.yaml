@@ -156,8 +156,8 @@ jobs:
       - name: Test Installation script
         env:
           TINYTEX_INSTALLER: TinyTeX-0
-        run: tools\\install-bin-windows.bat
-        shell: cmd
+        run: tools/install-bin-windows.ps1
+        shell: pwsh
 
       - name: Upload bundles
         uses: ./.github/actions/upload-bundles

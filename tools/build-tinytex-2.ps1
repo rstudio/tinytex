@@ -15,7 +15,7 @@ $releaseYear = if ($releaseYearMatch) { $releaseYearMatch.Matches.Groups[1].Valu
 if ($env:FORCE_REBUILD -ne 'true' -and $releaseYear -ne '' -and $releaseYear -eq $env:TEXLIVE_YEAR) {
   Write-Host ">> Years match (TeX Live $($env:TEXLIVE_YEAR)): reusing daily TinyTeX-2 bundle and applying incremental updates"
   $env:TINYTEX_INSTALLER = 'TinyTeX-2'
-  & "C:\Windows\System32\cmd.exe" /c "$PSScriptRoot\install-bin-windows.bat" "$PWD" '2>&1' | Write-Host
+  & "$PSScriptRoot\install-bin-windows.ps1" "$PWD" 2>&1 | Write-Host
   Rscript -e "tinytex::tlmgr(c('option', 'repository', Sys.getenv('CTAN_REPO')))"
 
   # Capture installed packages before any changes
