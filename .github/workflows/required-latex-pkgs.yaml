@@ -31,7 +31,7 @@ jobs:
 
       - uses: yihui/actions/setup-r-dependencies@HEAD
         with:
-          extra-packages: curl kableExtra bookdown
+          extra-packages: . curl kableExtra bookdown
 
       - name: Find required LaTeX packages
         run: Rscript tools/test-packages.R
