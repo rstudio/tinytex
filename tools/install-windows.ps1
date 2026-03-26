@@ -47,11 +47,10 @@ rd install-tl-* -r -fo -ErrorAction SilentlyContinue
 $pkgs = gc pkgs-custom.txt
 del pkgs-custom.txt
 
-pushd $env:APPDATA\TinyTeX\bin\win*
-& .\tlmgr conf texmf max_print_line 10000
-& .\tlmgr path add
-& .\tlmgr install @pkgs
+$tlmgr = "$env:APPDATA\TinyTeX\bin\windows\tlmgr.bat"
+& $tlmgr conf texmf max_print_line 10000
+& $tlmgr path add
+& $tlmgr install @pkgs
 if ($LASTEXITCODE -ne 0) { throw "tlmgr install failed" }
-popd
 
 pause

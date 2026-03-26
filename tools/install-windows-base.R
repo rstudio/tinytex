@@ -3,7 +3,7 @@
 owd = setwd('tools')
 f = 'install-windows.ps1'
 x = readLines(f)
-i = x == r"(& .\tlmgr install @pkgs)"
+i = x == "& $tlmgr install @pkgs"
 if (sum(i) != 1)
   stop('The script ', f, ' should contain a line to install extra LaTeX packages.')
 x = x[!i]
