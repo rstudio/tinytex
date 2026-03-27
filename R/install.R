@@ -333,7 +333,8 @@ install_via_script = function(pkg = '', dir = '', version = 'daily', add_path = 
   env_vars = c(TINYTEX_INSTALLER = pkg)
   if (version != 'daily') env_vars['TINYTEX_VERSION'] = version
 
-  # Determine the final TinyTeX directory so we can find tlmgr afterwards
+  # xfun::normalize_path() expands ~ so we can pass TINYTEX_TEXDIR to the script;
+  # normalizePath() below (after install) resolves symlinks for the canonical path
   target = if (dir == '') default_inst() else xfun::normalize_path(dir)
   # Pass the full target path to the script only when using a custom directory
   if (dir != '') env_vars['TINYTEX_TEXDIR'] = target

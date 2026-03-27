@@ -71,7 +71,7 @@ TEXDIR=${TINYTEX_TEXDIR:-${TEXDIR_DEFAULT_PARENT}/${TEXDIR_DEFAULT_BASENAME}}
 
 # the path where the archive will be extracted (always the standard basename under the
 # same parent as TEXDIR, regardless of whether a custom name was requested)
-TEXDIR_EXTRACTED="$(dirname $TEXDIR)/$TEXDIR_DEFAULT_BASENAME"
+TEXDIR_EXTRACTED="$(dirname "$TEXDIR")/$TEXDIR_DEFAULT_BASENAME"
 
 rm -rf "$TEXDIR"
 # also remove the standard extraction target when a custom path is requested,
@@ -119,7 +119,7 @@ if [ "${TINYTEX_INSTALLER#"TinyTeX"}" != "$TINYTEX_INSTALLER" ]; then
   else
     wget --retry-connrefused --progress=dot:giga -O "${INSTALLER_FILE}" ${TINYTEX_URL}
   fi
-  tar xf "${INSTALLER_FILE}" -C $(dirname $TEXDIR)
+  tar xf "${INSTALLER_FILE}" -C "$(dirname "$TEXDIR")"
   # rename to TEXDIR if a custom path (TINYTEX_TEXDIR) was requested and the
   # archive extracted to a different name (e.g. .TinyTeX or TinyTeX)
   [ "$TEXDIR" = "$TEXDIR_EXTRACTED" ] || mv "$TEXDIR_EXTRACTED" "$TEXDIR"
