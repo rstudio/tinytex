@@ -34,9 +34,7 @@
 #'   if an existing installation of TinyTeX is found. If you want a fresh
 #'   installation, you may use \code{extra_packages = NULL}.
 #' @param add_path Whether to add the bin path of TeX Live to the system
-#'   environment variable \var{PATH}. On macOS, this writes the bin path to
-#'   \file{/etc/paths.d/TinyTeX}; on Linux, it runs \command{tlmgr path add};
-#'   on Windows, it runs \command{tlmgr path add}.
+#'   environment variable \var{PATH}. See \code{\link{tlmgr_path}()}.
 #' @references See the TinyTeX documentation (\url{https://yihui.org/tinytex/})
 #'   for the default installation directories on different platforms.
 #' @note If you really want to disable the installation, you may set the
@@ -292,12 +290,32 @@ win_app_dir = function(s) {
 valid_path = function(x) grepl('^[!-~]+$', x)
 
 osascript = function(cmd) {
-  if (system(sprintf(
+  ret = system(sprintf(
     "/usr/bin/osascript -e 'do shell script \"%s\" with administrator privileges'", cmd
-  )) != 0) warning(
+  ))
+  if (ret != 0) warning(
     "Please run this command in your Terminal (password required):\n  sudo ",
     cmd, call. = FALSE
   )
+  invisible(ret)
+}
+
+# add/remove TinyTeX's bin path to/from /etc/paths.d/TinyTeX on macOS;
+# if adding and the file already contains the desired path, skip the operation
+macos_path = function(dir = NULL, add = TRUE) {
+  paths_file = '/etc/paths.d/TinyTeX'
+  if (add) {
+    if (is.null(dir) || dir == '') return(invisible(1L))
+    if (file.exists(paths_file) &&
+        identical(trimws(readLines(paths_file, warn = FALSE)), dir))
+      return(invisible(0L))
+    tmp = tempfile()
+    on.exit(unlink(tmp), add = TRUE)
+    writeLines(dir, tmp)
+    invisible(osascript(sprintf('cp %s %s', tmp, paths_file)))
+  } else {
+    invisible(osascript(sprintf('rm -f %s', paths_file)))
+  }
 }
 
 install_tinytex_source = function(repo = '', dir, version, add_path, extra_packages) {
@@ -577,8 +595,7 @@ download_installer = function(file, version) {
 #' The function \code{copy_tinytex()} copies the existing TinyTeX installation
 #' to another directory (e.g., a portable device like a USB stick). The function
 #' \code{use_tinytex()} adds the copy of TinyTeX in an existing folder to the
-#' \code{PATH} variable of the current system (on macOS via
-#' \file{/etc/paths.d/TinyTeX}; on other platforms via \command{tlmgr path add}),
+#' \code{PATH} variable of the current system via \code{\link{tlmgr_path}()},
 #' so that you can use utilities such as \command{tlmgr} and \command{pdflatex},
 #' etc.
 #' @param from The root directory of the TinyTeX installation. For
@@ -623,11 +640,7 @@ use_tinytex = function(from = select_dir('Select TinyTeX Directory')) {
   p = file.path(d, 'tlmgr')
   if (os == 'windows') p = paste0(p, '.bat')
   if (is_macos()) {
-    # on macOS, add the bin dir to /etc/paths.d instead of using symlinks in /usr/local/bin
-    tmp = tempfile(tmpdir = '/tmp')
-    writeLines(normalizePath(d), tmp)
-    osascript(sprintf('cp %s /etc/paths.d/TinyTeX', tmp))
-    unlink(tmp)
+    macos_path(normalizePath(d))
   } else if (system2(p, c('path', 'add')) != 0) stop(
     "Failed to add '", d, "' to your system's environment variable PATH. You may ",
     "consider the fallback approach, i.e., set options(tinytex.tlmgr.path = '", p, "')."

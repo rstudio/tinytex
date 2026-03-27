@@ -59,12 +59,16 @@ tlmgr = function(args = character(), usermode = FALSE, ..., .quiet = FALSE) {
 # check if it is necessary to add ~/Library/TinyTeX/bin/*/ to PATH
 
 #' @importFrom xfun is_linux is_unix is_macos is_windows with_ext
-tweak_path = function() {
-  # check tlmgr exists under the default installation dir of TinyTeX, or the
-  # global option tinytex.tlmgr.path
+# return the bin directory of TinyTeX (empty string if not found)
+find_tinytex_bin = function() {
   f = getOption('tinytex.tlmgr.path', find_tlmgr(extra = TRUE))
-  if (length(f) == 0 || !file_test('-x', f)) return()
-  bin = normalizePath(dirname(f))
+  if (length(f) == 0 || !file_test('-x', f)) return('')
+  normalizePath(dirname(f))
+}
+
+tweak_path = function() {
+  bin = find_tinytex_bin()
+  if (bin == '') return()
   # if the pdftex from TinyTeX is already on PATH, no need to adjust the PATH
   if ((p <- Sys.which('pdftex')) != '') {
     p2 = with_ext(file.path(bin, 'pdftex'), xfun::file_ext(p))
@@ -258,30 +262,16 @@ delete_tlpdb_files = function() {
   ))
 }
 
-#' @param action On Unix, add/remove symlinks of binaries to/from the system's
-#'   \code{PATH}. On macOS, add/remove the TinyTeX bin path to/from
-#'   \file{/etc/paths.d/TinyTeX}. On Windows, add/remove the path to the
-#'   TeXLive binary directory to/from the system environment variable
+#' @param action On macOS, add/remove the TinyTeX bin path to/from
+#'   \file{/etc/paths.d/TinyTeX}. On other Unix systems, add/remove symlinks of
+#'   binaries to/from the system's \code{PATH}. On Windows, add/remove the path
+#'   to the TeXLive binary directory to/from the system environment variable
 #'   \code{PATH}.
 #' @rdname tlmgr
 #' @export
 tlmgr_path = function(action = c('add', 'remove')) {
   action = match.arg(action)
-  if (is_macos()) {
-    paths_file = '/etc/paths.d/TinyTeX'
-    if (action == 'add') {
-      f = getOption('tinytex.tlmgr.path', find_tlmgr(extra = TRUE))
-      if (length(f) == 0 || !file_test('-x', f)) return(invisible(1L))
-      bin = normalizePath(dirname(f))
-      tmp = tempfile(tmpdir = '/tmp')
-      writeLines(bin, tmp)
-      osascript(sprintf('cp %s %s', tmp, paths_file))
-      unlink(tmp)
-    } else {
-      osascript(sprintf('rm -f %s', paths_file))
-    }
-    return(invisible(0L))
-  }
+  if (is_macos()) return(invisible(macos_path(find_tinytex_bin(), action == 'add')))
   tlmgr(c('path', action), .quiet = TRUE)
 }
 

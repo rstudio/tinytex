@@ -58,8 +58,8 @@ installed. By default, a vector of all currently installed LaTeX packages
 if an existing installation of TinyTeX is found. If you want a fresh
 installation, you may use \code{extra_packages = NULL}.}
 
-\item{add_path}{Whether to run the command \command{tlmgr path add} to add
-the bin path of TeX Live to the system environment variable \var{PATH}.}
+\item{add_path}{Whether to add the bin path of TeX Live to the system
+environment variable \var{PATH}. See \code{\link{tlmgr_path}()}.}
 
 \item{packages}{Whether to reinstall all currently installed packages.}
 

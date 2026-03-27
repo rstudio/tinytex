@@ -127,9 +127,10 @@ fi
 if [ $OSNAME = 'Darwin' ]; then
   # add TinyTeX's bin path to /etc/paths.d instead of creating symlinks in /usr/local/bin
   # (at this point we are in $TEXDIR/bin/*/ after the `cd` above)
-  TINYTEX_BINDIR="$(pwd)"
-  echo "Admin privilege (password) is required to set up the PATH for TinyTeX:"
-  printf '%s\n' "$TINYTEX_BINDIR" | sudo tee /etc/paths.d/TinyTeX > /dev/null
+  if ! grep -qxF "$(pwd)" /etc/paths.d/TinyTeX 2>/dev/null; then
+    echo "Admin privilege (password) is required to set up the PATH for TinyTeX:"
+    printf '%s\n' "$(pwd)" | sudo tee /etc/paths.d/TinyTeX > /dev/null
+  fi
 else
   ./tlmgr path add
 fi
