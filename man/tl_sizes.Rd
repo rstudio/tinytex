@@ -18,10 +18,10 @@ See \url{https://www.tug.org/texlive/doc/tlmgr.html#info} for more info.}
 }
 \value{
 By default, a data frame of three columns: \code{package} is the
-  package names, \code{size} is the sizes in bytes, and \code{size_h} is the
-  human-readable version of sizes. If different field names are provided in
-  the \code{field} argument, the returned data frame will contain these
-  columns.
+package names, \code{size} is the sizes in bytes, and \code{size_h} is the
+human-readable version of sizes. If different field names are provided in
+the \code{field} argument, the returned data frame will contain these
+columns.
 }
 \description{
 Use the command \command{tlmgr info --list} to obtain the sizes of LaTeX

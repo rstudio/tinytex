@@ -1,9 +1,9 @@
 #' Compile a LaTeX document
 #'
-#' The function \code{latexmk()} emulates the system command \command{latexmk}
-#' (\url{https://ctan.org/pkg/latexmk}) to compile a LaTeX document. The
-#' functions \code{pdflatex()}, \code{xelatex()}, and \code{lualatex()} are
-#' wrappers of \code{latexmk(engine =, emulation = TRUE)}.
+#' The function `latexmk()` emulates the system command \command{latexmk}
+#' (<https://ctan.org/pkg/latexmk>) to compile a LaTeX document. The
+#' functions `pdflatex()`, `xelatex()`, and `lualatex()` are
+#' wrappers of `latexmk(engine =, emulation = TRUE)`.
 #'
 #' The \command{latexmk} emulation works like this: run the LaTeX engine once
 #' (e.g., \command{pdflatex}), run \command{makeindex} to make the index if
@@ -14,62 +14,62 @@
 #' cross-references.
 #'
 #' By default, LaTeX warnings will be converted to R warnings. To suppress these
-#' warnings, set \code{options(tinytex.latexmk.warning = FALSE)}.
+#' warnings, set `options(tinytex.latexmk.warning = FALSE)`.
 #'
-#' If \code{emulation = FALSE}, you need to make sure the executable
-#' \command{latexmk} is available in your system, otherwise \code{latexmk()}
-#' will fall back to \code{emulation = TRUE}. You can set the global option
-#' \code{options(tinytex.latexmk.emulation = FALSE)} to always avoid emulation
+#' If `emulation = FALSE`, you need to make sure the executable
+#' \command{latexmk} is available in your system, otherwise `latexmk()`
+#' will fall back to `emulation = TRUE`. You can set the global option
+#' `options(tinytex.latexmk.emulation = FALSE)` to always avoid emulation
 #' (i.e., always use the executable \command{latexmk}).
 #'
 #' The default command to generate the index (if necessary) is
 #' \command{makeindex}. To change it to a different command (e.g.,
 #' \command{zhmakeindex}), you may set the global option
-#' \code{tinytex.makeindex}. To pass additional command-line arguments to the
-#' command, you may set the global option \code{tinytex.makeindex.args} (e.g.,
-#' \code{options(tinytex.makeindex = 'zhmakeindex', tinytex.makeindex.args =
-#' c('-z', 'pinyin'))}).
+#' `tinytex.makeindex`. To pass additional command-line arguments to the
+#' command, you may set the global option `tinytex.makeindex.args` (e.g.,
+#' `options(tinytex.makeindex = 'zhmakeindex', tinytex.makeindex.args =
+#' c('-z', 'pinyin'))`).
 #'
 #' If you are using the LaTeX distribution TinyTeX, but its path is not in the
-#' \code{PATH} variable of your operating system, you may set the global option
-#' \code{tinytex.tlmgr.path} to the full path of the executable \command{tlmgr},
-#' so that \code{latexmk()} knows where to find executables like
+#' `PATH` variable of your operating system, you may set the global option
+#' `tinytex.tlmgr.path` to the full path of the executable \command{tlmgr},
+#' so that `latexmk()` knows where to find executables like
 #' \command{pdflatex}. For example, if you are using Windows and your TinyTeX is
 #' on an external drive \file{Z:/} under the folder \file{TinyTeX}, you may set
-#' \code{options(tinytex.tlmgr.path = "Z:/TinyTeX/bin/windows/tlmgr.bat")}.
+#' `options(tinytex.tlmgr.path = "Z:/TinyTeX/bin/windows/tlmgr.bat")`.
 #' Usually you should not need to set this option because TinyTeX can add itself
-#' to the \code{PATH} variable during installation or via
-#' \code{\link{use_tinytex}()}. In case both methods fail, you can use this
+#' to the `PATH` variable during installation or via
+#' [use_tinytex()]. In case both methods fail, you can use this
 #' manual approach.
 #' @param file A LaTeX file path.
 #' @param engine A LaTeX engine (can be set in the global option
-#'   \code{tinytex.engine}, e.g., \code{options(tinytex.engine = 'xelatex')}).
+#'   `tinytex.engine`, e.g., `options(tinytex.engine = 'xelatex')`).
 #' @param bib_engine A bibliography engine (can be set in the global option
-#'   \code{tinytex.bib_engine}).
-#' @param engine_args Command-line arguments to be passed to \code{engine} (can
-#'   be set in the global option \code{tinytex.engine_args}, e.g.,
-#'   \code{options(tinytex.engine_args = '-shell-escape'}).
+#'   `tinytex.bib_engine`).
+#' @param engine_args Command-line arguments to be passed to `engine` (can
+#'   be set in the global option `tinytex.engine_args`, e.g.,
+#'   `options(tinytex.engine_args = '-shell-escape')`).
 #' @param emulation Whether to emulate the executable \command{latexmk} using R.
-#'   Note that this is unused when \code{engine == 'tectonic'}.
+#'   Note that this is unused when `engine == 'tectonic'`.
 #' @param min_times,max_times The minimum and maximum number of times to rerun
 #'   the LaTeX engine when using emulation. You can set the global options
-#'   \code{tinytex.compile.min_times} or \code{tinytex.compile.max_times}, e.g.,
-#'   \code{options(tinytex.compile.max_times = 3)}.
+#'   `tinytex.compile.min_times` or `tinytex.compile.max_times`, e.g.,
+#'   `options(tinytex.compile.max_times = 3)`.
 #' @param install_packages Whether to automatically install missing LaTeX
-#'   packages found by \code{\link{parse_packages}()} from the LaTeX log. This
+#'   packages found by [parse_packages()] from the LaTeX log. This
 #'   argument is only for the emulation mode and TeX Live. Its value can also be
-#'   set via the global option \code{tinytex.install_packages}, e.g.,
-#'   \code{options(tinytex.install_packages = FALSE)}.
+#'   set via the global option `tinytex.install_packages`, e.g.,
+#'   `options(tinytex.install_packages = FALSE)`.
 #' @param pdf_file Path to the PDF output file. By default, it is under the same
-#'   directory as the input \code{file} and also has the same base name. When
-#'   \code{engine == 'latex'} or \code{engine_args} contains \verb{--no-pdf} or
-#'   \code{--output-format=dvi}, this will be a DVI file.
+#'   directory as the input `file` and also has the same base name. When
+#'   `engine == 'latex'` or `engine_args` contains \verb{--no-pdf} or
+#'   `--output-format=dvi`, this will be a DVI file.
 #' @param clean Whether to clean up auxiliary files after compilation (can be
-#'   set in the global option \code{tinytex.clean}, which defaults to
-#'   \code{TRUE}).
+#'   set in the global option `tinytex.clean`, which defaults to
+#'   `TRUE`).
 #' @export
 #' @return A character string of the path of the output file (i.e., the value of
-#'   the \code{pdf_file} argument).
+#'   the `pdf_file` argument).
 latexmk = function(
   file, engine = c('pdflatex', 'xelatex', 'lualatex', 'latex', 'tectonic'),
   bib_engine = c('bibtex', 'biber'), engine_args = NULL, emulation = TRUE,
@@ -143,8 +143,8 @@ latexmk = function(
   check_pdf()
 }
 
-#' @param ... Arguments to be passed to \code{latexmk()} (other than
-#'   \code{engine} and \code{emulation}).
+#' @param ... Arguments to be passed to `latexmk()` (other than
+#'   `engine` and `emulation`).
 #' @rdname latexmk
 #' @export
 pdflatex = function(...) latexmk(engine = 'pdflatex', emulation = TRUE, ...)
@@ -480,20 +480,20 @@ exist_files = function(files) {
 #'
 #' Analyze the error messages in a LaTeX log file to figure out the names of
 #' missing LaTeX packages that caused the errors. These packages can be
-#' installed via \code{\link{tlmgr_install}()}. Searching for missing packages
-#' is based on \code{\link{tlmgr_search}()}.
+#' installed via [tlmgr_install()]. Searching for missing packages
+#' is based on [tlmgr_search()].
 #' @param log Path to the LaTeX log file (typically named \file{*.log}).
 #' @param text A character vector of the error log (read from the file provided
-#'   by the \code{log} argument by default).
+#'   by the `log` argument by default).
 #' @param files A character vector of names of the missing files (automatically
-#'   detected from the \code{log} by default).
+#'   detected from the `log` by default).
 #' @param quiet Whether to suppress messages when finding packages. It should be
 #'   a logical vector of length 3: the first element indicates whether to
 #'   suppress the message when no missing LaTeX packages could be detected from
 #'   the log, the second element indicate whether to suppress the message when
-#'   searching for packages via \code{tlmgr_search()}, and the third element
+#'   searching for packages via `tlmgr_search()`, and the third element
 #'   indicates whether to warn if no packages could be found via
-#'   \code{tlmgr_search()}.
+#'   `tlmgr_search()`.
 #' @return A character vector of LaTeX package names.
 #' @export
 parse_packages = function(
@@ -649,9 +649,9 @@ detect_files = function(text) {
 
 #' Parse the LaTeX log and install missing LaTeX packages if possible
 #'
-#' This is a helper function that combines \code{\link{parse_packages}()} and
-#' \code{\link{tlmgr_install}()}.
-#' @param ... Arguments passed to \code{\link{parse_packages}()}.
+#' This is a helper function that combines [parse_packages()] and
+#' [tlmgr_install()].
+#' @param ... Arguments passed to [parse_packages()].
 #' @export
 parse_install = function(...) {
   tlmgr_install(parse_packages(...))

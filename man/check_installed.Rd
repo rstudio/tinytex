@@ -11,7 +11,7 @@ check_installed(pkgs)
 }
 \value{
 A logical vector indicating if packages specified in \code{pkgs} are
-  installed.
+installed.
 }
 \description{
 If a package has been installed in TinyTeX or TeX Live, the command
@@ -20,7 +20,7 @@ package name.
 }
 \note{
 This function only works with LaTeX distributions based on TeX Live,
-  such as TinyTeX.
+such as TinyTeX.
 }
 \examples{
 \dontshow{if (interactive()) withAutoprint(\{ # examplesIf}

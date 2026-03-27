@@ -29,14 +29,12 @@ tinytex_root(error = TRUE)
 installing TinyTeX if another LaTeX distribution is detected, or the
 directory specified via the \code{dir} argument exists.}
 
-\item{dir}{The directory to install (should not exist unless \code{force =
-TRUE}) or uninstall TinyTeX.}
+\item{dir}{The directory to install (should not exist unless \code{force = TRUE}) or uninstall TinyTeX.}
 
 \item{version}{The version of TinyTeX, e.g., \code{"2020.09"} (see all
 available versions at \url{https://github.com/rstudio/tinytex-releases}, or
 via \code{xfun::github_releases('rstudio/tinytex-releases')}). By default,
-it installs the latest daily build of TinyTeX. If \code{version =
-'latest'}, it installs the latest monthly Github release of TinyTeX.}
+it installs the latest daily build of TinyTeX. If \code{version = 'latest'}, it installs the latest monthly Github release of TinyTeX.}
 
 \item{bundle}{The bundle name of TinyTeX (which determines the collection of
 LaTeX packages to install). See
@@ -44,11 +42,11 @@ LaTeX packages to install). See
 bundles and their meanings.}
 
 \item{repository}{The CTAN repository to set. By default, it is
-\code{https://tlnet.yihui.org} (a CDN-based mirror); if this site is not
+\verb{https://tlnet.yihui.org} (a CDN-based mirror); if this site is not
 accessible, use the repository automatically chosen by
-\code{https://mirror.ctan.org} (which is usually the fastest one to your
+\verb{https://mirror.ctan.org} (which is usually the fastest one to your
 location). You can find available repositories at
-\code{https://ctan.org/mirrors}), e.g.,
+\verb{https://ctan.org/mirrors}), e.g.,
 \code{'http://mirrors.tuna.tsinghua.edu.cn/CTAN/'}, or
 \code{'https://mirror.las.iastate.edu/tex-archive/'}. You can get a full
 list of CTAN mirrors via \code{tinytex:::ctan_mirrors()}.}
@@ -59,7 +57,7 @@ if an existing installation of TinyTeX is found. If you want a fresh
 installation, you may use \code{extra_packages = NULL}.}
 
 \item{add_path}{Whether to add the bin path of TeX Live to the system
-environment variable \var{PATH}. See \code{\link{tlmgr_path}()}.}
+environment variable \var{PATH}. See \code{\link[=tlmgr_path]{tlmgr_path()}}.}
 
 \item{packages}{Whether to reinstall all currently installed packages.}
 
@@ -78,13 +76,13 @@ reinstalls TinyTeX as well as previously installed LaTeX packages by default;
 }
 \note{
 If you really want to disable the installation, you may set the
-  environment variable \var{TINYTEX_PREVENT_INSTALL} to \code{true}. Then
-  \code{install_tinytex()} will fail immediately. This can be useful to
-  sysadmins who want to prevent the accidental installation of TinyTeX.
+environment variable \var{TINYTEX_PREVENT_INSTALL} to \code{true}. Then
+\code{install_tinytex()} will fail immediately. This can be useful to
+sysadmins who want to prevent the accidental installation of TinyTeX.
 
-  Installing TinyTeX requires perl (on Linux, perl-base is insufficient).
+Installing TinyTeX requires perl (on Linux, perl-base is insufficient).
 }
 \references{
 See the TinyTeX documentation (\url{https://yihui.org/tinytex/})
-  for the default installation directories on different platforms.
+for the default installation directories on different platforms.
 }

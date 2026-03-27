@@ -57,7 +57,7 @@ personal computers, and has some limitations, so please read the
 \pkg{tlmgr} manual very carefully before using it.}
 
 \item{...}{For \code{tlmgr()}, additional arguments to be passed to
-\code{\link{system2}()} (e.g., \code{stdout = TRUE} to capture stdout). For
+\code{\link[=system2]{system2()}} (e.g., \code{stdout = TRUE} to capture stdout). For
 other functions, arguments to be passed to \code{tlmgr()}.}
 
 \item{.quiet}{Whether to hide the actual command before executing it.}
@@ -86,8 +86,7 @@ even if no binary packages were installed).}
 \item{format}{The data format to be returned: \code{raw} means the raw output
 of the command \command{tlmgr --version}, \code{string} means a character
 string of the format \samp{TeX Live YEAR (TinyTeX) with tlmgr DATE}, and
-\code{list} means a list of the form \code{list(texlive = YEAR, tlmgr =
-DATE, tinytex = TRUE/FALSE)}.}
+\code{list} means a list of the form \code{list(texlive = YEAR, tlmgr = DATE, tinytex = TRUE/FALSE)}.}
 
 \item{self}{Whether to update the TeX Live Manager itself.}
 
@@ -109,7 +108,7 @@ directory to/from the system environment variable \code{PATH}.}
 
 \item{url}{The URL of the CTAN mirror. If \code{NULL}, show the current
 repository, otherwise set the repository. See the \code{repository}
-argument of \code{\link{install_tinytex}()} for examples.}
+argument of \code{\link[=install_tinytex]{install_tinytex()}} for examples.}
 }
 \description{
 Execute the \command{tlmgr} command to search for LaTeX packages, install
@@ -117,7 +116,7 @@ packages, update packages, and so on.
 }
 \details{
 The \code{tlmgr()} function is a wrapper of \code{system2('tlmgr')}. All
-other \code{tlmgr_*()} functions are based on \code{tlmgr} for specific
+other \verb{tlmgr_*()} functions are based on \code{tlmgr} for specific
 tasks. For example, \code{tlmgr_install()} runs the command \command{tlmgr
 install} to install LaTeX packages, and \code{tlmgr_update} runs the command
 \command{tlmgr update}, etc. Note that \code{tlmgr_repo} runs \command{tlmgr
@@ -141,5 +140,5 @@ tlmgr(c('info', '--list', '--only-installed', '--data', 'name'))
 }
 \references{
 The \pkg{tlmgr} manual:
-  \url{https://www.tug.org/texlive/doc/tlmgr.html}
+\url{https://www.tug.org/texlive/doc/tlmgr.html}
 }

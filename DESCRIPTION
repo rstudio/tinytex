@@ -23,3 +23,4 @@ URL: https://github.com/rstudio/tinytex
 BugReports: https://github.com/rstudio/tinytex/issues
 Encoding: UTF-8
 RoxygenNote: 7.3.3
+Roxygen: list(markdown = TRUE)

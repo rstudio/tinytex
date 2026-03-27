@@ -7,9 +7,9 @@
 parse_install(...)
 }
 \arguments{
-\item{...}{Arguments passed to \code{\link{parse_packages}()}.}
+\item{...}{Arguments passed to \code{\link[=parse_packages]{parse_packages()}}.}
 }
 \description{
-This is a helper function that combines \code{\link{parse_packages}()} and
-\code{\link{tlmgr_install}()}.
+This is a helper function that combines \code{\link[=parse_packages]{parse_packages()}} and
+\code{\link[=tlmgr_install]{tlmgr_install()}}.
 }

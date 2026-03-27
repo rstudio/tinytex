@@ -37,7 +37,7 @@ lualatex(...)
 
 \item{engine_args}{Command-line arguments to be passed to \code{engine} (can
 be set in the global option \code{tinytex.engine_args}, e.g.,
-\code{options(tinytex.engine_args = '-shell-escape'}).}
+\verb{options(tinytex.engine_args = '-shell-escape'}).}
 
 \item{emulation}{Whether to emulate the executable \command{latexmk} using R.
 Note that this is unused when \code{engine == 'tectonic'}.}
@@ -48,7 +48,7 @@ the LaTeX engine when using emulation. You can set the global options
 \code{options(tinytex.compile.max_times = 3)}.}
 
 \item{install_packages}{Whether to automatically install missing LaTeX
-packages found by \code{\link{parse_packages}()} from the LaTeX log. This
+packages found by \code{\link[=parse_packages]{parse_packages()}} from the LaTeX log. This
 argument is only for the emulation mode and TeX Live. Its value can also be
 set via the global option \code{tinytex.install_packages}, e.g.,
 \code{options(tinytex.install_packages = FALSE)}.}
@@ -67,7 +67,7 @@ set in the global option \code{tinytex.clean}, which defaults to
 }
 \value{
 A character string of the path of the output file (i.e., the value of
-  the \code{pdf_file} argument).
+the \code{pdf_file} argument).
 }
 \description{
 The function \code{latexmk()} emulates the system command \command{latexmk}
@@ -98,8 +98,7 @@ The default command to generate the index (if necessary) is
 \command{zhmakeindex}), you may set the global option
 \code{tinytex.makeindex}. To pass additional command-line arguments to the
 command, you may set the global option \code{tinytex.makeindex.args} (e.g.,
-\code{options(tinytex.makeindex = 'zhmakeindex', tinytex.makeindex.args =
-c('-z', 'pinyin'))}).
+\code{options(tinytex.makeindex = 'zhmakeindex', tinytex.makeindex.args = c('-z', 'pinyin'))}).
 
 If you are using the LaTeX distribution TinyTeX, but its path is not in the
 \code{PATH} variable of your operating system, you may set the global option
@@ -110,6 +109,6 @@ on an external drive \file{Z:/} under the folder \file{TinyTeX}, you may set
 \code{options(tinytex.tlmgr.path = "Z:/TinyTeX/bin/windows/tlmgr.bat")}.
 Usually you should not need to set this option because TinyTeX can add itself
 to the \code{PATH} variable during installation or via
-\code{\link{use_tinytex}()}. In case both methods fail, you can use this
+\code{\link[=use_tinytex]{use_tinytex()}}. In case both methods fail, you can use this
 manual approach.
 }

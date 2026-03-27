@@ -11,7 +11,7 @@ A logical value indicating if the LaTeX installation is TinyTeX.
 }
 \description{
 First find the root directory of the installation via
-\code{\link{tinytex_root}()}. Then check if the directory name is
+\code{\link[=tinytex_root]{tinytex_root()}}. Then check if the directory name is
 \code{"tinytex"} (case-insensitive). If not, further check if the first line
 of the file \file{texmf-dist/web2c/fmtutil.cnf} under the directory contains
 \code{"TinyTeX"} or \code{".TinyTeX"}. If the binary version of TinyTeX was

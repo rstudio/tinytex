@@ -31,11 +31,11 @@ TinyTeX after copying it.}
 The function \code{copy_tinytex()} copies the existing TinyTeX installation
 to another directory (e.g., a portable device like a USB stick). The function
 \code{use_tinytex()} adds the copy of TinyTeX in an existing folder to the
-\code{PATH} variable of the current system via \code{\link{tlmgr_path}()},
+\code{PATH} variable of the current system via \code{\link[=tlmgr_path]{tlmgr_path()}},
 so that you can use utilities such as \command{tlmgr} and \command{pdflatex},
 etc.
 }
 \note{
 You can only copy TinyTeX and use it in the same system, e.g., the
-  Windows version of TinyTeX only works on Windows.
+Windows version of TinyTeX only works on Windows.
 }
