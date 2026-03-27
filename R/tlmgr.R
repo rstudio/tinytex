@@ -62,8 +62,7 @@ tlmgr = function(args = character(), usermode = FALSE, ..., .quiet = FALSE) {
 # return the bin directory of TinyTeX (empty string if not found)
 find_tinytex_bin = function() {
   f = getOption('tinytex.tlmgr.path', find_tlmgr(extra = TRUE))
-  if (length(f) == 0 || !file_test('-x', f)) return('')
-  normalizePath(dirname(f))
+  if (length(f) == 0 || !file_test('-x', f)) '' else normalizePath(dirname(f))
 }
 
 tweak_path = function() {

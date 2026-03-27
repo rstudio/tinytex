@@ -642,12 +642,8 @@ use_tinytex = function(from = select_dir('Select TinyTeX Directory')) {
   if (length(d) != 1) stop("The directory '", from, "' does not contain TinyTeX.")
   p = file.path(d, 'tlmgr')
   if (os == 'windows') p = paste0(p, '.bat')
-  if (is_macos()) {
-    ret = macos_path(normalizePath(d))
-  } else {
-    ret = system2(p, c('path', 'add'))
-  }
-  if (ret != 0) stop(
+  ret = if (is_macos()) macos_path(normalizePath(d)) else system2(p, c('path', 'add'))
+  if (ret != 0) warning(
     "Failed to add '", d, "' to your system's environment variable PATH. You may ",
     "consider the fallback approach, i.e., set options(tinytex.tlmgr.path = '", p, "')."
   )
