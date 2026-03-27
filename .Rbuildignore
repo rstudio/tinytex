@@ -7,3 +7,4 @@
 ^\.github$
 ^cran-comments\.md$
 ^\.vscode$
+^NEWS\.md$
