@@ -29,13 +29,15 @@ cd install-tl-*
 (Get-Content install-tl-windows.bat) -notmatch '^\s*pause\s*$' | Set-Content install-tl-windows.bat
 mkdir TinyTeX
 cd TinyTeX
+$env:TEXLIVE_INSTALL_ENV_NOCHECK=true
+$env:TEXLIVE_INSTALL_NO_WELCOME=true
 & ..\install-tl-windows.bat -no-gui -profile=..\..\tinytex.profile -repository $TLREPO
 
 # a token to differentiate TinyTeX with other TeX Live distros
 ni .tinytex | Out-Null
-cd ..
 
-del TinyTeX\install-tl.log, ..\tinytex.profile, install-tl, install-tl-windows.bat -ErrorAction SilentlyContinue
+del install-tl.log, install-tl, install-tl-windows.bat -ErrorAction SilentlyContinue
+cd ..
 
 # TeXLive installed to ./TinyTeX; move it to APPDATA
 rd $env:APPDATA\TinyTeX -r -fo -ErrorAction SilentlyContinue
