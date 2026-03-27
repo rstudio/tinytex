@@ -311,13 +311,14 @@ macos_path = function(dir = NULL, action = 'add') {
         identical(readLines(paths_file, warn = FALSE), dir))
       return(0L)
     tmp = tempfile()
-    on.exit(unlink(tmp), add = TRUE)
     writeLines(dir, tmp)
-    sprintf('cp %s %s', tmp, paths_file)
+    sprintf('cp \\"%s\\" \\"%s\\"', tmp, paths_file)
   } else {
-    sprintf('rm -f %s', paths_file)
+    sprintf('rm -f \\"%s\\"', paths_file)
   }
-  osascript(cmd)
+  ret = osascript(cmd)
+  if (add && ret == 0) unlink(tmp)
+  ret
 }
 
 install_tinytex_source = function(repo = '', dir, version, add_path, extra_packages) {
@@ -642,11 +643,11 @@ use_tinytex = function(from = select_dir('Select TinyTeX Directory')) {
   p = file.path(d, 'tlmgr')
   if (os == 'windows') p = paste0(p, '.bat')
   if (is_macos()) {
-    if (macos_path(normalizePath(d)) != 0) stop(
-      "Failed to add '", d, "' to /etc/paths.d/TinyTeX. You may consider the fallback ",
-      "approach, i.e., set options(tinytex.tlmgr.path = '", p, "')."
-    )
-  } else if (system2(p, c('path', 'add')) != 0) stop(
+    ret = macos_path(normalizePath(d))
+  } else {
+    ret = system2(p, c('path', 'add'))
+  }
+  if (ret != 0) stop(
     "Failed to add '", d, "' to your system's environment variable PATH. You may ",
     "consider the fallback approach, i.e., set options(tinytex.tlmgr.path = '", p, "')."
   )
