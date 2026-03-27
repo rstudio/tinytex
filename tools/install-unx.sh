@@ -29,22 +29,10 @@ rm -r $OLDPWD/install-tl-*
 
 $TEXDIR/bin/*/tlmgr install $(download https://tinytex.yihui.org/pkgs-custom.txt | tr '\n' ' ')
 
-if [ $(uname) = 'Darwin' ]; then
-  # write TinyTeX's bin path to /etc/paths.d instead of creating symlinks in /usr/local/bin;
-  # skip only when --admin AND --no-path are both given (i.e. ! (admin && no-path))
-  if [ "$1" != '--admin' ] || [ "$2" != '--no-path' ]; then
-    BINDIR="$(ls -d $TEXDIR/bin/*/)"
-    if ! grep -qxF "$BINDIR" /etc/paths.d/TinyTeX 2>/dev/null; then
-      echo "Admin privilege (password) is required to set up the PATH for TinyTeX:"
-      printf '%s\n' "$BINDIR" | sudo tee /etc/paths.d/TinyTeX > /dev/null || true
-    fi
+if [ "$1" = '--admin' ]; then
+  if [ "$2" != '--no-path' ]; then
+    sudo $TEXDIR/bin/*/tlmgr path add
   fi
 else
-  if [ "$1" = '--admin' ]; then
-    if [ "$2" != '--no-path' ]; then
-      sudo $TEXDIR/bin/*/tlmgr path add
-    fi
-  else
-    $TEXDIR/bin/*/tlmgr path add || true
-  fi
+  $TEXDIR/bin/*/tlmgr path add || true
 fi

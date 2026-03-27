@@ -297,25 +297,27 @@ osascript = function(cmd) {
     "Please run this command in your Terminal (password required):\n  sudo ",
     cmd, call. = FALSE
   )
-  invisible(ret)
+  ret
 }
 
 # add/remove TinyTeX's bin path to/from /etc/paths.d/TinyTeX on macOS;
 # if adding and the file already contains the desired path, skip the operation
-macos_path = function(dir = NULL, add = TRUE) {
+macos_path = function(dir = NULL, action = 'add') {
   paths_file = '/etc/paths.d/TinyTeX'
-  if (add) {
-    if (is.null(dir) || dir == '') return(invisible(1L))
+  add = action == 'add'
+  cmd = if (add) {
+    if (is.null(dir) || dir == '') return(1L)
     if (file.exists(paths_file) &&
-        identical(trimws(readLines(paths_file, warn = FALSE)), dir))
-      return(invisible(0L))
+        identical(readLines(paths_file, warn = FALSE), dir))
+      return(0L)
     tmp = tempfile()
     on.exit(unlink(tmp), add = TRUE)
     writeLines(dir, tmp)
-    invisible(osascript(sprintf('cp %s %s', tmp, paths_file)))
+    sprintf('cp %s %s', tmp, paths_file)
   } else {
-    invisible(osascript(sprintf('rm -f %s', paths_file)))
+    sprintf('rm -f %s', paths_file)
   }
+  osascript(cmd)
 }
 
 install_tinytex_source = function(repo = '', dir, version, add_path, extra_packages) {
@@ -640,7 +642,10 @@ use_tinytex = function(from = select_dir('Select TinyTeX Directory')) {
   p = file.path(d, 'tlmgr')
   if (os == 'windows') p = paste0(p, '.bat')
   if (is_macos()) {
-    macos_path(normalizePath(d))
+    if (macos_path(normalizePath(d)) != 0) stop(
+      "Failed to add '", d, "' to /etc/paths.d/TinyTeX. You may consider the fallback ",
+      "approach, i.e., set options(tinytex.tlmgr.path = '", p, "')."
+    )
   } else if (system2(p, c('path', 'add')) != 0) stop(
     "Failed to add '", d, "' to your system's environment variable PATH. You may ",
     "consider the fallback approach, i.e., set options(tinytex.tlmgr.path = '", p, "')."
