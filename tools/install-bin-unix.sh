@@ -2,6 +2,10 @@
 
 set -e
 
+# abort installation if TINYTEX_PREVENT_INSTALL=true
+[ "$(echo "${TINYTEX_PREVENT_INSTALL}" | tr '[:upper:]' '[:lower:]')" != 'true' ] ||
+  (echo "The environment variable 'TINYTEX_PREVENT_INSTALL' was set to 'true', so the installation is aborted." && exit 1)
+
 perl -mFile::Find /dev/null ||
   (echo "perl is required but not found (https://github.com/rstudio/tinytex/issues/419)" && exit 1)
 
@@ -41,9 +45,12 @@ is_musl() {
 }
 
 if [ $OSNAME = 'Darwin' ]; then
-  TEXDIR=${TINYTEX_DIR:-~/Library}/TinyTeX
+  # default name in the archive; used to compute TEXDIR and rename after extraction
+  TEXDIR_DEFAULT_BASENAME="TinyTeX"
+  TEXDIR_DEFAULT_PARENT=${TINYTEX_DIR:-~/Library}
 else
-  TEXDIR=${TINYTEX_DIR:-~}/.TinyTeX
+  TEXDIR_DEFAULT_BASENAME=".TinyTeX"
+  TEXDIR_DEFAULT_PARENT=${TINYTEX_DIR:-~}
   if [ $OSNAME != 'Linux' ]; then
     TINYTEX_INSTALLER="installer-unix"
   elif is_musl; then
@@ -58,7 +65,18 @@ else
   fi
 fi
 
-rm -rf $TEXDIR
+# TINYTEX_TEXDIR allows callers (e.g. the R package) to specify the full
+# installation path directly; fall back to the traditional TINYTEX_DIR-based default
+TEXDIR=${TINYTEX_TEXDIR:-${TEXDIR_DEFAULT_PARENT}/${TEXDIR_DEFAULT_BASENAME}}
+
+# the path where the archive will be extracted (always the standard basename under the
+# same parent as TEXDIR, regardless of whether a custom name was requested)
+TEXDIR_EXTRACTED="$(dirname $TEXDIR)/$TEXDIR_DEFAULT_BASENAME"
+
+rm -rf "$TEXDIR"
+# also remove the standard extraction target when a custom path is requested,
+# so the rename step below has a clean destination
+[ "$TEXDIR" = "$TEXDIR_EXTRACTED" ] || rm -rf "$TEXDIR_EXTRACTED"
 
 # determine the OS/arch suffix and file extension based on the naming scheme
 if [ "$USE_NEW_NAMES" = true ] && [ "${TINYTEX_INSTALLER#"TinyTeX"}" != "$TINYTEX_INSTALLER" ]; then
@@ -102,7 +120,12 @@ if [ "${TINYTEX_INSTALLER#"TinyTeX"}" != "$TINYTEX_INSTALLER" ]; then
     wget --retry-connrefused --progress=dot:giga -O "${INSTALLER_FILE}" ${TINYTEX_URL}
   fi
   tar xf "${INSTALLER_FILE}" -C $(dirname $TEXDIR)
-  if [ -n "$1" ]; then mv "${INSTALLER_FILE}" "$1/"; else rm "${INSTALLER_FILE}"; fi
+  # rename to TEXDIR if a custom path (TINYTEX_TEXDIR) was requested and the
+  # archive extracted to a different name (e.g. .TinyTeX or TinyTeX)
+  [ "$TEXDIR" = "$TEXDIR_EXTRACTED" ] || mv "$TEXDIR_EXTRACTED" "$TEXDIR"
+  # the first positional arg may be a directory to move the installer to (used by
+  # build scripts); ignore it if it looks like a flag (e.g. --no-path)
+  if [ -n "$1" ] && [ "${1#--}" = "$1" ]; then mv "${INSTALLER_FILE}" "$1/"; else rm "${INSTALLER_FILE}"; fi
 else
   echo "We do not have a prebuilt TinyTeX package for this operating system ($(uname -s) $(uname -m))."
   echo "I will try to install from source for you instead."
@@ -123,6 +146,8 @@ fi
 
 [ $OSNAME != "Darwin" ] && ./tlmgr option sys_bin $BINDIR
 ./tlmgr postaction install script xetex  # GH issue #313
+# do not wrap lines in latex log (https://github.com/rstudio/tinytex/issues/322)
+./tlmgr conf texmf max_print_line 10000
 
 NO_PATH=0
 for arg in "$@"; do
