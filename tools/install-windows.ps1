@@ -18,16 +18,22 @@ del install-tl.zip
 
 # download tinytex.profile and modify it (set texdir to ./TinyTeX)
 Invoke-WebRequest 'https://tinytex.yihui.org/tinytex.profile' -OutFile tinytex.profile
-(gc tinytex.profile) -replace '\./', './TinyTeX/' | Out-File tinytex.profile
-echo 'TEXMFCONFIG $TEXMFSYSCONFIG' >> tinytex.profile
-echo 'TEXMFVAR $TEXMFSYSVAR' >> tinytex.profile
+Add-Content tinytex.profile 'TEXMFCONFIG $TEXMFSYSCONFIG'
+Add-Content tinytex.profile 'TEXMFVAR $TEXMFSYSVAR'
 
 # download the custom package list
 Invoke-WebRequest 'https://tinytex.yihui.org/pkgs-custom.txt' -OutFile pkgs-custom.txt
 
 # an automated installation of TeXLive (infrastructure only)
 cd install-tl-*
-cmd /c "install-tl-windows.bat -no-gui -profile=../tinytex.profile -repository $TLREPO < nul"
+(Get-Content install-tl-windows.bat) -notmatch '^\s*pause\s*$' | Set-Content install-tl-windows.bat
+mkdir TinyTeX
+cd TinyTeX
+& ..\install-tl-windows.bat -no-gui -profile=..\..\tinytex.profile -repository $TLREPO
+
+# a token to differentiate TinyTeX with other TeX Live distros
+ni .tinytex | Out-Null
+cd ..
 
 del TinyTeX\install-tl.log, ..\tinytex.profile, install-tl, install-tl-windows.bat -ErrorAction SilentlyContinue
 
@@ -35,9 +41,6 @@ del TinyTeX\install-tl.log, ..\tinytex.profile, install-tl, install-tl-windows.b
 rd $env:APPDATA\TinyTeX -r -fo -ErrorAction SilentlyContinue
 rd $env:APPDATA\TinyTeX -r -fo -ErrorAction SilentlyContinue
 move TinyTeX $env:APPDATA
-
-# a token to differentiate TinyTeX with other TeX Live distros
-ni $env:APPDATA\TinyTeX\.tinytex | Out-Null
 
 # clean up the install-tl-* directory
 cd ..
