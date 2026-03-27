@@ -2,6 +2,7 @@ $ErrorActionPreference = 'Stop'
 
 # switch to a temp directory
 cd $env:TEMP
+[Environment]::CurrentDirectory = $PWD.Path
 
 # in case there is a leftover install-tl-* dir, delete it
 rd install-tl-* -r -fo -ErrorAction SilentlyContinue
@@ -17,22 +18,26 @@ del install-tl.zip
 
 # download tinytex.profile and modify it (set texdir to ./TinyTeX)
 Invoke-WebRequest 'https://tinytex.yihui.org/tinytex.profile' -OutFile tinytex.profile
-(gc tinytex.profile) -replace '\./', './TinyTeX/' | Out-File tinytex.profile
-echo 'TEXMFCONFIG $TEXMFSYSCONFIG' >> tinytex.profile
-echo 'TEXMFVAR $TEXMFSYSVAR' >> tinytex.profile
+Add-Content tinytex.profile 'TEXMFCONFIG $TEXMFSYSCONFIG'
+Add-Content tinytex.profile 'TEXMFVAR $TEXMFSYSVAR'
 
 # download the custom package list
 Invoke-WebRequest 'https://tinytex.yihui.org/pkgs-custom.txt' -OutFile pkgs-custom.txt
 
 # an automated installation of TeXLive (infrastructure only)
 cd install-tl-*
-cmd /c "install-tl-windows.bat -no-gui -profile=../tinytex.profile -repository $TLREPO < nul"
-if ($LASTEXITCODE -ne 0) { throw "TeX Live installation failed" }
-
-del TinyTeX\install-tl.log ..\tinytex.profile install-tl install-tl-windows.bat -ErrorAction SilentlyContinue
+(Get-Content install-tl-windows.bat) -notmatch '^\s*pause\s*$' | Set-Content install-tl-windows.bat
+mkdir TinyTeX
+cd TinyTeX
+$env:TEXLIVE_INSTALL_ENV_NOCHECK=true
+$env:TEXLIVE_INSTALL_NO_WELCOME=true
+& ..\install-tl-windows.bat -no-gui -profile=..\..\tinytex.profile -repository $TLREPO
 
 # a token to differentiate TinyTeX with other TeX Live distros
-ni TinyTeX\.tinytex | Out-Null
+ni .tinytex | Out-Null
+
+del install-tl.log, install-tl, install-tl-windows.bat -ErrorAction SilentlyContinue
+cd ..
 
 # TeXLive installed to ./TinyTeX; move it to APPDATA
 rd $env:APPDATA\TinyTeX -r -fo -ErrorAction SilentlyContinue
@@ -51,6 +56,5 @@ $tlmgr = "$env:APPDATA\TinyTeX\bin\windows\tlmgr.bat"
 & $tlmgr conf texmf max_print_line 10000
 & $tlmgr path add
 & $tlmgr install @pkgs
-if ($LASTEXITCODE -ne 0) { throw "tlmgr install failed" }
 
 pause

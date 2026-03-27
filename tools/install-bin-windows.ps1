@@ -2,6 +2,7 @@ $ErrorActionPreference = 'Stop'
 
 # switch to a temp directory
 cd $env:TEMP
+[Environment]::CurrentDirectory = $PWD.Path
 
 # in case there is a leftover TinyTeX* dir, delete it
 rd TinyTeX* -r -fo -ErrorAction SilentlyContinue
