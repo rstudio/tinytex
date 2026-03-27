@@ -36,36 +36,9 @@ if (-not $env:TINYTEX_VERSION) {
 
 $DownloadedFile = "$TinyTeXFilename.$BundleExt"
 
-# download the bundle - method 1
-Write-Host "Download $BundleExt file... Method 1"
-$downloaded = $false
-try {
-  Add-Type -A 'System.Net.Http'
-  [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-  $response = (New-Object System.Net.Http.HttpClient).GetAsync($TinyTeXURL)
-  $response.Wait()
-  $outputFileStream = [System.IO.FileStream]::new($DownloadedFile, [System.IO.FileMode]::Create, [System.IO.FileAccess]::Write)
-  $response.Result.Content.CopyToAsync($outputFileStream).Wait()
-  $outputFileStream.Close()
-  $downloaded = $true
-} catch {}
-
-if (-not $downloaded) {
-  # Try another method if the first one failed
-  Write-Host "Download $BundleExt file... Method 2"
-  try {
-    [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-    (New-Object System.Net.WebClient).DownloadFile($TinyTeXURL, $DownloadedFile)
-    $downloaded = $true
-  } catch {}
-}
-
-if (-not $downloaded) {
-  # Try last method
-  Write-Host "Download bundle file... Method 3"
-  [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-  Invoke-WebRequest $TinyTeXURL -OutFile $DownloadedFile
-}
+# download the bundle
+Write-Host "Download $BundleExt file..."
+Invoke-WebRequest $TinyTeXURL -OutFile $DownloadedFile
 
 # unzip the downloaded file
 Write-Host 'Unbundle TinyTeX'
@@ -77,6 +50,7 @@ if ($BundleExt -eq 'exe') {
   [IO.Compression.ZipFile]::ExtractToDirectory($DownloadedFile, '.')
 }
 
+# save the downloaded file to the output dir (for build-tinytex-2.ps1)
 if ($args[0]) {
   move $DownloadedFile "$($args[0])\$DownloadedFile"
 } else {
@@ -92,8 +66,6 @@ move TinyTeX $env:TINYTEX_DIR
 
 # add tlmgr to PATH
 Write-Host 'add tlmgr to PATH'
-$tlmgr = (ls "$env:TINYTEX_DIR\TinyTeX\bin\win*\tlmgr.bat").FullName
+$tlmgr = "$env:TINYTEX_DIR\TinyTeX\bin\windows\tlmgr.bat"
 & $tlmgr path add
-if ($env:CI -ne 'true') { & $tlmgr option repository ctan }
 & $tlmgr postaction install script xetex
-if ($LASTEXITCODE -ne 0) { throw "tlmgr postaction failed" }

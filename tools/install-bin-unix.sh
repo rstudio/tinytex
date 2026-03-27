@@ -123,7 +123,6 @@ fi
 
 [ $OSNAME != "Darwin" ] && ./tlmgr option sys_bin $BINDIR
 ./tlmgr postaction install script xetex  # GH issue #313
-([ -z $CI ] || [ $(echo $CI | tr "[:upper:]" "[:lower:]") != "true" ]) && ./tlmgr option repository ctan
 
 if [ $OSNAME = 'Darwin' ]; then
   # create the dir if it doesn't exist
