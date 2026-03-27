@@ -125,23 +125,11 @@ fi
 ./tlmgr postaction install script xetex  # GH issue #313
 
 if [ $OSNAME = 'Darwin' ]; then
-  # create the dir if it doesn't exist
-  if [ ! -d /usr/local/bin ]; then
-    echo "Admin privilege (password) is required to create the directory /usr/local/bin:"
-    sudo mkdir -p /usr/local/bin
-  fi
-  # temporarily change owner of the dir to allow creating symlinks
-  if [ ! -w /usr/local/bin ]; then
-    echo "Admin privilege (password) is required to make /usr/local/bin writable:"
-    PREV_OWNER=$(stat -f "%Su:%Sg" /usr/local/bin)
-    sudo chown `whoami`:admin /usr/local/bin
-  fi
-fi
-
-./tlmgr path add
-
-# Restore original ownership of /usr/local/bin on macOS
-if [ "$OSNAME" = 'Darwin' ] && [ -n "${PREV_OWNER-}" ]; then
-  echo "Admin privilege (password) is required to restore ownership of /usr/local/bin:"
-  sudo chown ${PREV_OWNER} /usr/local/bin
+  # add TinyTeX's bin path to /etc/paths.d instead of creating symlinks in /usr/local/bin
+  # (at this point we are in $TEXDIR/bin/*/ after the `cd` above)
+  TINYTEX_BINDIR="$(pwd)"
+  echo "Admin privilege (password) is required to set up the PATH for TinyTeX:"
+  printf '%s\n' "$TINYTEX_BINDIR" | sudo tee /etc/paths.d/TinyTeX > /dev/null
+else
+  ./tlmgr path add
 fi
