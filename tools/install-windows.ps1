@@ -31,13 +31,13 @@ cmd /c "install-tl-windows.bat -no-gui -profile=../tinytex.profile -repository $
 
 del TinyTeX\install-tl.log, ..\tinytex.profile, install-tl, install-tl-windows.bat -ErrorAction SilentlyContinue
 
-# a token to differentiate TinyTeX with other TeX Live distros
-ni TinyTeX\.tinytex | Out-Null
-
 # TeXLive installed to ./TinyTeX; move it to APPDATA
 rd $env:APPDATA\TinyTeX -r -fo -ErrorAction SilentlyContinue
 rd $env:APPDATA\TinyTeX -r -fo -ErrorAction SilentlyContinue
 move TinyTeX $env:APPDATA
+
+# a token to differentiate TinyTeX with other TeX Live distros
+ni $env:APPDATA\TinyTeX\.tinytex | Out-Null
 
 # clean up the install-tl-* directory
 cd ..
