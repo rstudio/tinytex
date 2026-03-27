@@ -104,7 +104,7 @@ root directory of TeX Live after updating.}
 \item{action}{On macOS, add/remove the TinyTeX bin path to/from
 \file{/etc/paths.d/TinyTeX}. On other Unix systems, add/remove symlinks of
 binaries to/from the system's \code{PATH}. On Windows, add/remove the path
-to the TeXLive binary directory to/from the system environment variable
+to the TeX Live binary directory to/from the system environment variable
 \code{PATH}.}
 
 \item{url}{The URL of the CTAN mirror. If \code{NULL}, show the current
