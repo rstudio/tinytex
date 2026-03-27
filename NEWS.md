@@ -16,7 +16,7 @@
 
 - `install_tinytex()` and `install-bin-unix.sh` now automatically detect and use the new naming scheme for versions after `2026.03.02`, and fall back to the old naming for older versions.
 
-- The default CTAN repository is now `https://tlnet.yihui.org` (a CDN-based mirror). If this is not accessible, the installer falls back to `https://mirror.ctan.org`.
+- The default CTAN repository is now `https://tlnet.yihui.org` (a CDN-based mirror hosted on Cloudflare). If this is not accessible, the installer falls back to `https://mirror.ctan.org`.
 
 - The Windows installation scripts (`install-windows.bat` and `install-bin-windows.bat`) have been rewritten in PowerShell; the `.bat` files are now thin wrappers that download and run the corresponding `.ps1` scripts (#492, #493).
 
