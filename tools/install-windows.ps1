@@ -2,6 +2,7 @@ $ErrorActionPreference = 'Stop'
 
 # switch to a temp directory
 cd $env:TEMP
+[Environment]::CurrentDirectory = $PWD.Path
 
 # in case there is a leftover install-tl-* dir, delete it
 rd install-tl-* -r -fo -ErrorAction SilentlyContinue
