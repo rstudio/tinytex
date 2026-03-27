@@ -1,8 +1,28 @@
 # CHANGES IN tinytex VERSION 0.59
 
-- Suppress TeX Live's environment check and welcome text; delete `install-tl` and `install-tl-windows.bat` from the TinyTeX installation.
+- Fixed font package detection for fonts with spaces in their names (e.g., "Noto Emoji", "DejaVu Sans"). Previously, `latexmk()` failed to automatically install the missing font package because the search pattern preserved the space, but font files never have spaces in their names (thanks, @cderv, #478, #479).
 
-- On macOS, TinyTeX now uses `/etc/paths.d/TinyTeX` to add the TinyTeX binary directory to `PATH` when `/usr/local/bin` is not writable, instead of recursively changing the ownership of `/usr/local/bin`. The previous behavior (using `tlmgr path add`) is preserved for users who have already made `/usr/local/bin` writable. This fixes a filesystem security issue reported by @r2evans (#463, #489).
+- Added detection for PDF/A errors and automatic installation of the **latex-lab** package when `\DocumentMetadata` support files are missing (thanks, @cderv).
+
+- Added the **colorprofiles**, **latex-lab**, and **pdfmanagement-testphase** packages to the `TinyTeX` bundle to better support PDF/A document compilation (thanks, @cderv, @gordonwoodhull, #481, #482).
+
+- Support TeX Live on macOS when symlinks are installed to `/Library/TeX/texbin` (a standard MacTeX-style installation), so that users no longer need to manually adjust `PATH`.
+
+- TinyTeX prebuilt binaries are now provided for ARM64 Linux (`aarch64`) (thanks, @edavidaja, #483).
+
+- TinyTeX prebuilt binaries are now provided for x86_64 musl Linux (Alpine Linux and other musl-based distributions), so Docker/Alpine users can install TinyTeX with a fast binary download instead of a slow source build (#485, #487).
+
+- The TinyTeX release binary naming scheme has been updated to `TinyTeX-{N}-{os}[-{arch}].{ext}` (e.g., `TinyTeX-1-linux-x86_64.tar.xz`, `TinyTeX-1-linux-arm64.tar.xz`, `TinyTeX-1-darwin.tar.xz`). Old-style names remain available as backward-compatible copies (#484).
+
+- `install_tinytex()` and `install-bin-unix.sh` now automatically detect and use the new naming scheme for versions after `2026.03.02`, and fall back to the old naming for older versions.
+
+- The default CTAN repository is now `https://tlnet.yihui.org` (a CDN-based mirror). If this is not accessible, the installer falls back to `https://mirror.ctan.org`.
+
+- The Windows installation scripts (`install-windows.bat` and `install-bin-windows.bat`) have been rewritten in PowerShell; the `.bat` files are now thin wrappers that download and run the corresponding `.ps1` scripts (#492, #493).
+
+- Suppress spurious warnings from `tlmgr_version()` when `tlmgr` cannot be executed (https://github.com/rstudio/rmarkdown/issues/2612).
+
+- On macOS, TinyTeX now uses `/etc/paths.d/TinyTeX` to add the TinyTeX binary directory to `PATH` when `/usr/local/bin` is not writable, instead of recursively changing the ownership of `/usr/local/bin`. The previous behavior (using `tlmgr path add`) is preserved for users who have already made `/usr/local/bin` writable. This fixes a filesystem security issue (thanks, @r2evans, #463, #489).
 
 # CHANGES IN tinytex VERSION 0.58
 
