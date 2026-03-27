@@ -290,15 +290,18 @@ win_app_dir = function(s) {
 valid_path = function(x) grepl('^[!-~]+$', x)
 
 osascript = function(cmd) {
+  message("Requesting admin privilege to run: sudo ", cmd)
+  escaped = gsub('"', '\\"', cmd, fixed = TRUE)
   ret = system(sprintf(
-    "/usr/bin/osascript -e 'do shell script \"%s\" with administrator privileges'", cmd
+    "/usr/bin/osascript -e 'do shell script \"%s\" with administrator privileges'", escaped
   ))
   if (ret != 0) warning(
-    "Please run this command in your Terminal (password required):\n  sudo ",
-    cmd, call. = FALSE
+    "Please run the above command in your Terminal (password required).", call. = FALSE
   )
   ret
 }
+
+macos_local_bin_writable = function() file.access('/usr/local/bin', 2) == 0
 
 # add/remove TinyTeX's bin path to/from /etc/paths.d/TinyTeX on macOS;
 # if adding and the file already contains the desired path, skip the operation
@@ -312,9 +315,9 @@ macos_path = function(dir = NULL, action = 'add') {
       return(0L)
     tmp = tempfile()
     writeLines(dir, tmp)
-    sprintf('cp \\"%s\\" \\"%s\\"', tmp, paths_file)
+    sprintf('cp "%s" "%s"', tmp, paths_file)
   } else {
-    sprintf('rm -f \\"%s\\"', paths_file)
+    sprintf('rm -f "%s"', paths_file)
   }
   ret = osascript(cmd)
   if (add && ret == 0) unlink(tmp)
@@ -642,7 +645,7 @@ use_tinytex = function(from = select_dir('Select TinyTeX Directory')) {
   if (length(d) != 1) stop("The directory '", from, "' does not contain TinyTeX.")
   p = file.path(d, 'tlmgr')
   if (os == 'windows') p = paste0(p, '.bat')
-  ret = if (is_macos()) macos_path(normalizePath(d)) else system2(p, c('path', 'add'))
+  ret = if (is_macos() && !macos_local_bin_writable()) macos_path(normalizePath(d)) else system2(p, c('path', 'add'))
   if (ret != 0) warning(
     "Failed to add '", d, "' to your system's environment variable PATH. You may ",
     "consider the fallback approach, i.e., set options(tinytex.tlmgr.path = '", p, "')."

@@ -101,10 +101,11 @@ format and hyphenation files after updating \pkg{tlmgr}.}
 (where \verb{HASH} is an MD5 hash) under the \file{tlpkg} directory of the
 root directory of TeX Live after updating.}
 
-\item{action}{On macOS, add/remove the TinyTeX bin path to/from
-\file{/etc/paths.d/TinyTeX}. On other Unix systems, add/remove symlinks of
-binaries to/from the system's \code{PATH}. On Windows, add/remove the path
-to the TeX Live binary directory to/from the system environment variable
+\item{action}{On macOS, if \file{/usr/local/bin} is not writable,
+add/remove the TinyTeX bin path to/from \file{/etc/paths.d/TinyTeX};
+otherwise (or on other Unix systems), add/remove symlinks of binaries
+to/from the system's \code{PATH}. On Windows, add/remove the path to the
+TeX Live binary directory to/from the system environment variable
 \code{PATH}.}
 
 \item{url}{The URL of the CTAN mirror. If \code{NULL}, show the current

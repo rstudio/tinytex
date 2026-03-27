@@ -261,16 +261,17 @@ delete_tlpdb_files = function() {
   ))
 }
 
-#' @param action On macOS, add/remove the TinyTeX bin path to/from
-#'   \file{/etc/paths.d/TinyTeX}. On other Unix systems, add/remove symlinks of
-#'   binaries to/from the system's \code{PATH}. On Windows, add/remove the path
-#'   to the TeX Live binary directory to/from the system environment variable
+#' @param action On macOS, if \file{/usr/local/bin} is not writable,
+#'   add/remove the TinyTeX bin path to/from \file{/etc/paths.d/TinyTeX};
+#'   otherwise (or on other Unix systems), add/remove symlinks of binaries
+#'   to/from the system's \code{PATH}. On Windows, add/remove the path to the
+#'   TeX Live binary directory to/from the system environment variable
 #'   \code{PATH}.
 #' @rdname tlmgr
 #' @export
 tlmgr_path = function(action = c('add', 'remove')) {
   action = match.arg(action)
-  if (is_macos()) {
+  if (is_macos() && !macos_local_bin_writable()) {
     invisible(macos_path(find_tinytex_bin(), action))
   } else tlmgr(c('path', action), .quiet = TRUE)
 }
