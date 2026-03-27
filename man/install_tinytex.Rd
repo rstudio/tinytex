@@ -43,15 +43,15 @@ LaTeX packages to install). See
 \url{https://github.com/rstudio/tinytex-releases#releases} for all possible
 bundles and their meanings.}
 
-\item{repository}{The CTAN repository to set. By default, it is the
-repository automatically chosen by \code{https://mirror.ctan.org} (which is
-usually the fastest one to your location). You can find available
-repositories at \code{https://ctan.org/mirrors}), e.g.,
+\item{repository}{The CTAN repository to set. By default, it is
+\code{https://tlnet.yihui.org} (a CDN-based mirror); if this site is not
+accessible, use the repository automatically chosen by
+\code{https://mirror.ctan.org} (which is usually the fastest one to your
+location). You can find available repositories at
+\code{https://ctan.org/mirrors}), e.g.,
 \code{'http://mirrors.tuna.tsinghua.edu.cn/CTAN/'}, or
-\code{'https://mirror.las.iastate.edu/tex-archive/'}. In theory, this
-argument should end with the path \file{/systems/texlive/tlnet}, and if it
-does not, the path will be automatically appended. You can get a full list
-of CTAN mirrors via \code{tinytex:::ctan_mirrors()}.}
+\code{'https://mirror.las.iastate.edu/tex-archive/'}. You can get a full
+list of CTAN mirrors via \code{tinytex:::ctan_mirrors()}.}
 
 \item{extra_packages}{A character vector of extra LaTeX packages to be
 installed. By default, a vector of all currently installed LaTeX packages

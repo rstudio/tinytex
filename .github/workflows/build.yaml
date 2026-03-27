@@ -2,10 +2,10 @@ on:
   workflow_dispatch:
     inputs:
       ctan_repo:
-        description: 'CTAN repository URL (e.g., https://ctan.math.illinois.edu/systems/texlive/tlnet). See https://ctan.org/mirrors/mirmon for available mirrors.'
+        description: 'CTAN repository URL. See https://ctan.org/mirrors/mirmon for available mirrors.'
         required: false
         type: string
-        default: 'https://ctan.math.illinois.edu/systems/texlive/tlnet'
+        default: 'https://tlnet.yihui.org'
       force_rebuild_tinytex2:
         description: 'Force a full rebuild of TinyTeX-2 (ignore existing daily bundle)'
         required: false
@@ -23,7 +23,7 @@ env:
   # https://cli.github.com/manual/gh_help_environment
   GH_REPO: rstudio/tinytex-releases
   # CTAN repository URL for TeX Live packages
-  CTAN_REPO: ${{ inputs.ctan_repo || 'https://ctan.math.illinois.edu/systems/texlive/tlnet' }}
+  CTAN_REPO: ${{ inputs.ctan_repo || 'https://tlnet.yihui.org' }}
   # Force full rebuild of TinyTeX-2 even if the daily bundle year matches
   FORCE_REBUILD: ${{ inputs.force_rebuild_tinytex2 == true && 'true' || 'false' }}
 
@@ -140,18 +140,24 @@ jobs:
           7z a TinyTeX.zip $Env:APPDATA\\TinyTeX
 
       - name: Build TinyTeX-2
+        id: build-tinytex-2
         env:
           TEXLIVE_YEAR: ${{ needs.validate-ctan.outputs.texlive-year }}
-        run: |
-          & tools/build-tinytex-2.ps1
-          7z a -sfx TinyTeX-2-windows.exe $Env:APPDATA\\TinyTeX
-          Copy-Item TinyTeX-2-windows.exe TinyTeX-2.exe
+        run: "& tools/build-tinytex-2.ps1"
+        shell: pwsh
+
+      - name: Package TinyTeX-2
+        if: steps.build-tinytex-2.outputs.tinytex2-changed != 'false'
+        run: 7z a -sfx TinyTeX-2-windows.exe $Env:APPDATA\\TinyTeX
+
+      - name: Copy TinyTeX-2 alias
+        run: Copy-Item TinyTeX-2-windows.exe TinyTeX-2.exe
 
       - name: Test Installation script
         env:
           TINYTEX_INSTALLER: TinyTeX-0
-        run: tools\\install-bin-windows.bat
-        shell: cmd
+        run: tools/install-bin-windows.ps1
+        shell: pwsh
 
       - name: Upload bundles
         uses: ./.github/actions/upload-bundles
@@ -189,7 +195,7 @@ jobs:
           # tlmgr path add will add in this folder which is not on PATH by default
           # (can be checked with tlmgr options sys_bin)
           echo "$HOME/bin" >> $GITHUB_PATH
-          ls -lisa "$HOME/bin"
+          ls -lisah "$HOME/bin"
 
       - name: Build TinyTeX-1
         run: |
@@ -204,12 +210,17 @@ jobs:
           cp TinyTeX-linux-x86_64.tar.xz TinyTeX.tar.gz
 
       - name: Build TinyTeX-2
+        id: build-tinytex-2
         env:
           TEXLIVE_YEAR: ${{ needs.validate-ctan.outputs.texlive-year }}
-        run: |
-          sh tools/build-tinytex-2.sh
-          tar Jcf TinyTeX-2-linux-x86_64.tar.xz -C ~ .TinyTeX
-          cp TinyTeX-2-linux-x86_64.tar.xz TinyTeX-2.tar.gz
+        run: sh tools/build-tinytex-2.sh
+
+      - name: Package TinyTeX-2
+        if: steps.build-tinytex-2.outputs.tinytex2-changed != 'false'
+        run: tar Jcf TinyTeX-2-linux-x86_64.tar.xz -C ~ .TinyTeX
+
+      - name: Copy TinyTeX-2 alias
+        run: cp TinyTeX-2-linux-x86_64.tar.xz TinyTeX-2.tar.gz
 
       - name: Export Regex file
         run: |
@@ -230,7 +241,7 @@ jobs:
           ~/bin/tlmgr version | sed -n '1p;3p' >> $GITHUB_OUTPUT
           echo "EOFTLMGR" >> $GITHUB_OUTPUT
 
-      - run: ls -lisa
+      - run: ls -lisah
 
       - name: Upload bundles
         uses: ./.github/actions/upload-bundles
@@ -257,7 +268,7 @@ jobs:
           sed -i 's|# finished base|cp $OLDPWD/install-tl-unx.tar.gz tools/; Rscript tools/clean-tlpdb.R; tar Jcf TinyTeX-0-linux-arm64.tar.xz -C ~ .TinyTeX|' tools/install-unx.sh
           ./tools/install-unx.sh
           echo "$HOME/bin" >> $GITHUB_PATH
-          ls -lisa "$HOME/bin"
+          ls -lisah "$HOME/bin"
 
       - name: Build TinyTeX-1
         run: |
@@ -270,13 +281,16 @@ jobs:
           tar Jcf TinyTeX-linux-arm64.tar.xz -C ~ .TinyTeX
 
       - name: Build TinyTeX-2
+        id: build-tinytex-2
         env:
           TEXLIVE_YEAR: ${{ needs.validate-ctan.outputs.texlive-year }}
-        run: |
-          sh tools/build-tinytex-2.sh
-          tar Jcf TinyTeX-2-linux-arm64.tar.xz -C ~ .TinyTeX
+        run: sh tools/build-tinytex-2.sh
 
-      - run: ls -lisa
+      - name: Package TinyTeX-2
+        if: steps.build-tinytex-2.outputs.tinytex2-changed != 'false'
+        run: tar Jcf TinyTeX-2-linux-arm64.tar.xz -C ~ .TinyTeX
+
+      - run: ls -lisah
 
       - name: Upload bundles
         uses: ./.github/actions/upload-bundles
@@ -295,10 +309,11 @@ jobs:
 
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      USE_BUNDLED_LIBUV: 1
 
     steps:
       - name: Install build dependencies
-        run: apk add --no-cache bash R R-dev perl wget xz tar curl git github-cli g++ pandoc
+        run: apk add --no-cache bash R R-dev perl wget xz tar curl git github-cli g++ pandoc cmake linux-headers
 
       - name: Clean up any existing TinyTeX bundles
         run: rm -f TinyTeX-*.* TinyTeX.*
@@ -307,17 +322,16 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install R packages
-        run: |
-          echo "options(repos = 'https://cloud.r-project.org')" >> ~/.Rprofile
-          Rscript -e "install.packages(c('xfun', 'rmarkdown', 'testit'))"
-          Rscript -e "install.packages('.', repos = NULL, type = 'source')"
+        uses: yihui/actions/setup-r-dependencies@HEAD
+        with:
+          extra-packages: rmarkdown .
 
       - name: Build TinyTeX-0
         run: |
           sed -i 's|# finished base|cp $OLDPWD/install-tl-unx.tar.gz tools/; Rscript tools/clean-tlpdb.R; tar Jcf TinyTeX-0-linuxmusl-x86_64.tar.xz -C ~ .TinyTeX|' tools/install-unx.sh
           ./tools/install-unx.sh
           echo "$HOME/bin" >> $GITHUB_PATH
-          ls -lisa "$HOME/bin"
+          ls -lisah "$HOME/bin"
 
       - name: Build TinyTeX-1
         run: |
@@ -330,13 +344,16 @@ jobs:
           tar Jcf TinyTeX-linuxmusl-x86_64.tar.xz -C ~ .TinyTeX
 
       - name: Build TinyTeX-2
+        id: build-tinytex-2
         env:
           TEXLIVE_YEAR: ${{ needs.validate-ctan.outputs.texlive-year }}
-        run: |
-          sh tools/build-tinytex-2.sh
-          tar Jcf TinyTeX-2-linuxmusl-x86_64.tar.xz -C ~ .TinyTeX
+        run: sh tools/build-tinytex-2.sh
 
-      - run: ls -lisa
+      - name: Package TinyTeX-2
+        if: steps.build-tinytex-2.outputs.tinytex2-changed != 'false'
+        run: tar Jcf TinyTeX-2-linuxmusl-x86_64.tar.xz -C ~ .TinyTeX
+
+      - run: ls -lisah
 
       - name: Upload bundles
         uses: ./.github/actions/upload-bundles
@@ -376,14 +393,19 @@ jobs:
           cp TinyTeX-darwin.tar.xz TinyTeX.tgz
 
       - name: Build TinyTeX-2
+        id: build-tinytex-2
         env:
           TEXLIVE_YEAR: ${{ needs.validate-ctan.outputs.texlive-year }}
-        run: |
-          sh tools/build-tinytex-2.sh
-          tar Jcf TinyTeX-2-darwin.tar.xz -C ~/Library TinyTeX
-          cp TinyTeX-2-darwin.tar.xz TinyTeX-2.tgz
+        run: sh tools/build-tinytex-2.sh
 
-      - run: ls -lisa
+      - name: Package TinyTeX-2
+        if: steps.build-tinytex-2.outputs.tinytex2-changed != 'false'
+        run: tar Jcf TinyTeX-2-darwin.tar.xz -C ~/Library TinyTeX
+
+      - name: Copy TinyTeX-2 alias
+        run: cp TinyTeX-2-darwin.tar.xz TinyTeX-2.tgz
+
+      - run: ls -lisah
 
       - name: Upload bundles
         uses: ./.github/actions/upload-bundles
@@ -422,7 +444,7 @@ jobs:
           mv tinitex.tar.gz ../..
           popd
 
-      - run: ls -lisa
+      - run: ls -lisah
 
       - name: Upload bundles
         uses: ./.github/actions/upload-bundles

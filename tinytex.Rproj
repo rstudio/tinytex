@@ -17,4 +17,5 @@ AutoAppendNewline: Yes
 StripTrailingWhitespace: Yes
 
 BuildType: Package
+PackageUseDevtools: Yes
 PackageRoxygenize: rd,collate,namespace

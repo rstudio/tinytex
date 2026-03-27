@@ -1,7 +1,6 @@
 # make sure the default installation includes all LaTeX packages required to
 # compile basic R Markdown documents and bookdown books to PDF
 
-xfun::in_dir('..', xfun::install_dir('tinytex'))
 if (!tinytex:::tlmgr_available()) stop("tlmgr not available")
 
 system2('git', c('checkout', '--', '.'))  # drop changes if exist

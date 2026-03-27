@@ -51,10 +51,8 @@ l3backend
 l3kernel
 l3packages
 latex
-latex-amsmath-dev
 latex-bin
 latex-fonts
-latex-tools-dev
 latexconfig
 latexmk
 letltxmacro
