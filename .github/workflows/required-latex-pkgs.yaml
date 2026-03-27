@@ -29,9 +29,9 @@ jobs:
           # install prebuilt base version (infraonly)
           TINYTEX_INSTALLER: TinyTeX-0
 
-      - uses: r-lib/actions/setup-r-dependencies@v2
+      - uses: yihui/actions/setup-r-dependencies@HEAD
         with:
-          extra-packages: any::curl, any::kableExtra, any::bookdown
+          extra-packages: . curl kableExtra bookdown
 
       - name: Find required LaTeX packages
         run: Rscript tools/test-packages.R
