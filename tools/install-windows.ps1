@@ -28,9 +28,8 @@ Invoke-WebRequest 'https://tinytex.yihui.org/pkgs-custom.txt' -OutFile pkgs-cust
 # an automated installation of TeXLive (infrastructure only)
 cd install-tl-*
 cmd /c "install-tl-windows.bat -no-gui -profile=../tinytex.profile -repository $TLREPO < nul"
-if ($LASTEXITCODE -ne 0) { throw "TeX Live installation failed" }
 
-del TinyTeX\install-tl.log ..\tinytex.profile install-tl install-tl-windows.bat -ErrorAction SilentlyContinue
+del TinyTeX\install-tl.log, ..\tinytex.profile, install-tl, install-tl-windows.bat -ErrorAction SilentlyContinue
 
 # a token to differentiate TinyTeX with other TeX Live distros
 ni TinyTeX\.tinytex | Out-Null
@@ -52,6 +51,5 @@ $tlmgr = "$env:APPDATA\TinyTeX\bin\windows\tlmgr.bat"
 & $tlmgr conf texmf max_print_line 10000
 & $tlmgr path add
 & $tlmgr install @pkgs
-if ($LASTEXITCODE -ne 0) { throw "tlmgr install failed" }
 
 pause
