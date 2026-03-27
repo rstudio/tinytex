@@ -33,8 +33,8 @@
 #'   installed. By default, a vector of all currently installed LaTeX packages
 #'   if an existing installation of TinyTeX is found. If you want a fresh
 #'   installation, you may use \code{extra_packages = NULL}.
-#' @param add_path Whether to run the command \command{tlmgr path add} to add
-#'   the bin path of TeX Live to the system environment variable \var{PATH}.
+#' @param add_path Whether to add the bin path of TeX Live to the system
+#'   environment variable \var{PATH}. See \code{\link{tlmgr_path}()}.
 #' @references See the TinyTeX documentation (\url{https://yihui.org/tinytex/})
 #'   for the default installation directories on different platforms.
 #' @note If you really want to disable the installation, you may set the
@@ -113,8 +113,6 @@ install_tinytex = function(
   switch(
     os,
     'unix' = {
-      restore_local_bin = check_local_bin()
-      if (is.function(restore_local_bin)) on.exit(restore_local_bin(), add = TRUE)
       if (os_index != 3 && !any(dir_exists(c('~/bin', '~/.local/bin')))) on.exit(message(
         'You may have to restart your system after installing TinyTeX to make sure ',
         '~/bin appears in your PATH variable (https://github.com/rstudio/tinytex/issues/16).'
@@ -291,30 +289,36 @@ win_app_dir = function(s) {
 # test if path is pure ASCII and has no spaces
 valid_path = function(x) grepl('^[!-~]+$', x)
 
-# check if /usr/local/bin on macOS is writable
-check_local_bin = function() {
-  if (os_index != 3 || is_writable(p <- '/usr/local/bin')) return(invisible(NULL))
-  message(
-    'The directory ', p, ' is not writable. I recommend that you make it writable. ',
-    'See https://github.com/rstudio/tinytex/issues/24 for more info.'
-  )
-  if (!dir_exists(p)) osascript(paste('mkdir -p', p))
-  # save current ownership before changing it (to restore later)
-  prev_owner = system2('stat', c('-f', '%Su:%Sg', p), stdout = TRUE)
-  user = system2('whoami', stdout = TRUE)
-  osascript(sprintf('chown %s:admin %s', user, p))
-  # return a cleanup function to restore the original ownership (only if prev_owner is valid)
-  if (length(prev_owner) == 1 && grepl('^[^:]+:[^:]+$', prev_owner))
-    function() osascript(sprintf('chown %s %s', prev_owner, p))
-}
-
 osascript = function(cmd) {
-  if (system(sprintf(
+  ret = system(sprintf(
     "/usr/bin/osascript -e 'do shell script \"%s\" with administrator privileges'", cmd
-  )) != 0) warning(
+  ))
+  if (ret != 0) warning(
     "Please run this command in your Terminal (password required):\n  sudo ",
     cmd, call. = FALSE
   )
+  ret
+}
+
+# add/remove TinyTeX's bin path to/from /etc/paths.d/TinyTeX on macOS;
+# if adding and the file already contains the desired path, skip the operation
+macos_path = function(dir = NULL, action = 'add') {
+  paths_file = '/etc/paths.d/TinyTeX'
+  add = action == 'add'
+  cmd = if (add) {
+    if (is.null(dir) || dir == '') return(1L)
+    if (file.exists(paths_file) &&
+        identical(readLines(paths_file, warn = FALSE), dir))
+      return(0L)
+    tmp = tempfile()
+    writeLines(dir, tmp)
+    sprintf('cp \\"%s\\" \\"%s\\"', tmp, paths_file)
+  } else {
+    sprintf('rm -f \\"%s\\"', paths_file)
+  }
+  ret = osascript(cmd)
+  if (add && ret == 0) unlink(tmp)
+  ret
 }
 
 install_tinytex_source = function(repo = '', dir, version, add_path, extra_packages) {
@@ -593,9 +597,9 @@ download_installer = function(file, version) {
 #'
 #' The function \code{copy_tinytex()} copies the existing TinyTeX installation
 #' to another directory (e.g., a portable device like a USB stick). The function
-#' \code{use_tinytex()} runs \command{tlmgr path add} to add the copy of TinyTeX
-#' in an existing folder to the \code{PATH} variable of the current system, so
-#' that you can use utilities such as \command{tlmgr} and \command{pdflatex},
+#' \code{use_tinytex()} adds the copy of TinyTeX in an existing folder to the
+#' \code{PATH} variable of the current system via \code{\link{tlmgr_path}()},
+#' so that you can use utilities such as \command{tlmgr} and \command{pdflatex},
 #' etc.
 #' @param from The root directory of the TinyTeX installation. For
 #'   \code{copy_tinytex()}, the default value \code{tinytex_root()} should be a
@@ -638,7 +642,12 @@ use_tinytex = function(from = select_dir('Select TinyTeX Directory')) {
   if (length(d) != 1) stop("The directory '", from, "' does not contain TinyTeX.")
   p = file.path(d, 'tlmgr')
   if (os == 'windows') p = paste0(p, '.bat')
-  if (system2(p, c('path', 'add')) != 0) stop(
+  if (is_macos()) {
+    ret = macos_path(normalizePath(d))
+  } else {
+    ret = system2(p, c('path', 'add'))
+  }
+  if (ret != 0) stop(
     "Failed to add '", d, "' to your system's environment variable PATH. You may ",
     "consider the fallback approach, i.e., set options(tinytex.tlmgr.path = '", p, "')."
   )
