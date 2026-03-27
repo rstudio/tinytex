@@ -124,17 +124,29 @@ fi
 [ $OSNAME != "Darwin" ] && ./tlmgr option sys_bin $BINDIR
 ./tlmgr postaction install script xetex  # GH issue #313
 
-if [ $OSNAME = 'Darwin' ]; then
-  # create the dir if it doesn't exist
-  if [ ! -d /usr/local/bin ]; then
-    echo "Admin privilege (password) is required to create the directory /usr/local/bin:"
-    sudo mkdir -p /usr/local/bin
-  fi
-  # change owner of the dir
-  if [ ! -w /usr/local/bin ]; then
-    echo "Admin privilege (password) is required to make /usr/local/bin writable:"
-    sudo chown -R `whoami`:admin /usr/local/bin
+NO_PATH=0
+for arg in "$@"; do
+  case "$arg" in --no-path) NO_PATH=1 ;; esac
+done
+
+if [ $NO_PATH -eq 0 ]; then
+  if [ $OSNAME = 'Darwin' ]; then
+    if [ -w /usr/local/bin ]; then
+      ./tlmgr path add
+    elif ! grep -qxF "$(pwd)" /etc/paths.d/TinyTeX 2>/dev/null; then
+      # add TinyTeX's bin path to /etc/paths.d instead of creating symlinks in /usr/local/bin
+      # (at this point we are in $TEXDIR/bin/*/ after the `cd` above)
+      echo "Admin privilege (password) is required to set up the PATH for TinyTeX:"
+      if printf '%s\n' "$(pwd)" | sudo tee /etc/paths.d/TinyTeX > /dev/null; then
+        # /etc/paths.d is not picked up until the shell is restarted; export PATH now
+        export PATH="$PATH:$(pwd)"
+      else
+        echo "To set up PATH manually, run the following command and add it to your shell startup profile (e.g. ~/.zshrc):"
+        echo "  export PATH=\$PATH:$(pwd)"
+        export PATH="$PATH:$(pwd)"
+      fi
+    fi
+  else
+    ./tlmgr path add
   fi
 fi
-
-./tlmgr path add
