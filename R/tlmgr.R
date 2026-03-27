@@ -271,7 +271,7 @@ delete_tlpdb_files = function() {
 #' @export
 tlmgr_path = function(action = c('add', 'remove')) {
   action = match.arg(action)
-  if (is_macos() && !macos_local_bin_writable()) {
+  if (use_paths_d()) {
     invisible(macos_path(find_tinytex_bin(), action))
   } else tlmgr(c('path', action), .quiet = TRUE)
 }

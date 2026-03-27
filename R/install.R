@@ -301,7 +301,11 @@ osascript = function(cmd) {
   ret
 }
 
-macos_local_bin_writable = function() file.access('/usr/local/bin', 2) == 0
+# on macOS, if the user doesn't have write permission to /usr/local/bin, we use
+# /etc/paths.d instead
+use_paths_d = function() {
+  is_macos() && file.access('/usr/local/bin', 2) != 0
+}
 
 # add/remove TinyTeX's bin path to/from /etc/paths.d/TinyTeX on macOS;
 # if adding and the file already contains the desired path, skip the operation
@@ -645,7 +649,7 @@ use_tinytex = function(from = select_dir('Select TinyTeX Directory')) {
   if (length(d) != 1) stop("The directory '", from, "' does not contain TinyTeX.")
   p = file.path(d, 'tlmgr')
   if (os == 'windows') p = paste0(p, '.bat')
-  ret = if (is_macos() && !macos_local_bin_writable()) macos_path(normalizePath(d)) else system2(p, c('path', 'add'))
+  ret = if (use_paths_d()) macos_path(normalizePath(d)) else system2(p, c('path', 'add'))
   if (ret != 0) warning(
     "Failed to add '", d, "' to your system's environment variable PATH. You may ",
     "consider the fallback approach, i.e., set options(tinytex.tlmgr.path = '", p, "')."
