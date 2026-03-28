@@ -37,7 +37,7 @@ lualatex(...)
 
 \item{engine_args}{Command-line arguments to be passed to \code{engine} (can
 be set in the global option \code{tinytex.engine_args}, e.g.,
-\verb{options(tinytex.engine_args = '-shell-escape'}).}
+\code{options(tinytex.engine_args = '-shell-escape')}).}
 
 \item{emulation}{Whether to emulate the executable \command{latexmk} using R.
 Note that this is unused when \code{engine == 'tectonic'}.}
