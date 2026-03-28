@@ -1,3 +1,5 @@
+# CHANGES IN tinytex VERSION 0.60
+
 # CHANGES IN tinytex VERSION 0.59
 
 - Fixed font package detection for fonts with spaces in their names (e.g., "Noto Emoji", "DejaVu Sans"). Previously, `latexmk()` failed to automatically install the missing font package because the search pattern preserved the space, but font files never have spaces in their names (thanks, @cderv, #478, #479).
