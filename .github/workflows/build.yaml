@@ -148,9 +148,6 @@ jobs:
         if: steps.build-tinytex-2.outputs.tinytex2-changed != 'false'
         run: 7z a -sfx TinyTeX-2-windows.exe $Env:APPDATA\\TinyTeX
 
-      - name: Copy TinyTeX-2 alias
-        run: Copy-Item TinyTeX-2-windows.exe TinyTeX-2.exe
-
       - name: Test Installation script
         env:
           TINYTEX_INSTALLER: TinyTeX-0
