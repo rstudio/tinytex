@@ -125,13 +125,11 @@ jobs:
         run: |
           Rscript "tools/install-windows-base.R" # the infraonly scheme
           7z a -sfx TinyTeX-0-windows.exe $Env:APPDATA\\TinyTeX
-          7z a TinyTeX-0.zip $Env:APPDATA\\TinyTeX
 
       - name: Build TinyTeX-1
         run: |
           Rscript "tools/install-windows-more.R"  # extra packages for compiling R Markdown
           7z a -sfx TinyTeX-1-windows.exe $Env:APPDATA\\TinyTeX
-          7z a TinyTeX-1.zip $Env:APPDATA\\TinyTeX
 
       - name: Build TinyTeX
         run: |
@@ -404,47 +402,8 @@ jobs:
         with:
           draft-tag: ${{ needs.new-release.outputs.draft-tag }}
 
-  tinitex:
-    needs: [new-release]
-    name: Get tinitex release
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Clone repo
-        uses: actions/checkout@v4
-
-      - name: Get tinytex artifacts
-        run: |
-          echo ">> Will retrieve artifact from Quarto latexmk workflow"
-          runId=$(gh run -R quarto-dev/quarto-cli list -w 'Test quarto-latexmk' --json 'headBranch,conclusion,databaseId' --jq 'map(select(.conclusion == "success" and .headBranch == "main")) | .[0].databaseId')
-          gh run -R quarto-dev/quarto-cli download $runId -p tinitex-* --dir tinitex
-        shell: bash
-
-      - name: Repackage in per OS bundle
-        working-directory: tinitex
-        run: |
-          pushd $(find . -maxdepth 1 -type d -name "*windows*")
-          7z a tinitex.zip x86_64-pc-windows-msvc/.
-          mv tinitex.zip ../..
-          popd
-          pushd $(find . -maxdepth 1 -type d -name "*macOS*")
-          7z a -ttar -so tinitex.tar aarch64-apple-darwin/. | 7z a -si tinitex.tgz
-          mv tinitex.tgz ../..
-          popd
-          pushd $(find . -maxdepth 1 -type d -name "*ubuntu*")
-          7z a -ttar -so tinitex.tar x86_64-unknown-linux-gnu/. | 7z a -si tinitex.tar.gz
-          mv tinitex.tar.gz ../..
-          popd
-
-      - run: ls -lisah
-
-      - name: Upload bundles
-        uses: ./.github/actions/upload-bundles
-        with:
-          draft-tag: ${{ needs.new-release.outputs.draft-tag }}
-
   deploy:
-    needs: [validate-ctan, new-release, build-windows, build-linux, build-linux-arm64, build-linux-musl, build-mac, tinitex]
+    needs: [validate-ctan, new-release, build-windows, build-linux, build-linux-arm64, build-linux-musl, build-mac]
     runs-on: ubuntu-latest
     name: Publish new daily release
 
