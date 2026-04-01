@@ -125,13 +125,11 @@ jobs:
         run: |
           Rscript "tools/install-windows-base.R" # the infraonly scheme
           7z a -sfx TinyTeX-0-windows.exe $Env:APPDATA\\TinyTeX
-          7z a TinyTeX-0.zip $Env:APPDATA\\TinyTeX
 
       - name: Build TinyTeX-1
         run: |
           Rscript "tools/install-windows-more.R"  # extra packages for compiling R Markdown
           7z a -sfx TinyTeX-1-windows.exe $Env:APPDATA\\TinyTeX
-          7z a TinyTeX-1.zip $Env:APPDATA\\TinyTeX
 
       - name: Build TinyTeX
         run: |
@@ -190,7 +188,7 @@ jobs:
 
       - name: Build TinyTeX-0
         run: |
-          sed -i 's|# finished base|cp $OLDPWD/install-tl-unx.tar.gz tools/; Rscript tools/clean-tlpdb.R; tar Jcf TinyTeX-0-linux-x86_64.tar.xz -C ~ .TinyTeX; cp TinyTeX-0-linux-x86_64.tar.xz TinyTeX-0.tar.gz|' tools/install-unx.sh
+          sed -i 's|# finished base|cp $OLDPWD/install-tl-unx.tar.gz tools/; Rscript tools/clean-tlpdb.R; tar Jcf TinyTeX-0-linux-x86_64.tar.xz -C ~ .TinyTeX|' tools/install-unx.sh
           ./tools/install-unx.sh
           # tlmgr path add will add in this folder which is not on PATH by default
           # (can be checked with tlmgr options sys_bin)
@@ -201,13 +199,12 @@ jobs:
         run: |
           Rscript "tools/clean-tlpdb.R"
           tar Jcf TinyTeX-1-linux-x86_64.tar.xz -C ~ .TinyTeX
-          cp TinyTeX-1-linux-x86_64.tar.xz TinyTeX-1.tar.gz
 
       - name: Build TinyTeX
         run: |
           Rscript "tools/test-basic.R"
           tar Jcf TinyTeX-linux-x86_64.tar.xz -C ~ .TinyTeX
-          cp TinyTeX-linux-x86_64.tar.xz TinyTeX.tar.gz
+          tar zcf TinyTeX.tar.gz -C ~ .TinyTeX
 
       - name: Build TinyTeX-2
         id: build-tinytex-2
@@ -218,9 +215,6 @@ jobs:
       - name: Package TinyTeX-2
         if: steps.build-tinytex-2.outputs.tinytex2-changed != 'false'
         run: tar Jcf TinyTeX-2-linux-x86_64.tar.xz -C ~ .TinyTeX
-
-      - name: Copy TinyTeX-2 alias
-        run: cp TinyTeX-2-linux-x86_64.tar.xz TinyTeX-2.tar.gz
 
       - name: Export Regex file
         run: |
@@ -377,20 +371,19 @@ jobs:
 
       - name: Build TinyTeX-0
         run: |
-          sed -i '' 's|# finished base|Rscript tools/clean-tlpdb.R; tar Jcf TinyTeX-0-darwin.tar.xz -C ~/Library TinyTeX; cp TinyTeX-0-darwin.tar.xz TinyTeX-0.tgz|' tools/install-unx.sh
+          sed -i '' 's|# finished base|Rscript tools/clean-tlpdb.R; tar Jcf TinyTeX-0-darwin.tar.xz -C ~/Library TinyTeX|' tools/install-unx.sh
           ./tools/install-unx.sh
 
       - name: Build TinyTeX-1
         run: |
           Rscript "tools/clean-tlpdb.R"
           tar Jcf TinyTeX-1-darwin.tar.xz -C ~/Library TinyTeX
-          cp TinyTeX-1-darwin.tar.xz TinyTeX-1.tgz
 
       - name: Build TinyTeX
         run: |
           Rscript "tools/test-basic.R"
           tar Jcf TinyTeX-darwin.tar.xz -C ~/Library TinyTeX
-          cp TinyTeX-darwin.tar.xz TinyTeX.tgz
+          tar zcf TinyTeX.tgz -C ~/Library TinyTeX
 
       - name: Build TinyTeX-2
         id: build-tinytex-2
@@ -402,48 +395,6 @@ jobs:
         if: steps.build-tinytex-2.outputs.tinytex2-changed != 'false'
         run: tar Jcf TinyTeX-2-darwin.tar.xz -C ~/Library TinyTeX
 
-      - name: Copy TinyTeX-2 alias
-        run: cp TinyTeX-2-darwin.tar.xz TinyTeX-2.tgz
-
-      - run: ls -lisah
-
-      - name: Upload bundles
-        uses: ./.github/actions/upload-bundles
-        with:
-          draft-tag: ${{ needs.new-release.outputs.draft-tag }}
-
-  tinitex:
-    needs: [new-release]
-    name: Get tinitex release
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Clone repo
-        uses: actions/checkout@v4
-
-      - name: Get tinytex artifacts
-        run: |
-          echo ">> Will retrieve artifact from Quarto latexmk workflow"
-          runId=$(gh run -R quarto-dev/quarto-cli list -w 'Test quarto-latexmk' --json 'headBranch,conclusion,databaseId' --jq 'map(select(.conclusion == "success" and .headBranch == "main")) | .[0].databaseId')
-          gh run -R quarto-dev/quarto-cli download $runId -p tinitex-* --dir tinitex
-        shell: bash
-
-      - name: Repackage in per OS bundle
-        working-directory: tinitex
-        run: |
-          pushd $(find . -maxdepth 1 -type d -name "*windows*")
-          7z a tinitex.zip x86_64-pc-windows-msvc/.
-          mv tinitex.zip ../..
-          popd
-          pushd $(find . -maxdepth 1 -type d -name "*macOS*")
-          7z a -ttar -so tinitex.tar aarch64-apple-darwin/. | 7z a -si tinitex.tgz
-          mv tinitex.tgz ../..
-          popd
-          pushd $(find . -maxdepth 1 -type d -name "*ubuntu*")
-          7z a -ttar -so tinitex.tar x86_64-unknown-linux-gnu/. | 7z a -si tinitex.tar.gz
-          mv tinitex.tar.gz ../..
-          popd
-
       - run: ls -lisah
 
       - name: Upload bundles
@@ -452,7 +403,7 @@ jobs:
           draft-tag: ${{ needs.new-release.outputs.draft-tag }}
 
   deploy:
-    needs: [validate-ctan, new-release, build-windows, build-linux, build-linux-arm64, build-linux-musl, build-mac, tinitex]
+    needs: [validate-ctan, new-release, build-windows, build-linux, build-linux-arm64, build-linux-musl, build-mac]
     runs-on: ubuntu-latest
     name: Publish new daily release
 
