@@ -1,6 +1,6 @@
 # CHANGES IN tinytex VERSION 0.60
 
-- The backward-compatible `TinyTeX.tar.gz` (Linux) and `TinyTeX.tgz` (macOS) bundles are now truly gzip-compressed instead of being XZ-compressed copies with misleading extensions. Backward-compatible copies are only provided for the plain `TinyTeX` bundle (used by Quarto's `quarto install tinytex`), not for `TinyTeX-0`, `TinyTeX-1`, or `TinyTeX-2` (#58).
+- The backward-compatible `TinyTeX.tar.gz` (Linux) and `TinyTeX.tgz` (macOS) bundles are now truly gzip-compressed instead of being XZ-compressed copies with misleading extensions. Backward-compatible copies are only provided for the `TinyTeX` bundle (used by Quarto's `quarto install tinytex`), not for `TinyTeX-0`, `TinyTeX-1`, or `TinyTeX-2` (thanks, @knstmrd @pebenbow, rstudio/tinytex-releases#58).
 
 # CHANGES IN tinytex VERSION 0.59
 
