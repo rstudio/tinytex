@@ -55,7 +55,7 @@ if ($BundleExt -eq 'exe') {
 if ($args[0]) {
   move $DownloadedFile "$($args[0])\$DownloadedFile"
 } else {
-  del $DownloadedFile
+  del $DownloadedFile -Force -ErrorAction SilentlyContinue
 }
 
 # in case it was installed to APPDATA previously
