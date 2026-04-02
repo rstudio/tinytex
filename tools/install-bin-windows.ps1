@@ -1,5 +1,12 @@
 $ErrorActionPreference = 'Stop'
 
+if ($env:TINYTEX_PREVENT_INSTALL -eq 'true') {
+  throw "The environment variable 'TINYTEX_PREVENT_INSTALL' was set to 'true', so the installation is aborted."
+}
+
+# parse --no-path argument
+$AddPath = -not ($args -contains '--no-path')
+
 # switch to a temp directory
 cd $env:TEMP
 [Environment]::CurrentDirectory = $PWD.Path
@@ -14,6 +21,10 @@ if (-not $env:TINYTEX_INSTALLER) { $env:TINYTEX_INSTALLER = 'TinyTeX-1' }
 if (-not $env:TINYTEX_DIR) {
   $env:TINYTEX_DIR = if ($env:APPDATA -match '^[!-~]+$') { $env:APPDATA } else { $env:ProgramData }
 }
+
+# TINYTEX_TEXDIR allows callers (e.g. the R package) to specify the full installation
+# path directly; fall back to the traditional TINYTEX_DIR\TinyTeX default
+$TargetDir = if ($env:TINYTEX_TEXDIR) { $env:TINYTEX_TEXDIR } else { "$($env:TINYTEX_DIR)\TinyTeX" }
 
 # new naming scheme: TinyTeX-{N}-windows.exe for daily and versions after v2026.03.02
 $UseNewNames = $true
@@ -52,7 +63,7 @@ if ($BundleExt -eq 'exe') {
 }
 
 # save the downloaded file to the output dir (for build-tinytex-2.ps1)
-if ($args[0]) {
+if ($args[0] -and $args[0] -ne '--no-path') {
   move $DownloadedFile "$($args[0])\$DownloadedFile"
 } else {
   del $DownloadedFile -Force -ErrorAction SilentlyContinue
@@ -61,12 +72,27 @@ if ($args[0]) {
 # in case it was installed to APPDATA previously
 rd $env:APPDATA\TinyTeX -r -fo -ErrorAction SilentlyContinue
 
-rd $env:TINYTEX_DIR\TinyTeX -r -fo -ErrorAction SilentlyContinue
-rd $env:TINYTEX_DIR\TinyTeX -r -fo -ErrorAction SilentlyContinue
-move TinyTeX $env:TINYTEX_DIR
+# remove any existing installation at the target directory
+rd $TargetDir -r -fo -ErrorAction SilentlyContinue
+
+# the bundle always extracts to a 'TinyTeX' directory in the current dir (TEMP);
+# move it to the parent of TargetDir, then rename if a custom leaf name was requested
+$TargetParent = Split-Path $TargetDir -Parent
+$TargetLeaf = Split-Path $TargetDir -Leaf
+if (-not (Test-Path $TargetParent)) { mkdir $TargetParent -Force | Out-Null }
+# remove an existing TinyTeX dir in the target parent that may conflict with the move
+rd (Join-Path $TargetParent 'TinyTeX') -r -fo -ErrorAction SilentlyContinue
+move TinyTeX $TargetParent
+if ($TargetLeaf -ne 'TinyTeX') {
+  rename-item (Join-Path $TargetParent 'TinyTeX') $TargetLeaf
+}
 
 # add tlmgr to PATH
-Write-Host 'add tlmgr to PATH'
-$tlmgr = "$env:TINYTEX_DIR\TinyTeX\bin\windows\tlmgr.bat"
-& $tlmgr path add
+$tlmgr = "$TargetDir\bin\windows\tlmgr.bat"
 & $tlmgr postaction install script xetex
+# do not wrap lines in latex log (https://github.com/rstudio/tinytex/issues/322)
+& $tlmgr conf texmf max_print_line 10000
+if ($AddPath) {
+  Write-Host 'add tlmgr to PATH'
+  & $tlmgr path add
+}

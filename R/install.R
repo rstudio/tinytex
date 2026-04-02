@@ -143,7 +143,7 @@ install_tinytex = function(
     if (src_install) {
       install_tinytex_source(repository, ...)
     } else {
-      install_prebuilt(bundle, ..., repo = repository)
+      install_via_script(bundle, ..., repo = repository)
     }
   }
   user_dir = install(user_dir, version, add_path, extra_packages)
@@ -326,6 +326,48 @@ macos_path = function(dir = NULL, action = 'add') {
   ret = osascript(cmd)
   if (add && ret == 0) unlink(tmp)
   ret
+}
+
+install_via_script = function(pkg = '', dir = '', version = 'daily', add_path = TRUE, extra_packages = NULL, repo = 'ctan') {
+  # Set env vars consumed by the install-bin-*.sh / install-bin-*.ps1 scripts
+  env_vars = c(TINYTEX_INSTALLER = pkg)
+  if (version != 'daily') env_vars['TINYTEX_VERSION'] = version
+
+  # xfun::normalize_path() expands ~ so we can pass TINYTEX_TEXDIR to the script;
+  # normalizePath() below (after install) resolves symlinks for the canonical path
+  target = if (dir == '') default_inst() else xfun::normalize_path(dir)
+  # Pass the full target path to the script only when using a custom directory
+  if (dir != '') env_vars['TINYTEX_TEXDIR'] = target
+
+  old_vars = xfun::set_envvar(env_vars)
+  on.exit(xfun::set_envvar(old_vars), add = TRUE)
+
+  if (is_windows()) {
+    script = 'install-bin-windows.ps1'
+    download_file('https://tinytex.yihui.org/install-bin-windows.ps1', script)
+    on.exit(unlink(script), add = TRUE)
+    script_args = c('-NonInteractive', '-File', script, if (!add_path) '--no-path')
+    res = system2('powershell', script_args)
+  } else {
+    script = 'install-bin-unix.sh'
+    download_file('https://tinytex.yihui.org/install-bin-unix.sh', script)
+    on.exit(unlink(script), add = TRUE)
+    res = system2('sh', c(script, if (!add_path) '--no-path'))
+  }
+  if (res != 0) stop('Failed to install TinyTeX', call. = FALSE)
+  if (!dir_exists(target)) stop('Failed to install TinyTeX.')
+  target = normalizePath(target)
+
+  opts = options(tinytex.tlmgr.path = find_tlmgr(target))
+  on.exit(options(opts), add = TRUE)
+
+  r_texmf(.quiet = TRUE)
+  # don't use the default random ctan mirror when installing on CI servers
+  if (repo != 'ctan' || tolower(Sys.getenv('CI')) != 'true')
+    tlmgr_repo(repo, stdout = FALSE, .quiet = TRUE)
+  tlmgr_install(setdiff(extra_packages, tl_pkgs()))
+
+  target
 }
 
 install_tinytex_source = function(repo = '', dir, version, add_path, extra_packages) {
