@@ -46,7 +46,7 @@ download_file() {
   if command -v curl > /dev/null 2>&1; then
     curl -L -f --retry 10 --retry-delay 30 "$1" -o "$2"
   else
-    wget --retry-connrefused --tries=11 --waitretry=30 -O "$2" "$1"
+    wget --retry-connrefused --tries=11 --waitretry=30 --progress=dot:giga -O "$2" "$1"
   fi
 }
 
