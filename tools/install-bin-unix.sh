@@ -99,14 +99,14 @@ if [ "${TINYTEX_INSTALLER#"TinyTeX"}" != "$TINYTEX_INSTALLER" ]; then
   if [ $OSNAME = 'Darwin' ]; then
     curl -L -f --retry 10 --retry-delay 30 ${TINYTEX_URL} -o "${INSTALLER_FILE}"
   else
-    wget --retry-connrefused --progress=dot:giga -O "${INSTALLER_FILE}" ${TINYTEX_URL}
+    wget --retry-connrefused --tries=11 --waitretry=30 --progress=dot:giga -O "${INSTALLER_FILE}" ${TINYTEX_URL}
   fi
   tar xf "${INSTALLER_FILE}" -C $(dirname $TEXDIR)
   if [ -n "$1" ]; then mv "${INSTALLER_FILE}" "$1/"; else rm "${INSTALLER_FILE}"; fi
 else
   echo "We do not have a prebuilt TinyTeX package for this operating system ($(uname -s) $(uname -m))."
   echo "I will try to install from source for you instead."
-  wget --retry-connrefused -O "${INSTALLER_FILE}" ${TINYTEX_URL}
+  wget --retry-connrefused --tries=11 --waitretry=30 -O "${INSTALLER_FILE}" ${TINYTEX_URL}
   tar xf "${INSTALLER_FILE}"
   ./install.sh
   mkdir -p $TEXDIR

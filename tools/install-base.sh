@@ -9,12 +9,12 @@ PRNAME="tinytex.profile"
 PRURL="https://tinytex.yihui.org"
 if [ $(uname) = 'Darwin' ]; then
   alias sedi="sed -i ''"
-  [ -e $TLINST ] || curl -LO $TLURL
-  [ -e $PRNAME ] || curl -LO $PRURL/$PRNAME
+  [ -e $TLINST ] || curl -L --retry 10 --retry-delay 30 -O $TLURL
+  [ -e $PRNAME ] || curl -L --retry 10 --retry-delay 30 -O $PRURL/$PRNAME
 else
   alias sedi="sed -i"
-  [ -e $TLINST ] || wget $TLURL
-  [ -e $PRNAME ] || wget $PRURL/$PRNAME
+  [ -e $TLINST ] || wget --tries=11 --waitretry=30 $TLURL
+  [ -e $PRNAME ] || wget --tries=11 --waitretry=30 $PRURL/$PRNAME
   # ask `tlmgr path add` to add binaries to ~/bin instead of the default
   # /usr/local/bin unless this script is invoked with the argument '--admin'
   # (e.g., users want to make LaTeX binaries available system-wide), in which

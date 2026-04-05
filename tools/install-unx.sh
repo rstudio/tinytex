@@ -7,10 +7,10 @@ cd ${TMPDIR:-/tmp}
 
 if [ $(uname) = 'Darwin' ]; then
   TEXDIR=${TINYTEX_DIR:-~/Library/TinyTeX}
-  alias download='curl -sL'
+  alias download='curl -sL --retry 10 --retry-delay 30'
 else
   TEXDIR=${TINYTEX_DIR:-~/.TinyTeX}
-  alias download='wget -qO-'
+  alias download='wget -qO- --tries=11 --waitretry=30'
 fi
 
 rm -f install-tl-unx.tar.gz tinytex.profile

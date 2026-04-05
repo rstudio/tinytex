@@ -1,5 +1,19 @@
 $ErrorActionPreference = 'Stop'
 
+function Invoke-DownloadWithRetry {
+  param([string]$Uri, [string]$OutFile, [int]$MaxRetries = 10, [int]$RetryDelay = 30)
+  for ($i = 1; $i -le ($MaxRetries + 1); $i++) {
+    try {
+      Invoke-WebRequest $Uri -OutFile $OutFile
+      return
+    } catch {
+      if ($i -gt $MaxRetries) { throw }
+      Write-Host "Download failed (attempt $i of $($MaxRetries + 1)), retrying in $RetryDelay seconds..."
+      Start-Sleep -Seconds $RetryDelay
+    }
+  }
+}
+
 # switch to a temp directory
 cd $env:TEMP
 [Environment]::CurrentDirectory = $PWD.Path
@@ -11,18 +25,18 @@ $TLREPO = if ($env:CTAN_REPO) { $env:CTAN_REPO } else { 'https://tlnet.yihui.org
 $TLURL = "$TLREPO/install-tl.zip"
 
 # download install-tl.zip and unzip it
-Invoke-WebRequest $TLURL -OutFile install-tl.zip
+Invoke-DownloadWithRetry $TLURL install-tl.zip
 Add-Type -A 'System.IO.Compression.FileSystem'
 [IO.Compression.ZipFile]::ExtractToDirectory('install-tl.zip', '.')
 del install-tl.zip
 
 # download tinytex.profile and modify it (set texdir to ./TinyTeX)
-Invoke-WebRequest 'https://tinytex.yihui.org/tinytex.profile' -OutFile tinytex.profile
+Invoke-DownloadWithRetry 'https://tinytex.yihui.org/tinytex.profile' tinytex.profile
 Add-Content tinytex.profile 'TEXMFCONFIG $TEXMFSYSCONFIG'
 Add-Content tinytex.profile 'TEXMFVAR $TEXMFSYSVAR'
 
 # download the custom package list
-Invoke-WebRequest 'https://tinytex.yihui.org/pkgs-custom.txt' -OutFile pkgs-custom.txt
+Invoke-DownloadWithRetry 'https://tinytex.yihui.org/pkgs-custom.txt' pkgs-custom.txt
 
 # an automated installation of TeX Live (infrastructure only)
 cd install-tl-*
