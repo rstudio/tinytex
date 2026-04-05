@@ -104,15 +104,14 @@ fi
 
 INSTALLER_FILE="${TINYTEX_INSTALLER}${OS_ARCH}.${EXT}"
 
+download_file "${TINYTEX_URL}" "${INSTALLER_FILE}"
 if [ "${TINYTEX_INSTALLER#"TinyTeX"}" != "$TINYTEX_INSTALLER" ]; then
   # prebuilt TinyTeX bundle
-  download_file "${TINYTEX_URL}" "${INSTALLER_FILE}"
   tar xf "${INSTALLER_FILE}" -C $(dirname $TEXDIR)
   if [ -n "$1" ]; then mv "${INSTALLER_FILE}" "$1/"; else rm "${INSTALLER_FILE}"; fi
 else
   echo "We do not have a prebuilt TinyTeX package for this operating system ($(uname -s) $(uname -m))."
   echo "I will try to install from source for you instead."
-  download_file "${TINYTEX_URL}" "${INSTALLER_FILE}"
   tar xf "${INSTALLER_FILE}"
   ./install.sh
   mkdir -p $TEXDIR
