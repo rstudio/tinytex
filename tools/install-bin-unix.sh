@@ -40,6 +40,16 @@ is_musl() {
   fi
 }
 
+# download URL to output file; pick curl or wget by availability
+# $1 = URL, $2 = output file
+download_file() {
+  if command -v curl > /dev/null 2>&1; then
+    curl -L -f --retry 10 --retry-delay 30 "$1" -o "$2"
+  else
+    wget --retry-connrefused --tries=11 --waitretry=30 --progress=dot:giga -O "$2" "$1"
+  fi
+}
+
 if [ $OSNAME = 'Darwin' ]; then
   TEXDIR=${TINYTEX_DIR:-~/Library}/TinyTeX
 else
@@ -94,19 +104,14 @@ fi
 
 INSTALLER_FILE="${TINYTEX_INSTALLER}${OS_ARCH}.${EXT}"
 
+download_file "${TINYTEX_URL}" "${INSTALLER_FILE}"
 if [ "${TINYTEX_INSTALLER#"TinyTeX"}" != "$TINYTEX_INSTALLER" ]; then
-  # prebuilt TinyTeX bundle: download with platform-appropriate tool
-  if [ $OSNAME = 'Darwin' ]; then
-    curl -L -f --retry 10 --retry-delay 30 ${TINYTEX_URL} -o "${INSTALLER_FILE}"
-  else
-    wget --retry-connrefused --progress=dot:giga -O "${INSTALLER_FILE}" ${TINYTEX_URL}
-  fi
+  # prebuilt TinyTeX bundle
   tar xf "${INSTALLER_FILE}" -C $(dirname $TEXDIR)
   if [ -n "$1" ]; then mv "${INSTALLER_FILE}" "$1/"; else rm "${INSTALLER_FILE}"; fi
 else
   echo "We do not have a prebuilt TinyTeX package for this operating system ($(uname -s) $(uname -m))."
   echo "I will try to install from source for you instead."
-  wget --retry-connrefused -O "${INSTALLER_FILE}" ${TINYTEX_URL}
   tar xf "${INSTALLER_FILE}"
   ./install.sh
   mkdir -p $TEXDIR

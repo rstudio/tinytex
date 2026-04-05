@@ -7,14 +7,26 @@ TLINST="install-tl-unx.tar.gz"
 TLURL=$TLREPO/$TLINST
 PRNAME="tinytex.profile"
 PRURL="https://tinytex.yihui.org"
+
+# download a URL and save to its basename; pick curl or wget by availability
+download_file() {
+  if command -v curl > /dev/null 2>&1; then
+    curl -L -f --retry 10 --retry-delay 30 -O "$1"
+  else
+    wget --tries=11 --waitretry=30 "$1"
+  fi
+}
+
 if [ $(uname) = 'Darwin' ]; then
   alias sedi="sed -i ''"
-  [ -e $TLINST ] || curl -LO $TLURL
-  [ -e $PRNAME ] || curl -LO $PRURL/$PRNAME
 else
   alias sedi="sed -i"
-  [ -e $TLINST ] || wget $TLURL
-  [ -e $PRNAME ] || wget $PRURL/$PRNAME
+fi
+
+[ -e "$TLINST" ] || download_file "$TLURL"
+[ -e "$PRNAME" ] || download_file "$PRURL/$PRNAME"
+
+if [ $(uname) != 'Darwin' ]; then
   # ask `tlmgr path add` to add binaries to ~/bin instead of the default
   # /usr/local/bin unless this script is invoked with the argument '--admin'
   # (e.g., users want to make LaTeX binaries available system-wide), in which
