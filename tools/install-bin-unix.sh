@@ -50,7 +50,9 @@ download_file() {
   fi
 }
 
-if [ $OSNAME = 'Darwin' ]; then
+[ "$OSNAME" = 'Darwin' ] && IS_MACOS=true
+
+if [ -n "$IS_MACOS" ]; then
   TEXDIR=${TINYTEX_DIR:-~/Library}/TinyTeX
 else
   TEXDIR=${TINYTEX_DIR:-~}/.TinyTeX
@@ -73,7 +75,7 @@ rm -rf $TEXDIR
 # determine the OS/arch suffix and file extension based on the naming scheme
 if [ "$USE_NEW_NAMES" = true ] && [ "${TINYTEX_INSTALLER#"TinyTeX"}" != "$TINYTEX_INSTALLER" ]; then
   # new naming: TinyTeX-{N}-{os}[-{arch}].tar.xz
-  if [ $OSNAME = 'Darwin' ]; then
+  if [ -n "$IS_MACOS" ]; then
     OS_ARCH="-darwin"
   elif is_musl; then
     OS_ARCH="-linuxmusl-x86_64"
@@ -85,7 +87,7 @@ if [ "$USE_NEW_NAMES" = true ] && [ "${TINYTEX_INSTALLER#"TinyTeX"}" != "$TINYTE
   EXT="tar.xz"
 else
   OS_ARCH=""
-  if [ $OSNAME = 'Darwin' ]; then
+  if [ -n "$IS_MACOS" ]; then
     EXT="tgz"
   else
     EXT="tar.gz"
@@ -135,7 +137,7 @@ for arg in "$@"; do
 done
 
 if [ $NO_PATH -eq 0 ]; then
-  if [ $OSNAME = 'Darwin' ]; then
+  if [ -n "$IS_MACOS" ]; then
     if [ -w /usr/local/bin ]; then
       ./tlmgr path add
     elif ! grep -qxF "$(pwd)" /etc/paths.d/TinyTeX 2>/dev/null; then
