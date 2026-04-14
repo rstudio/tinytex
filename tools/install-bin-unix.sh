@@ -94,6 +94,12 @@ else
   fi
 fi
 
+if [ -z "$IS_MACOS" ] && [ "$EXT" = "tar.xz" ] && ! command -v xz > /dev/null 2>&1; then
+  echo "xz is required to extract .tar.xz bundles."
+  echo "Install it with: apt install xz-utils (Debian/Ubuntu) or dnf install xz (Fedora/RHEL)"
+  exit 1
+fi
+
 if [ -z "$TINYTEX_VERSION" ]; then
   TINYTEX_URL="https://github.com/rstudio/tinytex-releases/releases/download/daily/${TINYTEX_INSTALLER}${OS_ARCH}.${EXT}"
 else
