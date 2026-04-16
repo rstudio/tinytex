@@ -196,6 +196,7 @@ jobs:
         run: |
           Rscript "tools/clean-tlpdb.R"
           tar Jcf TinyTeX-1-linux-x86_64.tar.xz -C ~ .TinyTeX
+          tar zcf TinyTeX-1-tar.gz -C ~ .TinyTeX
 
       - name: Build TinyTeX
         run: |
