@@ -10,8 +10,6 @@ runs:
 
     - name: Install Pandoc
       uses: r-lib/actions/setup-pandoc@HEAD
-      with:
-        pandoc-version: '2.19.2'
 
     - name: Install R
       uses: r-lib/actions/setup-r@HEAD
