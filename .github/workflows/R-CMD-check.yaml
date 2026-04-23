@@ -60,12 +60,13 @@ jobs:
           TINYTEX_INSTALLER: TinyTeX
 
       - uses: yihui/actions/setup-r-dependencies@HEAD
+        with:
+          extra-packages: ${{ runner.os == 'Linux' && matrix.config.r == 'release' && 'covr' || '' }}
 
       - uses: yihui/actions/check-r-package@HEAD
 
       - name: Test coverage
         if: success() && runner.os == 'Linux' && matrix.config.r == 'release'
         run: |
-          xfun::pkg_load2('covr')
           covr::codecov()
         shell: Rscript {0}
