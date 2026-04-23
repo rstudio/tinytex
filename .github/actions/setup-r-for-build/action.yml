@@ -20,8 +20,3 @@ runs:
       uses: yihui/actions/setup-r-dependencies@HEAD
       with:
         extra-packages: rmarkdown kableExtra bookdown .
-
-    - name: Update all packages
-      run: |
-        try(update.packages(ask = FALSE, checkBuilt = TRUE))
-      shell: Rscript {0}
