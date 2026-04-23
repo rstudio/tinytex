@@ -316,7 +316,7 @@ jobs:
       - name: Install R packages
         uses: yihui/actions/setup-r-dependencies@HEAD
         with:
-          extra-packages: rmarkdown .
+          extra-packages: rmarkdown kableExtra bookdown .
 
       - name: Build TinyTeX-0
         run: |

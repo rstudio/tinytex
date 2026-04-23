@@ -19,7 +19,7 @@ runs:
     - name: Install tinytex package and its deps
       uses: yihui/actions/setup-r-dependencies@HEAD
       with:
-        extra-packages: . rmarkdown
+        extra-packages: rmarkdown kableExtra bookdown .
 
     - name: Update all packages
       run: |
