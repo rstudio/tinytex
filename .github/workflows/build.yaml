@@ -26,6 +26,7 @@ env:
   CTAN_REPO: ${{ inputs.ctan_repo || 'https://tlnet.yihui.org' }}
   # Force full rebuild of TinyTeX-2 even if the daily bundle year matches
   FORCE_REBUILD: ${{ inputs.force_rebuild_tinytex2 == true && 'true' || 'false' }}
+  USE_BUNDLED_LIBUV: 1
 
 jobs:
   validate-ctan:
@@ -301,7 +302,6 @@ jobs:
 
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
-      USE_BUNDLED_LIBUV: 1
 
     steps:
       - name: Install build dependencies
