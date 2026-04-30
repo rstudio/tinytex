@@ -1,23 +1,5 @@
 $ErrorActionPreference = 'Stop'
 
-function Invoke-DownloadWithRetry {
-  param([string]$Uri, [string]$OutFile, [int]$MaxRetries = 10, [int]$RetryDelay = 30)
-  for ($i = 1; $i -le ($MaxRetries + 1); $i++) {
-    try {
-      Add-Type -AssemblyName System.Net.Http
-      $f = [IO.File]::OpenWrite($OutFile)
-      [Net.Http.HttpClient]::new().GetStreamAsync($Uri).Result.CopyTo($f)
-      $f.Close()
-      return
-    } catch {
-      Write-Error $_
-      if ($i -gt $MaxRetries) { throw }
-      Write-Host "Download failed (attempt $i of $($MaxRetries + 1)), retrying in $RetryDelay seconds..."
-      Start-Sleep -Seconds $RetryDelay
-    }
-  }
-}
-
 # switch to a temp directory
 cd $env:TEMP
 [Environment]::CurrentDirectory = $PWD.Path
@@ -57,7 +39,7 @@ $DownloadedFile = "$TinyTeXFilename.$BundleExt"
 
 # download the bundle
 Write-Host "Download $BundleExt file..."
-Invoke-DownloadWithRetry $TinyTeXURL $DownloadedFile
+curl.exe -fL --retry 10 --retry-delay 30 -o "$DownloadedFile" "$TinyTeXURL"
 
 # unzip the downloaded file
 Write-Host 'Unbundle TinyTeX'
