@@ -1,0 +1,20 @@
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+name: Test TinyTeX installers on Windows
+
+jobs:
+  debug:
+    runs-on: windows-latest
+
+    steps:
+
+      - uses: r-lib/actions/setup-tinytex@HEAD
+        with:
+          TINYTEX_VERSION: '2026.03.02'
+
+      - uses: r-lib/actions/setup-tinytex@HEAD
+        with:
+          TINYTEX_VERSION: '2026.04'
