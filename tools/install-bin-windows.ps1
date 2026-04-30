@@ -4,9 +4,14 @@ function Invoke-DownloadWithRetry {
   param([string]$Uri, [string]$OutFile, [int]$MaxRetries = 10, [int]$RetryDelay = 30)
   for ($i = 1; $i -le ($MaxRetries + 1); $i++) {
     try {
-      Invoke-WebRequest $Uri -OutFile $OutFile
+      [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+      Add-Type -AssemblyName System.Net.Http
+      $f = [IO.File]::OpenWrite($OutFile)
+      [Net.Http.HttpClient]::new().GetStreamAsync($Uri).Result.CopyTo($f)
+      $f.Close()
       return
     } catch {
+      Write-Error $_
       if ($i -gt $MaxRetries) { throw }
       Write-Host "Download failed (attempt $i of $($MaxRetries + 1)), retrying in $RetryDelay seconds..."
       Start-Sleep -Seconds $RetryDelay
