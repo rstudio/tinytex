@@ -11,7 +11,6 @@ bitset
 bookmark
 booktabs
 cm
-ctablestack
 dehyph
 dvipdfmx
 dvips
@@ -66,7 +65,6 @@ lualatex-math
 lualibs
 luaotfload
 luatex
-luatexbase
 mdwtools
 metafont
 mfware
@@ -78,7 +76,6 @@ plain
 psnfss
 refcount
 rerunfilecheck
-selnolig
 stringenc
 tex
 tex-ini-files
