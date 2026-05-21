@@ -1,5 +1,7 @@
 # CHANGES IN tinytex VERSION 0.60
 
+- Fixed the CTAN repository URL detection in `normalize_repo()`: when a URL like `https://tlnet.yihui.org` already serves `tlpkg/texlive.tlpdb` at its root, don't append `/systems/texlive/tlnet` to it. Also hardened `is_tlnet()` to check the `Content-Type` header instead of only the HTTP status code, so servers that return 200 with an HTML page for all URLs (e.g., Cloudflare Pages' SPA fallback) no longer fool the detection (thanks, @Gael-Hammer rstudio/tinytex-releases#59, @mfisher5 #508).
+
 - The backward-compatible `TinyTeX.tar.gz` (Linux) and `TinyTeX.tgz` (macOS) bundles are now truly gzip-compressed instead of being XZ-compressed copies with misleading extensions. Backward-compatible copies are only provided for the `TinyTeX` bundle (used by Quarto's `quarto install tinytex`), not for `TinyTeX-0`, `TinyTeX-1`, or `TinyTeX-2` (thanks, @knstmrd @pebenbow, rstudio/tinytex-releases#58).
 
 # CHANGES IN tinytex VERSION 0.59

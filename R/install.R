@@ -197,6 +197,8 @@ normalize_repo = function(url) {
   if (url == 'illinois') return('https://ctan.math.illinois.edu/systems/texlive/tlnet')
   url = sub('/+$', '', url)
   if (!grepl('/tlnet$', url)) {
+    # if the url is already a valid tlnet root, use it directly
+    if (is_tlnet(url)) return(url)
     url2 = paste0(url, '/systems/texlive/tlnet')
     # return the amended url if the file texlive.tlpdb can be found
     if (is_tlnet(url2)) return(url2)
@@ -206,7 +208,13 @@ normalize_repo = function(url) {
 
 # check if a URL points to the tlnet dir of CTAN
 is_tlnet = function(x) {
-  xfun::url_accessible(paste0(x, '/tlpkg/texlive.tlpdb'))
+  u = paste0(x, '/tlpkg/texlive.tlpdb')
+  h = tryCatch(curlGetHeaders(u, timeout = 30), error = function(e) '')
+  # verify status < 400 and the response is not HTML (some servers return 200
+  # with an HTML page for all URLs, which fools a simple status-code check)
+  s = attr(h, 'status')
+  !is.null(s) && s < 400 &&
+    !any(grepl('content-type:.*text/html', h, ignore.case = TRUE))
 }
 
 auto_repo = function() {

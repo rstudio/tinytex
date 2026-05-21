@@ -8,3 +8,5 @@
 ^cran-comments\.md$
 ^\.vscode$
 ^NEWS\.md$
+^\.positai$
+^\.claude$
