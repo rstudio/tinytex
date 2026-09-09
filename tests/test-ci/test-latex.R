@@ -12,3 +12,14 @@ assert('latexmk() generates the PDF output to the dir of the .tex file by defaul
   # can also specify a custom pdf output path
   (latexmk('sub/test.tex', pdf_file = 'foo.pdf') %==% 'foo.pdf')
 })
+
+assert('latexmk() infers biber from the .bcf file when bib_engine is not set', {
+  # a biblatex + biber document does not generate the \bibdata/\bibstyle info in
+  # the .aux file that bibtex needs, so bibtex would silently do nothing; the
+  # bibliography is only built if biber is (correctly) inferred from the .bcf
+  owd = setwd('bib'); on.exit(setwd(owd), add = TRUE)
+  latexmk('biber.tex', clean = FALSE)
+  bbl = readLines('biber.bbl', warn = FALSE)
+  file.remove(list.files('.', '^biber[.](aux|bbl|bcf|blg|log|pdf|run[.]xml)$'))
+  (any(grepl('R Core Team', bbl, fixed = TRUE)))
+})

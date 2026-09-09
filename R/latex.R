@@ -44,8 +44,11 @@
 #' @param file A LaTeX file path.
 #' @param engine A LaTeX engine (can be set in the global option
 #'   `tinytex.engine`, e.g., `options(tinytex.engine = 'xelatex')`).
-#' @param bib_engine A bibliography engine (can be set in the global option
-#'   `tinytex.bib_engine`).
+#' @param bib_engine A bibliography engine, either `'bibtex'` or `'biber'` (can
+#'   be set in the global option `tinytex.bib_engine`). By default (`NULL`), the
+#'   engine is inferred from the auxiliary files generated during compilation:
+#'   if a `.bcf` file is found (produced by \pkg{biblatex} with the `biber`
+#'   backend), `'biber'` is used; otherwise `'bibtex'` is used.
 #' @param engine_args Command-line arguments to be passed to `engine` (can
 #'   be set in the global option `tinytex.engine_args`, e.g.,
 #'   `options(tinytex.engine_args = '-shell-escape')`).
@@ -72,7 +75,7 @@
 #'   the `pdf_file` argument).
 latexmk = function(
   file, engine = c('pdflatex', 'xelatex', 'lualatex', 'latex', 'tectonic'),
-  bib_engine = c('bibtex', 'biber'), engine_args = NULL, emulation = TRUE,
+  bib_engine = NULL, engine_args = NULL, emulation = TRUE,
   min_times = 1, max_times = 10, install_packages = emulation && tlmgr_writable(),
   pdf_file = NULL, clean = TRUE
 ) {
@@ -160,7 +163,7 @@ lualatex = function(...) latexmk(engine = 'lualatex', emulation = TRUE, ...)
 # a quick and dirty version of latexmk (should work reasonably well unless the
 # LaTeX document is extremely complicated)
 latexmk_emu = function(
-  file, engine, bib_engine = c('bibtex', 'biber'), engine_args = NULL, min_times = 1, max_times = 10,
+  file, engine, bib_engine = NULL, engine_args = NULL, min_times = 1, max_times = 10,
   install_packages = FALSE, clean
 ) {
   aux = c(
@@ -239,8 +242,11 @@ latexmk_emu = function(
       stop("Failed to build the index via ", idx_engine, call. = FALSE)
     })
   }
-  # generate bibliography
-  bib_engine = match.arg(bib_engine)
+  # generate bibliography; if bib_engine is not specified, infer it from the aux
+  # files: biblatex with the biber backend generates a .bcf file, in which case
+  # we use biber, otherwise bibtex
+  if (is.null(bib_engine)) bib_engine = if (file.exists(aux_files['bcf'])) 'biber' else 'bibtex'
+  bib_engine = match.arg(bib_engine, c('bibtex', 'biber'))
   install_cmd(bib_engine)
   pkgs_last = character()
   aux = aux_files[if ((biber <- bib_engine == 'biber')) 'bcf' else 'aux']

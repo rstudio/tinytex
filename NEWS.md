@@ -1,3 +1,7 @@
+# CHANGES IN tinytex VERSION 0.61
+
+- The `bib_engine` argument of `latexmk()` now defaults to `NULL`, in which case the bibliography engine is inferred from the auxiliary files generated during compilation: if a `.bcf` file is found (produced by **biblatex** with the `biber` backend), `biber` is used, otherwise `bibtex`. Previously the default was always `bibtex`, so the bibliography of a **biblatex** + **biber** document was silently not built unless you set `bib_engine = 'biber'` or the global option `tinytex.bib_engine` (thanks, @HughParsonage, #19).
+
 # CHANGES IN tinytex VERSION 0.60
 
 - Fixed the CTAN repository URL detection in `normalize_repo()`: when a URL like `https://tlnet.yihui.org` already serves `tlpkg/texlive.tlpdb` at its root, don't append `/systems/texlive/tlnet` to it. Also hardened `is_tlnet()` to check the `Content-Type` header instead of only the HTTP status code, so servers that return 200 with an HTML page for all URLs (e.g., Cloudflare Pages' SPA fallback) no longer fool the detection (thanks, @Gael-Hammer rstudio/tinytex-releases#59, @mfisher5 #508).

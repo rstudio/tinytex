@@ -10,7 +10,7 @@
 latexmk(
   file,
   engine = c("pdflatex", "xelatex", "lualatex", "latex", "tectonic"),
-  bib_engine = c("bibtex", "biber"),
+  bib_engine = NULL,
   engine_args = NULL,
   emulation = TRUE,
   min_times = 1,
@@ -32,8 +32,11 @@ lualatex(...)
 \item{engine}{A LaTeX engine (can be set in the global option
 \code{tinytex.engine}, e.g., \code{options(tinytex.engine = 'xelatex')}).}
 
-\item{bib_engine}{A bibliography engine (can be set in the global option
-\code{tinytex.bib_engine}).}
+\item{bib_engine}{A bibliography engine, either \code{'bibtex'} or \code{'biber'} (can
+be set in the global option \code{tinytex.bib_engine}). By default (\code{NULL}), the
+engine is inferred from the auxiliary files generated during compilation:
+if a \code{.bcf} file is found (produced by \pkg{biblatex} with the \code{biber}
+backend), \code{'biber'} is used; otherwise \code{'bibtex'} is used.}
 
 \item{engine_args}{Command-line arguments to be passed to \code{engine} (can
 be set in the global option \code{tinytex.engine_args}, e.g.,
