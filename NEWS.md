@@ -1,3 +1,6 @@
+# CHANGES IN tinytex VERSION 0.62
+
+
 # CHANGES IN tinytex VERSION 0.61
 
 - The `bib_engine` argument of `latexmk()` now defaults to `NULL`, in which case the bibliography engine is inferred from the auxiliary files generated during compilation: if a `.bcf` file is found (produced by **biblatex** with the `biber` backend), `biber` is used, otherwise `bibtex`. Previously the default was always `bibtex`, so the bibliography of a **biblatex** + **biber** document was silently not built unless you set `bib_engine = 'biber'` or the global option `tinytex.bib_engine` (thanks, @HughParsonage, #19).
