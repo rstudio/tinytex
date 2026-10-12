@@ -427,7 +427,7 @@ check_extra = function(file) {
 check_babel = function(text) {
   r = "^(\\(babel\\).* |Package babel Warning: No hyphenation patterns were preloaded for the )language [`']([^']+)'.*$"
   if (length(m <- grep_sub(r, '\\2', text)) == 0) return(FALSE)
-  tlmgr_install(hyphen_pkgs(m)) == 0
+  length(pkgs <- hyphen_pkgs(m)) > 0 && tlmgr_install(pkgs) == 0
 }
 
 # map language names in babel/polyglossia messages to TeX Live hyphen-* packages
@@ -447,7 +447,11 @@ hyphen_pkgs = function(x) {
   )
   i = x %in% names(m)
   x[i] = m[x[i]]
-  unique(paste0('hyphen-', x))
+  x = unique(paste0('hyphen-', x))
+  # names come from a log file, so only keep what looks like a package name
+  # (all names in language.dat/texlive.tlpdb are lowercase letters, digits, and
+  # hyphens), since package names are passed to tlmgr via system2()
+  x[grepl('^hyphen-[a-z0-9-]+$', x)]
 }
 
 # missing hyphenation patterns may also lead to babel errors (instead of
@@ -476,7 +480,7 @@ check_glossaries = function(text) {
 check_polyglossia = function(text) {
   r = "^Package polyglossia Warning: No hyphenation patterns were loaded for ([`'][^']+'|British English).*"
   if (length(m <- grep_sub(r, '\\1', text)) == 0) return(FALSE)
-  tlmgr_install(hyphen_pkgs(m)) == 0
+  length(pkgs <- hyphen_pkgs(m)) > 0 && tlmgr_install(pkgs) == 0
 }
 
 # Package datetime2 Warning: Date-Time Language Module `english' not installed on

@@ -44,6 +44,24 @@ assert('hyphen_pkgs() maps babel/polyglossia language names to hyphen-* packages
   (hyphen_pkgs('pinyin') %==% 'hyphen-chinese')
   (hyphen_pkgs(c('ngerman', 'swissgerman', 'german')) %==% 'hyphen-german')
   (hyphen_pkgs('nynorsk') %==% 'hyphen-norwegian')
+  # names in language.dat may be in mixed case
+  (hyphen_pkgs('UKenglish') %==% 'hyphen-english')
+})
+
+assert('hyphen_pkgs() drops names that are not valid package names', {
+  # names come from the log, and they must not be interpreted by the shell
+  (hyphen_pkgs('ngerman;id') %==% character())
+  (hyphen_pkgs('$(id)') %==% character())
+  (hyphen_pkgs('a|b') %==% character())
+  (hyphen_pkgs('a&b') %==% character())
+  (hyphen_pkgs('--repository=x') %==% character())
+  (hyphen_pkgs(character()) %==% character())
+  # valid names are kept
+  (hyphen_pkgs(c('french', 'x;id', 'swissgerman')) %==% c('hyphen-french', 'hyphen-german'))
+  # nothing to install, so tlmgr must not be called (and no rerun is needed)
+  (detect_hyphen("! Package babel Error: You haven't defined the language 'x;id' yet.") %==% character())
+  (!check_babel("Package babel Warning: No hyphenation patterns were preloaded for the language `x;id'."))
+  (!check_polyglossia("Package polyglossia Warning: No hyphenation patterns were loaded for `x;id'"))
 })
 
 assert('missing hyphenation patterns are detected from babel errors (#515)', {
