@@ -426,11 +426,39 @@ check_extra = function(file) {
 
 check_babel = function(text) {
   r = "^(\\(babel\\).* |Package babel Warning: No hyphenation patterns were preloaded for the )language [`']([^']+)'.*$"
-  if (length(m <- grep_sub(r, 'hyphen-\\2', text)) == 0) return(FALSE)
+  if (length(m <- grep_sub(r, '\\2', text)) == 0) return(FALSE)
+  tlmgr_install(hyphen_pkgs(m)) == 0
+}
+
+# map language names in babel/polyglossia messages to TeX Live hyphen-* packages
+hyphen_pkgs = function(x) {
+  x = tolower(gsub("[`']", '', x))
   # (babel) the language `German (new orthography)' into the format
-  m = gsub('\\s.*', '', m)
-  m[m == 'hyphen-pinyin'] = 'hyphen-chinese'
-  tlmgr_install(tolower(m)) == 0
+  x = gsub('\\s.*', '', x)
+  # hyphenation pattern names (in language.dat) that differ from the package
+  # names, according to `execute AddHyphen` in texlive.tlpdb
+  m = c(
+    ngerman = 'german', swissgerman = 'german', pinyin = 'chinese',
+    ukenglish = 'english', british = 'english', usenglishmax = 'english',
+    bokmal = 'norwegian', norsk = 'norwegian', nynorsk = 'norwegian',
+    schoolfinnish = 'finnish', monogreek = 'greek', ibycus = 'ancientgreek',
+    classiclatin = 'latin', liturgicallatin = 'latin',
+    mongolianlmc = 'mongolian', serbianc = 'serbian'
+  )
+  i = x %in% names(m)
+  x[i] = m[x[i]]
+  unique(paste0('hyphen-', x))
+}
+
+# missing hyphenation patterns may also lead to babel errors (instead of
+# warnings), e.g., with the babel option nswissgerman (#515):
+# ! Package babel Error: You haven't defined the language 'ngerman' yet.
+# (babel)                Perhaps you misspelled it or your installation
+# (babel)                is not complete.
+detect_hyphen = function(text) {
+  r = ".*Package babel Error: You haven't defined the language [`']([^'`]+)' yet.*"
+  if (length(m <- grep_sub(r, '\\1', text)) == 0) return(character())
+  hyphen_pkgs(m)
 }
 
 # Package glossaries Warning: No language module detected for `english'.
@@ -448,9 +476,7 @@ check_glossaries = function(text) {
 check_polyglossia = function(text) {
   r = "^Package polyglossia Warning: No hyphenation patterns were loaded for ([`'][^']+'|British English).*"
   if (length(m <- grep_sub(r, '\\1', text)) == 0) return(FALSE)
-  m[m == 'British English'] = 'english'
-  m = gsub("[`']", '', m)
-  tlmgr_install(paste0('hyphen-', m)) == 0
+  tlmgr_install(hyphen_pkgs(m)) == 0
 }
 
 # Package datetime2 Warning: Date-Time Language Module `english' not installed on
@@ -505,9 +531,13 @@ exist_files = function(files) {
 parse_packages = function(
   log, text = read_lines(log), files = detect_files(text), quiet = rep(FALSE, 3)
 ) {
-  pkgs = character(); quiet = rep_len(quiet, length.out = 3)
+  quiet = rep_len(quiet, length.out = 3)
+  # hyphen-* packages are inferred from language names instead of file names
+  # (`text` may be unavailable, e.g., parse_packages(files = 'bibtex'))
+  pkgs = if (missing(log) && missing(text)) character() else detect_hyphen(text)
   x = unique(c(files, miss_font()))
   if (length(x) == 0) {
+    if (length(pkgs)) return(pkgs)
     if (!quiet[1]) message(
       'I was unable to find any missing LaTeX packages from the error log',
       if (missing(log)) '.' else c(' ', log, '.')
@@ -520,7 +550,7 @@ parse_packages = function(
     # Known packages where tlmgr search returns results but no file path ends
     # with the exact package name (e.g., no file ends with "/latex-lab").
     # These packages are returned directly without further tlmgr search parsing.
-    if (x[j] %in% c('fandol', 'latex-lab')) return(x[j])
+    if (x[j] %in% c('fandol', 'latex-lab')) return(unique(c(pkgs, x[j])))
     # why $? e.g. searching for mf returns a list like this
     # metafont.x86_64-darwin:
     #     bin/x86_64-darwin/mf       <- what we want

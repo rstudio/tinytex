@@ -36,6 +36,29 @@ assert('detect_files() can detect filenames from LaTeX log', {
   (detect_files("(pdf backend): cannot open file for embedding") %==% 'colorprofiles.sty')
 })
 
+assert('hyphen_pkgs() maps babel/polyglossia language names to hyphen-* packages', {
+  (hyphen_pkgs('french') %==% 'hyphen-french')
+  (hyphen_pkgs("`hungarian'") %==% 'hyphen-hungarian')
+  (hyphen_pkgs('German (new orthography)') %==% 'hyphen-german')
+  (hyphen_pkgs('British English') %==% 'hyphen-english')
+  (hyphen_pkgs('pinyin') %==% 'hyphen-chinese')
+  (hyphen_pkgs(c('ngerman', 'swissgerman', 'german')) %==% 'hyphen-german')
+  (hyphen_pkgs('nynorsk') %==% 'hyphen-norwegian')
+})
+
+assert('missing hyphenation patterns are detected from babel errors (#515)', {
+  x = c(
+    "! Package babel Error: You haven't defined the language 'ngerman' yet.",
+    "(babel)                Perhaps you misspelled it or your installation",
+    "(babel)                is not complete."
+  )
+  (detect_hyphen(x) %==% 'hyphen-german')
+  (detect_hyphen("! Package babel Error: You haven't defined the language `french' yet.") %==% 'hyphen-french')
+  (detect_hyphen("! Package babel Error: Unknown option 'ngerman'.") %==% character())
+  # the error is not about a missing file, so no tlmgr search is needed
+  (length(detect_files(x)) == 0)
+  (parse_packages(text = x, quiet = rep(TRUE, 3)) %==% 'hyphen-german')
+})
 
 assert('rerun are correctly detected', {
   (needs_rerun(text = "Package biblatex Warning: Please rerun LaTeX."))
