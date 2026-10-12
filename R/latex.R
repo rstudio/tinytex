@@ -443,7 +443,11 @@ hyphen_pkgs = function(x) {
     bokmal = 'norwegian', norsk = 'norwegian', nynorsk = 'norwegian',
     schoolfinnish = 'finnish', monogreek = 'greek', ibycus = 'ancientgreek',
     classiclatin = 'latin', liturgicallatin = 'latin',
-    mongolianlmc = 'mongolian', serbianc = 'serbian'
+    mongolianlmc = 'mongolian', serbianc = 'serbian',
+    # all of these are in the hyphen-indic package
+    assamese = 'indic', bengali = 'indic', gujarati = 'indic', hindi = 'indic',
+    kannada = 'indic', malayalam = 'indic', marathi = 'indic', oriya = 'indic',
+    pali = 'indic', panjabi = 'indic', tamil = 'indic', telugu = 'indic'
   )
   i = x %in% names(m)
   x[i] = m[x[i]]

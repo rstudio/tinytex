@@ -44,6 +44,12 @@ assert('hyphen_pkgs() maps babel/polyglossia language names to hyphen-* packages
   (hyphen_pkgs('pinyin') %==% 'hyphen-chinese')
   (hyphen_pkgs(c('ngerman', 'swissgerman', 'german')) %==% 'hyphen-german')
   (hyphen_pkgs('nynorsk') %==% 'hyphen-norwegian')
+  # all Indic languages are in a single package
+  (hyphen_pkgs(c('hindi', 'tamil', 'bengali', 'Panjabi')) %==% 'hyphen-indic')
+  (hyphen_pkgs(c(
+    'assamese', 'bengali', 'gujarati', 'hindi', 'kannada', 'malayalam',
+    'marathi', 'oriya', 'pali', 'panjabi', 'tamil', 'telugu'
+  )) %==% 'hyphen-indic')
   # names in language.dat may be in mixed case
   (hyphen_pkgs('UKenglish') %==% 'hyphen-english')
 })
