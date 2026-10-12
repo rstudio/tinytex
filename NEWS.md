@@ -1,6 +1,6 @@
 # CHANGES IN tinytex VERSION 0.62
 
-- `latexmk()` can automatically install missing `hyphen-*` packages when the missing hyphenation patterns lead to the babel error `You haven't defined the language 'xxx' yet` instead of a warning, e.g., for the babel option `nswissgerman` (from `lang: de-CH` in R Markdown or Quarto), which needs the patterns of `ngerman` from **hyphen-german** (thanks, @stibu81, #515).
+- `latexmk()` can automatically install missing `hyphen-*` packages when the missing hyphenation patterns lead to the babel error `You haven't defined the language 'xxx' yet` instead of a warning, e.g., for the babel option `nswissgerman` (from `lang: de-CH` in R Markdown or Quarto), which needs the patterns of `ngerman` from **hyphen-german** (thanks, @stibu81, #515). Language names found in the log are now only used if they look like valid package names, and more of them are mapped to the package that provides them, e.g., `hindi` and the other Indic languages to **hyphen-indic**, and `slovene` to **hyphen-slovenian**.
 
 # CHANGES IN tinytex VERSION 0.61
 
