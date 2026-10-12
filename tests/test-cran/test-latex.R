@@ -36,6 +36,61 @@ assert('detect_files() can detect filenames from LaTeX log', {
   (detect_files("(pdf backend): cannot open file for embedding") %==% 'colorprofiles.sty')
 })
 
+assert('hyphen_pkgs() maps babel/polyglossia language names to hyphen-* packages', {
+  (hyphen_pkgs('french') %==% 'hyphen-french')
+  (hyphen_pkgs("`hungarian'") %==% 'hyphen-hungarian')
+  (hyphen_pkgs('German (new orthography)') %==% 'hyphen-german')
+  (hyphen_pkgs('British English') %==% 'hyphen-english')
+  (hyphen_pkgs('pinyin') %==% 'hyphen-chinese')
+  (hyphen_pkgs(c('ngerman', 'swissgerman', 'german')) %==% 'hyphen-german')
+  (hyphen_pkgs('nynorsk') %==% 'hyphen-norwegian')
+  # all Indic languages are in a single package
+  (hyphen_pkgs(c('hindi', 'tamil', 'bengali', 'Panjabi')) %==% 'hyphen-indic')
+  (hyphen_pkgs(c(
+    'assamese', 'bengali', 'gujarati', 'hindi', 'kannada', 'malayalam',
+    'marathi', 'oriya', 'pali', 'panjabi', 'tamil', 'telugu'
+  )) %==% 'hyphen-indic')
+  # older names that are synonyms of other languages
+  (hyphen_pkgs(c('amharic', 'geez')) %==% 'hyphen-ethiopic')
+  (hyphen_pkgs('persian') %==% 'hyphen-farsi')
+  (hyphen_pkgs(c('patois', 'francais', 'french')) %==% 'hyphen-french')
+  (hyphen_pkgs(c('polygreek', 'monogreek', 'greek')) %==% 'hyphen-greek')
+  (hyphen_pkgs('portuges') %==% 'hyphen-portuguese')
+  (hyphen_pkgs('slovene') %==% 'hyphen-slovenian')
+  (hyphen_pkgs('espanol') %==% 'hyphen-spanish')
+  # names in language.dat may be in mixed case
+  (hyphen_pkgs('UKenglish') %==% 'hyphen-english')
+})
+
+assert('hyphen_pkgs() drops names that are not valid package names', {
+  # names come from the log, and they must not be interpreted by the shell
+  (hyphen_pkgs('ngerman;id') %==% character())
+  (hyphen_pkgs('$(id)') %==% character())
+  (hyphen_pkgs('a|b') %==% character())
+  (hyphen_pkgs('a&b') %==% character())
+  (hyphen_pkgs('--repository=x') %==% character())
+  (hyphen_pkgs(character()) %==% character())
+  # valid names are kept
+  (hyphen_pkgs(c('french', 'x;id', 'swissgerman')) %==% c('hyphen-french', 'hyphen-german'))
+  # nothing to install, so tlmgr must not be called (and no rerun is needed)
+  (detect_hyphen("! Package babel Error: You haven't defined the language 'x;id' yet.") %==% character())
+  (!check_babel("Package babel Warning: No hyphenation patterns were preloaded for the language `x;id'."))
+  (!check_polyglossia("Package polyglossia Warning: No hyphenation patterns were loaded for `x;id'"))
+})
+
+assert('missing hyphenation patterns are detected from babel errors (#515)', {
+  x = c(
+    "! Package babel Error: You haven't defined the language 'ngerman' yet.",
+    "(babel)                Perhaps you misspelled it or your installation",
+    "(babel)                is not complete."
+  )
+  (detect_hyphen(x) %==% 'hyphen-german')
+  (detect_hyphen("! Package babel Error: You haven't defined the language `french' yet.") %==% 'hyphen-french')
+  (detect_hyphen("! Package babel Error: Unknown option 'ngerman'.") %==% character())
+  # the error is not about a missing file, so no tlmgr search is needed
+  (length(detect_files(x)) == 0)
+  (parse_packages(text = x, quiet = rep(TRUE, 3)) %==% 'hyphen-german')
+})
 
 assert('rerun are correctly detected', {
   (needs_rerun(text = "Package biblatex Warning: Please rerun LaTeX."))
