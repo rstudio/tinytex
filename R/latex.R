@@ -444,6 +444,10 @@ hyphen_pkgs = function(x) {
     schoolfinnish = 'finnish', monogreek = 'greek', ibycus = 'ancientgreek',
     classiclatin = 'latin', liturgicallatin = 'latin',
     mongolianlmc = 'mongolian', serbianc = 'serbian',
+    # older names (synonyms in texlive.tlpdb)
+    amharic = 'ethiopic', geez = 'ethiopic', persian = 'farsi',
+    patois = 'french', francais = 'french', polygreek = 'greek',
+    portuges = 'portuguese', slovene = 'slovenian', espanol = 'spanish',
     # all of these are in the hyphen-indic package
     assamese = 'indic', bengali = 'indic', gujarati = 'indic', hindi = 'indic',
     kannada = 'indic', malayalam = 'indic', marathi = 'indic', oriya = 'indic',
