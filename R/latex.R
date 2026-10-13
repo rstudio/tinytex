@@ -435,31 +435,15 @@ hyphen_pkgs = function(x) {
   x = tolower(gsub("[`']", '', x))
   # (babel) the language `German (new orthography)' into the format
   x = gsub('\\s.*', '', x)
-  # hyphenation pattern names (in language.dat) that differ from the package
-  # names, according to `execute AddHyphen` in texlive.tlpdb
-  m = c(
-    ngerman = 'german', swissgerman = 'german', pinyin = 'chinese',
-    ukenglish = 'english', british = 'english', usenglishmax = 'english',
-    bokmal = 'norwegian', norsk = 'norwegian', nynorsk = 'norwegian',
-    schoolfinnish = 'finnish', monogreek = 'greek', ibycus = 'ancientgreek',
-    classiclatin = 'latin', liturgicallatin = 'latin',
-    mongolianlmc = 'mongolian', serbianc = 'serbian',
-    # older names (synonyms in texlive.tlpdb)
-    amharic = 'ethiopic', geez = 'ethiopic', persian = 'farsi',
-    patois = 'french', francais = 'french', polygreek = 'greek',
-    portuges = 'portuguese', slovene = 'slovenian', espanol = 'spanish',
-    # all of these are in the hyphen-indic package
-    assamese = 'indic', bengali = 'indic', gujarati = 'indic', hindi = 'indic',
-    kannada = 'indic', malayalam = 'indic', marathi = 'indic', oriya = 'indic',
-    pali = 'indic', panjabi = 'indic', tamil = 'indic', telugu = 'indic'
-  )
-  i = x %in% names(m)
-  x[i] = m[x[i]]
-  x = unique(paste0('hyphen-', x))
   # names come from a log file, so only keep what looks like a package name
   # (all names in language.dat/texlive.tlpdb are lowercase letters, digits, and
   # hyphens), since package names are passed to tlmgr via system2()
-  x[grepl('^hyphen-[a-z0-9-]+$', x)]
+  x = x[grepl('^[a-z0-9-]+$', x)]
+  # names that are not simply hyphen-<name> are in .hyphen_map (R/hyphen.R)
+  p = sprintf('hyphen-%s', x)
+  i = x %in% names(.hyphen_map)
+  p[i] = .hyphen_map[x[i]]
+  unique(unname(p))
 }
 
 # missing hyphenation patterns may also lead to babel errors (instead of
