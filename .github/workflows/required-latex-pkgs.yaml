@@ -36,13 +36,17 @@ jobs:
       - name: Find required LaTeX packages
         run: Rscript tools/test-packages.R
 
+      - name: Update the map of hyphenation languages
+        run: Rscript tools/update-hyphen.R
+
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@HEAD
         with:
           title: Update the list of LaTeX packages
-          body: New results by running `tools/test-packages.R`.
+          body: New results by running `tools/test-packages.R` and `tools/update-hyphen.R`.
           commit-message: Update the list of LaTeX packages
           add-paths: |
+            R/hyphen.R
             R/platforms.R
             tools/pkgs-custom.txt
             tools/pkgs-yihui.txt
