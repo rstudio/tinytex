@@ -218,7 +218,7 @@ jobs:
       - name: Export Regex file
         run: |
           Rscript "tools/export-regex.R"
-          tar zcf regex.tar.gz regex.json
+          tar zcf regex.tar.gz regex.json hyphen.json
 
       - name: Build *nix installer bundle
         working-directory: tools
