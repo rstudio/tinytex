@@ -414,7 +414,10 @@ latex_warning = function(file, show = getOption('tinytex.latexmk.warning', TRUE)
 
 # check if any babel/glossaries/... packages are missing
 check_extra = function(file) {
-  length(m <- latex_warning(file, FALSE)) > 0 &&
+  # babel may silently fall back to the current \language when the hyphenation
+  # patterns of a language set up from its .ini file are missing (#519)
+  r1 = file.exists(file) && check_babel_fallback(read_lines(file))
+  r2 = length(m <- latex_warning(file, FALSE)) > 0 &&
     length(grep('^Package ([^ ]+) Warning:', m)) > 0 &&
     any(
       check_babel(m),
@@ -422,6 +425,7 @@ check_extra = function(file) {
       check_datetime2(m),
       check_polyglossia(m)
     )
+  r1 || r2
 }
 
 check_babel = function(text) {
@@ -455,6 +459,64 @@ detect_hyphen = function(text) {
   r = ".*Package babel Error: You haven't defined the language [`']([^'`]+)' yet.*"
   if (length(m <- grep_sub(r, '\\1', text)) == 0) return(character())
   hyphen_pkgs(m)
+}
+
+# when babel sets up a language from its .ini file (\babelprovide[import]{lang}
+# or the provide=* package option) and the hyphenation patterns are not
+# installed, babel silently falls back to the current \language with an Info
+# line instead of a warning (#519):
+# Package babel Info: Importing data for 'spanish'
+# (babel)             from babel-es.ini. Reported on input line 3.
+# Package babel Info: Hyphen rules for 'spanish' set to \l@english
+# (babel)             (\language0). Reported on input line 3.
+# the same pair of lines appears when the patterns were found under another
+# name (e.g., 'austrian' set to \l@ngerman-x-2024-02-28), so the target of
+# `set to` is compared against the hyphenation language that the locale's .ini
+# file expects (.babel_hyphen_map), modulo language.dat synonyms
+# (.hyphen_synonyms); a target of \l@nil (no hyphenation) is a fallback, too,
+# when the locale expects patterns
+detect_babel_fallback = function(text) {
+  if (length(text) == 0) return(character())
+  # join babel message continuation lines (e.g., "(babel)  from babel-es.ini.")
+  # to the message they belong to
+  i = grepl('^\\(babel\\)\\s+', text)
+  text[i] = sub('^\\(babel\\)\\s+', '', text[i])
+  text = as.vector(tapply(text, cumsum(!i), paste, collapse = ' '))
+  r1 = "^Package babel Info: Importing( font and identification)? data for '([^']+)' .*from babel-([-.A-Za-z0-9]+)[.]ini.*$"
+  r2 = "^Package babel Info: Hyphen rules for '([^']+)' set to \\\\l@([-.A-Za-z0-9]+).*$"
+  # locale name -> base name of the imported .ini file; the name may be a
+  # custom one (\babelprovide[import=es]{myspanish}), in which case only the
+  # .ini file name points to the expected patterns
+  imp = grep(r1, text, value = TRUE)
+  imp_code = stats::setNames(tolower(sub(r1, '\\3', imp)), tolower(sub(r1, '\\2', imp)))
+  m = grep(r2, text, value = TRUE)
+  # the fallback line is the one paired with an Importing line for the same
+  # language; the english.ldf dialects (canadian, australian, ...) have no
+  # Importing line
+  i = tolower(sub(r2, '\\1', m)) %in% names(imp_code)
+  if (!any(i)) return(character())
+  lang = tolower(sub(r2, '\\1', m[i]))
+  target = tolower(sub(r2, '\\2', m[i]))
+  expected = unname(.babel_hyphen_codes[imp_code[lang]])
+  # .ini files without a hyphenrules value are not in .babel_hyphen_codes;
+  # for them the locale name itself is the expected pattern if it is a
+  # language.dat name (.babel_hyphen_map)
+  j = is.na(expected)
+  expected[j] = unname(.babel_hyphen_map[lang[j]])
+  miss = !is.na(expected) & hyphen_canon(target) != hyphen_canon(expected)
+  hyphen_pkgs(unname(expected[miss]))
+}
+
+check_babel_fallback = function(text) {
+  length(pkgs <- detect_babel_fallback(text)) > 0 && tlmgr_install(pkgs) == 0
+}
+
+# canonical name of a hyphenation language, resolving language.dat synonyms
+hyphen_canon = function(x) {
+  i = match(x, names(.hyphen_synonyms))
+  j = !is.na(i)
+  x[j] = .hyphen_synonyms[i[j]]
+  x
 }
 
 # Package glossaries Warning: No language module detected for `english'.
