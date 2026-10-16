@@ -155,6 +155,43 @@ assert('missing hyphenation patterns from babel .ini locales are detected (#519)
   )
   (detect_babel_fallback(z) %==% 'hyphen-spanish')
 
+  # languages loaded from an .ldf file import font and identification data,
+  # but their hyphen rules are registered by the .ldf, so these are not
+  # fallbacks (real lualatex logs for naustrian, nswissgerman, and austrian)
+  ldf = c(
+    "Package babel Info: Importing font and identification data for 'naustrian'",
+    "(babel)             from babel-de-AT.ini. Reported on input line 4478.",
+    "Package babel Info: Hyphen rules for 'naustrian' set to \\l@ngerman",
+    "(babel)             (\\language10). Reported on input line 200.",
+    "Package babel Info: Importing font and identification data for 'nswissgerman'",
+    "(babel)             from babel-de-CH.ini. Reported on input line 4478.",
+    "Package babel Info: Hyphen rules for 'nswissgerman' set to \\l@ngerman",
+    "(babel)             (\\language10). Reported on input line 200.",
+    "Package babel Info: Importing font and identification data for 'austrian'",
+    "(babel)             from babel-de-AT.ini. Reported on input line 4478.",
+    "Package babel Info: Hyphen rules for 'austrian' set to \\l@german",
+    "(babel)             (\\language9). Reported on input line 200."
+  )
+  (detect_babel_fallback(ldf) %==% character())
+
+  # \babelprovide{spanish} without import uses the basic identification level
+  basic = c(
+    "Package babel Info: Importing basic data for 'spanish'",
+    "(babel)             from babel-es.ini. Reported on input line 3.",
+    "Package babel Info: Hyphen rules for 'spanish' set to \\l@nil",
+    "(babel)             (\\language23). Reported on input line 3."
+  )
+  (detect_babel_fallback(basic) %==% 'hyphen-spanish')
+
+  # babel 3.84 did not quote the language name in the Importing line
+  old = c(
+    "Package babel Info: Importing data for spanish",
+    "(babel)             from babel-es.ini. Reported on input line 3.",
+    "Package babel Info: Hyphen rules for 'spanish' set to \\l@nil",
+    "(babel)             (\\language23). Reported on input line 3."
+  )
+  (detect_babel_fallback(old) %==% 'hyphen-spanish')
+
   # explicit import under a custom language name: the log names the custom
   # language, so the expected patterns must be resolved from the imported
   # .ini file (real lualatex logs for \babelprovide[import=es]{myspanish}

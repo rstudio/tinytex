@@ -469,10 +469,14 @@ detect_hyphen = function(text) {
 # (babel)             from babel-es.ini. Reported on input line 3.
 # Package babel Info: Hyphen rules for 'spanish' set to \l@english
 # (babel)             (\language0). Reported on input line 3.
-# the same pair of lines appears when the patterns were found under another
-# name (e.g., 'austrian' set to \l@ngerman-x-2024-02-28), so the target of
-# `set to` is compared against the hyphenation language that the locale's .ini
-# file expects (.babel_hyphen_map), modulo language.dat synonyms
+# \babelprovide{lang} without import logs "Importing basic data", and babel
+# 3.84 did not quote the language name. A language loaded from an .ldf file
+# logs "Importing font and identification data", but this is not followed by
+# the .ini hyphenrules lookup, so it must not be paired with the Hyphen rules
+# line. The same pair of lines appears when the patterns were found under
+# another name (e.g., 'austrian' set to \l@ngerman-x-2024-02-28), so the target
+# of `set to` is compared against the hyphenation language that the locale's
+# .ini file expects (.babel_hyphen_map), modulo language.dat synonyms
 # (.hyphen_synonyms); a target of \l@nil (no hyphenation) is a fallback, too,
 # when the locale expects patterns
 detect_babel_fallback = function(text) {
@@ -482,7 +486,7 @@ detect_babel_fallback = function(text) {
   i = grepl('^\\(babel\\)\\s+', text)
   text[i] = sub('^\\(babel\\)\\s+', '', text[i])
   text = as.vector(tapply(text, cumsum(!i), paste, collapse = ' '))
-  r1 = "^Package babel Info: Importing( font and identification)? data for '([^']+)' .*from babel-([-.A-Za-z0-9]+)[.]ini.*$"
+  r1 = "^Package babel Info: Importing (basic )?data for '?([^' ]+)'? .*from babel-([-.A-Za-z0-9]+)[.]ini.*$"
   r2 = "^Package babel Info: Hyphen rules for '([^']+)' set to \\\\l@([-.A-Za-z0-9]+).*$"
   # locale name -> base name of the imported .ini file; the name may be a
   # custom one (\babelprovide[import=es]{myspanish}), in which case only the
