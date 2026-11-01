@@ -364,7 +364,12 @@ install_tinytex_source = function(repo = '', dir, version, add_path, extra_packa
   target
 }
 
-os_index = if (is_windows()) 1 else if (is_linux()) 2 else if (is_macos()) 3 else 0
+# set in .onLoad(), not at build time, since binaries can be built on another OS
+os_index = 0
+
+.onLoad = function(libname, pkgname) {
+  os_index <<- if (is_windows()) 1 else if (is_linux()) 2 else if (is_macos()) 3 else 0
+}
 
 default_inst = function() switch(
   os_index, win_app_dir('TinyTeX'), '~/.TinyTeX', '~/Library/TinyTeX'
