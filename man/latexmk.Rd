@@ -100,6 +100,13 @@ cross-references.
 By default, LaTeX warnings will be converted to R warnings. To suppress these
 warnings, set \code{options(tinytex.latexmk.warning = FALSE)}.
 
+By default, the output of the LaTeX engine, \command{makeindex}, and the
+bibliography engine is hidden. To show it as the commands run, set
+\code{options(tinytex.verbose = TRUE)}, which also reports the messages about
+installing LaTeX packages. Note that the bibliography log (e.g.,
+\file{*.blg}) is removed after compilation when \code{clean = TRUE}, so the output
+of \command{biber} is only available with \code{tinytex.verbose}.
+
 If \code{emulation = FALSE}, you need to make sure the executable
 \command{latexmk} is available in your system, otherwise \code{latexmk()}
 will fall back to \code{emulation = TRUE}. You can set the global option

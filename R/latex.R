@@ -16,6 +16,13 @@
 #' By default, LaTeX warnings will be converted to R warnings. To suppress these
 #' warnings, set `options(tinytex.latexmk.warning = FALSE)`.
 #'
+#' By default, the output of the LaTeX engine, \command{makeindex}, and the
+#' bibliography engine is hidden. To show it as the commands run, set
+#' `options(tinytex.verbose = TRUE)`, which also reports the messages about
+#' installing LaTeX packages. Note that the bibliography log (e.g.,
+#' \file{*.blg}) is removed after compilation when `clean = TRUE`, so the output
+#' of \command{biber} is only available with `tinytex.verbose`.
+#'
 #' If `emulation = FALSE`, you need to make sure the executable
 #' \command{latexmk} is available in your system, otherwise `latexmk()`
 #' will fall back to `emulation = TRUE`. You can set the global option
@@ -234,7 +241,7 @@ latexmk_emu = function(
       error = {
         if (install_packages) tlmgr_update(run_fmtutil = FALSE, .quiet = TRUE)
         on_error()
-      }, logfile = logfile, fail_rerun = verbose
+      }, logfile = logfile, fail_rerun = FALSE
     )
     # PNAS you are the worst! Why don't you signal an error in case of missing packages?
     if (res == 0 && !file.exists(filep)) on_error()
@@ -332,8 +339,9 @@ system2_quiet = function(..., error = NULL, logfile = NULL, fail_rerun = TRUE) {
   f1 = tempfile('stdout'); f2 = tempfile('stderr')
   on.exit(unlink(c(f1, f2)), add = TRUE)
 
-  # run the command quietly if possible
-  res = system2(..., stdout = if (use_file_stdout()) f1 else FALSE, stderr = f2)
+  # show stdout if verbose, otherwise run the command quietly if possible
+  stdout = if (getOption('tinytex.verbose', FALSE)) '' else if (use_file_stdout()) f1 else FALSE
+  res = system2(..., stdout = stdout, stderr = f2)
   if (is.character(logfile) && file.exists(f2) && length(e <- read_lines(f2))) {
     i = grep('^\\s*$', e, invert = TRUE)
     e[i] = paste('!', e[i])  # prepend ! to non-empty error messages
