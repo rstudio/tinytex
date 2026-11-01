@@ -83,12 +83,14 @@ assert('check_tl_version() is silent unless a new TeX Live release is announced'
 assert('tinytex_root() and find_tlmgr() locate the installation', {
   r = tinytex_root()
   (dir.exists(file.path(r, 'bin')))
-  (basename(find_tlmgr(r)) %==% 'tlmgr')
+  (xfun::sans_ext(basename(find_tlmgr(r))) %==% 'tlmgr')
   (is.logical(is_tinytex()))
   (find_tinytex_bin() != '')
   (nchar(Sys.which('tlmgr')) > 0)
-  # symlinks are resolved to the real tlmgr.pl
-  (basename(symlink_root(Sys.which('tlmgr'))) %==% 'tlmgr.pl')
+  # symlinks are resolved to the real tlmgr.pl (no symlinks on Windows)
+  if (xfun::is_unix()) {
+    (basename(symlink_root(Sys.which('tlmgr'))) %==% 'tlmgr.pl')
+  }
 })
 
 assert('r_texmf_path() points to a directory with Rd.sty', {
