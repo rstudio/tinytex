@@ -3,6 +3,4 @@
 #' @keywords internal
 '_PACKAGE'
 
-os = .Platform$OS.type
-
 .global = new.env(parent = emptyenv())
