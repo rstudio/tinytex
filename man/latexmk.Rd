@@ -54,7 +54,17 @@ the LaTeX engine when using emulation. You can set the global options
 packages found by \code{\link[=parse_packages]{parse_packages()}} from the LaTeX log. This
 argument is only for the emulation mode and TeX Live. Its value can also be
 set via the global option \code{tinytex.install_packages}, e.g.,
-\code{options(tinytex.install_packages = FALSE)}.}
+\code{options(tinytex.install_packages = FALSE)}. Missing packages are normally
+found from the log, one failed run of the LaTeX engine at a time, which is
+robust but can be slow when many packages are missing. You can opt in to a
+faster approach (at the cost of accuracy) with
+\code{options(tinytex.prescan_packages = TRUE)}: the \verb{\\usepackage\{\}} and
+\verb{\\RequirePackage\{\}} commands in \code{file} are scanned before compilation, and
+the packages that cannot be found are installed in a single \command{tlmgr}
+call. This is only a heuristic (e.g., it does not look into files included
+via \verb{\\input}, and does not understand conditionals or macros), so it may
+install packages that are not actually needed. Packages it misses are
+still installed from the log as usual.}
 
 \item{pdf_file}{Path to the PDF output file. By default, it is under the same
 directory as the input \code{file} and also has the same base name. When

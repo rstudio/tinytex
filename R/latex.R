@@ -62,7 +62,17 @@
 #'   packages found by [parse_packages()] from the LaTeX log. This
 #'   argument is only for the emulation mode and TeX Live. Its value can also be
 #'   set via the global option `tinytex.install_packages`, e.g.,
-#'   `options(tinytex.install_packages = FALSE)`.
+#'   `options(tinytex.install_packages = FALSE)`. Missing packages are normally
+#'   found from the log, one failed run of the LaTeX engine at a time, which is
+#'   robust but can be slow when many packages are missing. You can opt in to a
+#'   faster approach (at the cost of accuracy) with
+#'   `options(tinytex.prescan_packages = TRUE)`: the `\usepackage{}` and
+#'   `\RequirePackage{}` commands in `file` are scanned before compilation, and
+#'   the packages that cannot be found are installed in a single \command{tlmgr}
+#'   call. This is only a heuristic (e.g., it does not look into files included
+#'   via `\input`, and does not understand conditionals or macros), so it may
+#'   install packages that are not actually needed. Packages it misses are
+#'   still installed from the log as usual.
 #' @param pdf_file Path to the PDF output file. By default, it is under the same
 #'   directory as the input `file` and also has the same base name. When
 #'   `engine == 'latex'` or `engine_args` contains \verb{--no-pdf} or
@@ -198,6 +208,8 @@ latexmk_emu = function(
     if (install_packages && Sys.which(cmd) == '') parse_install(file = cmd)
   }
   install_cmd(engine)
+  if (install_packages && getOption('tinytex.prescan_packages', FALSE))
+    try(prescan_install(file, quiet = !verbose), silent = TRUE)
 
   run_engine = function() {
     on_error  = function() {
@@ -547,26 +559,31 @@ parse_packages = function(
     # with the exact package name (e.g., no file ends with "/latex-lab").
     # These packages are returned directly without further tlmgr search parsing.
     if (x[j] %in% c('fandol', 'latex-lab')) return(unique(c(pkgs, x[j])))
-    # why $? e.g. searching for mf returns a list like this
-    # metafont.x86_64-darwin:
-    #     bin/x86_64-darwin/mf       <- what we want
-    # metapost.x86_64-darwin:
-    #     bin/x86_64-darwin/mfplain  <- but this also matches /mf
-    k = grep(paste0('/', x[j], '$'), l)  # only match /mf exactly
-    if (length(k) == 0) {
+    res = search_pkgs(l, x[j])
+    if (length(res) == 0) {
       if (!quiet[3]) warning('Failed to find a package that contains ', x[j])
       next
     }
-    k = k[k > 2]
-    p = grep(':$', l)
-    if (length(p) == 0) next
-    for (i in k) {
-      pkg  = gsub(':$', '', l[max(p[p < i])])  # find the package name
-      pkgs = c(pkgs, setNames(pkg, x[j]))
-    }
+    pkgs = c(pkgs, res)
   }
   pkgs = gsub('[.].*', '', pkgs)  # e.g., 'metafont.x86_64-darwin'
   unique(pkgs)
+}
+
+# find packages that contain a file ending with `/f` in the output `l` of
+# `tlmgr search --file`, which is a list of "pkg:" lines followed by file paths
+search_pkgs = function(l, f) {
+  # why $? e.g. searching for mf returns a list like this
+  # metafont.x86_64-darwin:
+  #     bin/x86_64-darwin/mf       <- what we want
+  # metapost.x86_64-darwin:
+  #     bin/x86_64-darwin/mfplain  <- but this also matches /mf
+  k = grep(paste0('/', f, '$'), l)  # only match /f exactly
+  k = k[k > 2]
+  p = grep(':$', l)
+  if (length(k) == 0 || length(p) == 0) return(character())
+  # find the package names
+  setNames(gsub(':$', '', l[sapply(k, function(i) max(p[p < i]))]), f)
 }
 
 regex_errors = function() {
@@ -677,6 +694,36 @@ detect_files = function(text) {
     v = gsub('^.*?:|:.*$', '', v)  # https://github.com/rstudio/tinytex/issues/465
     if (p == r$font[1]) paste0(v, '.sty') else font_ext(v)
   })))
+}
+
+# find the names of LaTeX packages requested via \usepackage{} or
+# \RequirePackage{} in a .tex file; this is only a rough scan (files included via
+# \input, conditionals, and macros are not handled), so it may be inaccurate
+scan_packages = function(text) {
+  text = paste(sub('(^|[^\\\\])%.*', '\\1', text), collapse = '\n')  # drop comments
+  x = unlist(regmatches(text, gregexpr(
+    '\\\\(usepackage|RequirePackage)\\s*(\\[[^]]*\\])?\\s*[{][^}]*[}]', text
+  )))
+  x = trimws(unlist(strsplit(sub('^[^{]*[{]([^}]*)[}]$', '\\1', x), ',')))
+  unique(x[grepl('^[A-Za-z0-9_-]+$', x)])
+}
+
+# install the LaTeX packages that are used by a .tex file but not yet installed,
+# in a single tlmgr call (opt-in via the option tinytex.prescan_packages), instead
+# of waiting for the engine to fail on one missing .sty file at a time
+prescan_install = function(file, quiet = TRUE) {
+  x = scan_packages(read_lines(file))
+  if (length(x) == 0) return()
+  f = paste0(x, '.sty')
+  # skip the ones that can already be found
+  f = setdiff(f, basename(suppressWarnings(kpsewhich(f, stdout = TRUE, stderr = FALSE))))
+  if (length(f) == 0) return()
+  l = tlmgr_search(
+    paste0('/(', paste(gsub('[.]sty$', '', f), collapse = '|'), ')\\.sty$'),
+    stdout = TRUE, .quiet = quiet
+  )
+  pkgs = unique(gsub('[.].*', '', unlist(lapply(f, search_pkgs, l = l))))
+  tlmgr_install(pkgs, .quiet = quiet)
 }
 
 #' Parse the LaTeX log and install missing LaTeX packages if possible

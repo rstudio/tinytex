@@ -111,3 +111,28 @@ assert('rerun are correctly detected', {
   (needs_rerun(text = "error: Rerun LaTeX."))
   (needs_rerun(text = "Rerun to get the final file"))
 })
+
+assert('scan_packages() finds packages from \\usepackage and \\RequirePackage', {
+  (scan_packages(c(
+    '\\documentclass{article}',
+    '\\usepackage[a=b]{amsmath, titling}',
+    '% \\usepackage{commented}',
+    '\\usepackage{foo} % \\usepackage{bar}',
+    '\\RequirePackage{ a4wide }',
+    '\\usepackage{\\mypkg}',
+    '\\usepackage{multi,', 'line}',
+    '50\\% \\usepackage{baz}'
+  )) %==% c('amsmath', 'titling', 'foo', 'a4wide', 'multi', 'line', 'baz'))
+})
+
+assert('search_pkgs() finds packages from the output of tlmgr search', {
+  l = c(
+    'tlmgr: package repository https://example.org', '',
+    'titling:', '\ttexmf-dist/tex/latex/titling/titling.sty',
+    'metafont.x86_64-darwin:', '\tbin/x86_64-darwin/mf',
+    'metapost.x86_64-darwin:', '\tbin/x86_64-darwin/mfplain'
+  )
+  (search_pkgs(l, 'titling.sty') %==% c(titling.sty = 'titling'))
+  (search_pkgs(l, 'mf') %==% c(mf = 'metafont.x86_64-darwin'))
+  (length(search_pkgs(l, 'foo.sty')) == 0)
+})
