@@ -136,3 +136,56 @@ assert('search_pkgs() finds packages from the output of tlmgr search', {
   (search_pkgs(l, 'mf') %==% c(mf = 'metafont.x86_64-darwin'))
   (length(search_pkgs(l, 'foo.sty')) == 0)
 })
+
+assert('needs_rerun() is FALSE for logs without rerun requests', {
+  (!needs_rerun(text = c('This is pdfTeX', 'Output written on a.pdf (1 page).')))
+  (!needs_rerun(text = character()))
+})
+
+assert('latex_warning() returns warnings with continuation lines, ignoring harmless packages', {
+  f = tempfile(fileext = '.log'); on.exit(unlink(f))
+  writeLines(c(
+    'Package hyperref Warning: Token not allowed.', '',
+    'LaTeX Warning: Reference `a\' on page 1 undefined', '(LaTeX)  more info.', '',
+    'Package babel Warning: Something', ''
+  ), f)
+  (latex_warning(f, FALSE) %==% c(
+    'LaTeX Warning: Reference `a\' on page 1 undefined', '(LaTeX)  more info.',
+    'Package babel Warning: Something'
+  ))
+  writeLines(c('Package caption Warning: ok.', ''), f)
+  (is.null(latex_warning(f, FALSE)))
+  (is.null(latex_warning(tempfile(), FALSE)))
+})
+
+assert('show_latex_error() signals LaTeX errors from the log', {
+  f = tempfile(fileext = '.log'); on.exit(unlink(f))
+  writeLines(c('This is pdfTeX', '! Undefined control sequence.', 'l.3 \\foo', '', 'done'), f)
+  (has_error(suppressMessages(show_latex_error('a.tex', f))))
+  # no error in log: silent unless forced
+  writeLines('all good', f)
+  (is.null(show_latex_error('a.tex', f)))
+  (has_error(show_latex_error('a.tex', f, force = TRUE)))
+  (has_error(show_latex_error('a.tex', tempfile())))
+})
+
+assert('tweak_aux() drops .bib extensions from \\bibdata', {
+  f = tempfile(fileext = '.aux'); on.exit(unlink(f))
+  writeLines(c('\\citation{a}', '\\bibdata{x.bib,y.bib}', '\\bibstyle{plain}'), f)
+  tweak_aux(f)
+  (readLines(f) %==% c('\\citation{a}', '\\bibdata{x,y}', '\\bibstyle{plain}'))
+})
+
+assert('require_bibtex() needs citation, bibdata, and bibstyle in the .aux file', {
+  f = tempfile(fileext = '.aux'); on.exit(unlink(f))
+  writeLines(c('\\citation{a}', '\\bibdata{x}', '\\bibstyle{plain}'), f)
+  (require_bibtex(f))
+  # e.g., biblatex + biber writes no \bibdata
+  writeLines('\\citation{a}', f)
+  (!require_bibtex(f))
+})
+
+assert('tl_names() strips platform suffixes except for the given platform', {
+  (tl_names(c('metafont.x86_64-linux', 'metafont.win32', 'titling'), 'win32') %==%
+    c('metafont', 'metafont.win32', 'titling'))
+})
