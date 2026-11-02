@@ -13,6 +13,26 @@ assert('latexmk() generates the PDF output to the dir of the .tex file by defaul
   (latexmk('sub/test.tex', pdf_file = 'foo.pdf') %==% 'foo.pdf')
 })
 
+assert('latexmk() installs missing hyphenation patterns for babel .ini locales (#519)', {
+  # babel falls back to the current \language silently, so this only tests
+  # something when the patterns are missing; restore the initial state after
+  if (!check_installed('hyphen-spanish')) {
+    on.exit(tlmgr_remove('hyphen-spanish'), add = TRUE)
+    owd = setwd(tempdir()); on.exit(setwd(owd), add = TRUE)
+    writeLines(c(
+      '\\documentclass{article}',
+      '\\usepackage[english]{babel}',
+      '\\babelprovide[import]{spanish}',
+      '\\begin{document}',
+      '\\foreignlanguage{spanish}{Hola}',
+      '\\end{document}'
+    ), 'test-babel.tex')
+    (lualatex('test-babel.tex', clean = FALSE) %==% 'test-babel.pdf')
+    (check_installed('hyphen-spanish'))
+    file.remove(list.files('.', '^test-babel[.]'))
+  }
+})
+
 assert('latexmk() infers biber from the .bcf file when bib_engine is not set', {
   # a biblatex + biber document does not generate the \bibdata/\bibstyle info in
   # the .aux file that bibtex needs, so bibtex would silently do nothing; the
