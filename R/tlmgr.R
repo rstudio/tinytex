@@ -68,14 +68,19 @@ find_tinytex_bin = function() {
 tweak_path = function() {
   bin = find_tinytex_bin()
   if (bin == '') return()
-  # if the pdftex from TinyTeX is already on PATH, no need to adjust the PATH
-  if ((p <- Sys.which('pdftex')) != '') {
-    p2 = with_ext(file.path(bin, 'pdftex'), xfun::file_ext(p))
-    if (xfun::same_path(p, p2)) return()
-  }
   old = Sys.getenv('PATH')
   one = unlist(strsplit(old, s <- .Platform$path.sep, fixed = TRUE))
-  Sys.setenv(PATH = paste(c(bin, setdiff(one, bin)), collapse = s))
+  # tlmgr may pick up tools (e.g., xz, zstd, gzip) from PATH when its shipped
+  # ones are unusable, and those from Rtools are extremely slow on Windows:
+  # https://github.com/rstudio/tinytex/issues/512
+  if (is_windows()) one = one[!grepl('(^|[\\\\/])rtools[0-9]*([\\\\/]|$)', one, ignore.case = TRUE)]
+  # if the pdftex from TinyTeX is already on PATH, no need to prepend its bin
+  p = Sys.which('pdftex')
+  if (p == '' || !xfun::same_path(p, with_ext(file.path(bin, 'pdftex'), xfun::file_ext(p))))
+    one = c(bin, setdiff(one, bin))
+  new = paste(one, collapse = s)
+  if (new == old) return()
+  Sys.setenv(PATH = new)
   do.call(
     on.exit, list(substitute(Sys.setenv(PATH = x), list(x = old)), add = TRUE),
     envir = parent.frame()

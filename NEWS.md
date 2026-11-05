@@ -6,6 +6,8 @@
 
 - The OS (`os` and `os_index`) is now detected when the package is loaded instead of built, so binary packages cross-compiled on another OS (e.g., the macOS binaries on P3M built on Linux) no longer use the wrong platform (thanks, @krlmlr, #523).
 
+- On Windows, Rtools directories are now temporarily removed from `PATH` when running `tlmgr()` and other functions that call it, because `tlmgr` may pick up tools (e.g., `xz`, `zstd`, `gzip`) from `PATH`, and the ones in Rtools can make it extremely slow (thanks, @jiedxu, #512).
+
 - Added an opt-in global option `tinytex.prescan_packages` (default `FALSE`). When it is `TRUE` and `latexmk()` is allowed to install packages, `\usepackage{}` and `\RequirePackage{}` in the input file are scanned before compilation, and the missing packages are installed with a single `tlmgr` call instead of one failed run of the LaTeX engine per missing package, which is faster but less accurate (thanks, @huangde, #512). This is a heuristic that may install packages that are not needed; packages it misses are still installed from the log as before.
 
 # CHANGES IN tinytex VERSION 0.61
