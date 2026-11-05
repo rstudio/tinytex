@@ -67,6 +67,7 @@ luatex
 mdwtools
 metafont
 mfware
+nameref
 natbib
 pdfescape
 pdftex
