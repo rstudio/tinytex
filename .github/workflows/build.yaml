@@ -27,6 +27,8 @@ env:
   # Force full rebuild of TinyTeX-2 even if the daily bundle year matches
   FORCE_REBUILD: ${{ inputs.force_rebuild_tinytex2 == true && 'true' || 'false' }}
   USE_BUNDLED_LIBUV: 1
+  # use TeX Live's own xz/wget/lz4: install-tl hung unpacking with the xz from PATH on Windows
+  TEXLIVE_PREFER_OWN: 1
 
 jobs:
   validate-ctan:
