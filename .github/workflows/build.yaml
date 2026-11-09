@@ -105,6 +105,8 @@ jobs:
   build-windows:
     needs: [validate-ctan, new-release]
     runs-on: windows-latest
+    # cap hangs (normal run < 2h; 3h allows slack); the default is 6h
+    timeout-minutes: 180
     name: Build Bundles For Windows
 
     env:
@@ -164,6 +166,7 @@ jobs:
     needs: [validate-ctan, new-release]
     name: Build Bundles For Linux
     runs-on: ubuntu-latest
+    timeout-minutes: 180
     outputs:
       tlmgr-version: ${{ steps.tlmgr-version.outputs.TLMGR_VERSION }}
 
@@ -245,6 +248,7 @@ jobs:
     needs: [validate-ctan, new-release]
     name: Build Bundles For Linux ARM64
     runs-on: ubuntu-24.04-arm
+    timeout-minutes: 180
 
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
@@ -294,6 +298,7 @@ jobs:
     needs: [validate-ctan, new-release]
     name: Build Bundles For Linux (musl/Alpine)
     runs-on: ubuntu-latest
+    timeout-minutes: 180
     permissions:
       contents: read
     container:
@@ -355,6 +360,7 @@ jobs:
   build-mac:
     needs: [validate-ctan, new-release]
     runs-on: macos-latest
+    timeout-minutes: 180
     name: Build Bundles For macOS
 
     env:
@@ -438,11 +444,19 @@ jobs:
           echo -e "\n::endgroup::"
 
   cleaning:
-    needs: [new-release, deploy]
-    if: ${{ failure() || cancelled() }}
+    needs: [new-release, build-windows, build-linux, build-linux-arm64, build-linux-musl, build-mac, deploy]
+    # a timed-out job is "cancelled" (no notification), so also catch that here
+    if: ${{ always() && (contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled')) }}
     runs-on: ubuntu-latest
     name: Cleaning step in case of error
     steps:
       - name: Remove unused daily release
         run: |
           gh release delete ${{needs.new-release.outputs.draft-tag}} -y
+
+      # make the run fail so that GitHub sends a notification
+      - name: Report failure
+        if: always()
+        run: |
+          echo "::error::A build job failed, timed out, or was cancelled"
+          exit 1
