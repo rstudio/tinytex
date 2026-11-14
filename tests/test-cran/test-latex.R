@@ -105,6 +105,144 @@ assert('missing hyphenation patterns are detected from babel errors (#515)', {
   (parse_packages(text = x, quiet = rep(TRUE, 3)) %==% 'hyphen-german')
 })
 
+assert('missing hyphenation patterns from babel .ini locales are detected (#519)', {
+  # real lualatex log (babel v26.13, TeX Live 2026) for
+  # \usepackage[english]{babel} and \babelprovide[import]{spanish}, without
+  # hyphen-spanish installed: babel falls back to the current \language with
+  # an Info line only
+  x = c(
+    "Package babel Info: Importing data for 'spanish'",
+    "(babel)             from babel-es.ini. Reported on input line 3.",
+    "Package babel Info: Hyphen rules for 'spanish' set to \\l@english",
+    "(babel)             (\\language0). Reported on input line 3."
+  )
+  (detect_babel_fallback(x) %==% 'hyphen-spanish')
+
+  # real lualatex log for \babelprovide[import]{canadianfrench,austrian,mexican}
+  # with only hyphen-english/french/german installed: the first two are found
+  # under another name (possibly a language.dat synonym), only mexican is a
+  # fallback; the english.ldf dialects (canadian, australian) have no
+  # preceding Importing line and must be ignored
+  y = c(
+    "Package babel Info: Importing font and identification data for 'english'",
+    "(babel)             from babel-en.ini. Reported on input line 4478.",
+    "Package babel Info: Hyphen rules for 'canadian' set to \\l@english",
+    "(babel)             (\\language0). Reported on input line 102.",
+    "Package babel Info: Hyphen rules for 'australian' set to \\l@ukenglish",
+    "(babel)             (\\language6). Reported on input line 105.",
+    "Package babel Info: Importing data for 'canadianfrench'",
+    "(babel)             from babel-fr-CA.ini. Reported on input line 3.",
+    "Package babel Info: Hyphen rules for 'canadianfrench' set to \\l@french",
+    "(babel)             (\\language8). Reported on input line 3.",
+    "Package babel Info: Importing data for 'austrian'",
+    "(babel)             from babel-de-AT.ini. Reported on input line 4.",
+    "Package babel Info: Hyphen rules for 'austrian' set to \\l@ngerman-x-2024-02-28",
+    "(babel)             (\\language5). Reported on input line 4.",
+    "Package babel Info: Importing data for 'mexican'",
+    "(babel)             from babel-es-MX.ini. Reported on input line 5.",
+    "Package babel Info: Hyphen rules for 'mexican' set to \\l@english",
+    "(babel)             (\\language0). Reported on input line 5."
+  )
+  (detect_babel_fallback(y) %==% 'hyphen-spanish')
+
+  # a fallback to \l@nil (no hyphenation) also means missing patterns when the
+  # locale expects patterns (cf quarto-dev/quarto-cli#8684)
+  z = c(
+    "Package babel Info: Importing data for 'spanish'",
+    "(babel)             from babel-es.ini. Reported on input line 3.",
+    "Package babel Info: Hyphen rules for 'spanish' set to \\l@nil",
+    "(babel)             (\\language23). Reported on input line 3."
+  )
+  (detect_babel_fallback(z) %==% 'hyphen-spanish')
+
+  # languages loaded from an .ldf file import font and identification data,
+  # but their hyphen rules are registered by the .ldf, so these are not
+  # fallbacks (real lualatex logs for naustrian, nswissgerman, and austrian)
+  ldf = c(
+    "Package babel Info: Importing font and identification data for 'naustrian'",
+    "(babel)             from babel-de-AT.ini. Reported on input line 4478.",
+    "Package babel Info: Hyphen rules for 'naustrian' set to \\l@ngerman",
+    "(babel)             (\\language10). Reported on input line 200.",
+    "Package babel Info: Importing font and identification data for 'nswissgerman'",
+    "(babel)             from babel-de-CH.ini. Reported on input line 4478.",
+    "Package babel Info: Hyphen rules for 'nswissgerman' set to \\l@ngerman",
+    "(babel)             (\\language10). Reported on input line 200.",
+    "Package babel Info: Importing font and identification data for 'austrian'",
+    "(babel)             from babel-de-AT.ini. Reported on input line 4478.",
+    "Package babel Info: Hyphen rules for 'austrian' set to \\l@german",
+    "(babel)             (\\language9). Reported on input line 200."
+  )
+  (detect_babel_fallback(ldf) %==% character())
+
+  # \babelprovide{spanish} without import uses the basic identification level
+  basic = c(
+    "Package babel Info: Importing basic data for 'spanish'",
+    "(babel)             from babel-es.ini. Reported on input line 3.",
+    "Package babel Info: Hyphen rules for 'spanish' set to \\l@nil",
+    "(babel)             (\\language23). Reported on input line 3."
+  )
+  (detect_babel_fallback(basic) %==% 'hyphen-spanish')
+
+  # babel 3.84 did not quote the language name in the Importing line
+  old = c(
+    "Package babel Info: Importing data for spanish",
+    "(babel)             from babel-es.ini. Reported on input line 3.",
+    "Package babel Info: Hyphen rules for 'spanish' set to \\l@nil",
+    "(babel)             (\\language23). Reported on input line 3."
+  )
+  (detect_babel_fallback(old) %==% 'hyphen-spanish')
+
+  # explicit import under a custom language name: the log names the custom
+  # language, so the expected patterns must be resolved from the imported
+  # .ini file (real lualatex logs for \babelprovide[import=es]{myspanish}
+  # without hyphen-spanish, and \babelprovide[import=fr-CA]{mycanadian}
+  # with hyphen-french, which is legit)
+  w = c(
+    "Package babel Info: Importing data for 'myspanish'",
+    "(babel)             from babel-es.ini. Reported on input line 3.",
+    "Package babel Info: Hyphen rules for 'myspanish' set to \\l@english",
+    "(babel)             (\\language0). Reported on input line 3.",
+    "Package babel Info: Importing data for 'mycanadian'",
+    "(babel)             from babel-fr-CA.ini. Reported on input line 3.",
+    "Package babel Info: Hyphen rules for 'mycanadian' set to \\l@french",
+    "(babel)             (\\language8). Reported on input line 3."
+  )
+  (detect_babel_fallback(w) %==% 'hyphen-spanish')
+
+  # no Importing/Hyphen rules pair, no detection
+  (detect_babel_fallback("Package babel Info: Hyphen rules for 'spanish' set to \\l@english") %==% character())
+  (detect_babel_fallback(character()) %==% character())
+})
+
+assert('.babel_hyphen_map and .hyphen_synonyms (generated) are well-formed', {
+  m = tinytex:::.babel_hyphen_map
+  (is.character(m) && length(m) > 0 && !anyNA(m))
+  # babel locale names may contain dots (serbianc.ijekav)
+  (all(grepl('^[a-z0-9.-]+$', names(m))))
+  (all(grepl('^[a-z0-9-]+$', m)))
+  (!anyDuplicated(names(m)))
+  # babel locale names map to language.dat names
+  (unname(m[c('spanish', 'mexican', 'spanish-mx')]) %==% rep('spanish', 3))
+  (unname(m['canadianfrench']) %==% 'french')
+  (unname(m['austrian']) %==% 'ngerman-x-latest')
+  # .ini file base names map to hyphenrules values (for custom locale names)
+  n = tinytex:::.babel_hyphen_codes
+  (is.character(n) && length(n) > 0 && !anyNA(n))
+  (all(grepl('^[a-z0-9-]+$', names(n))))
+  (all(grepl('^[a-z0-9-]+$', n)))
+  (!anyDuplicated(names(n)))
+  (unname(n[c('es', 'es-mx')]) %==% rep('spanish', 2))
+  (unname(n['fr-ca']) %==% 'french')
+  (unname(n['de-at']) %==% 'ngerman-x-latest')
+  s = tinytex:::.hyphen_synonyms
+  (is.character(s) && length(s) > 0 && !anyNA(s))
+  (all(grepl('^[a-z0-9-]+$', names(s))))
+  (all(grepl('^[a-z0-9-]+$', s)))
+  (!anyDuplicated(names(s)))
+  # dated German pattern names are synonyms of the -latest names
+  (unname(s['ngerman-x-latest']) %==% 'ngerman-x-2024-02-28')
+})
+
 assert('rerun are correctly detected', {
   (needs_rerun(text = "Package biblatex Warning: Please rerun LaTeX."))
   (needs_rerun(text = "Please (re)run the file"))
