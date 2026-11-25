@@ -1,3 +1,6 @@
+# CHANGES IN tinytex VERSION 0.63
+
+
 # CHANGES IN tinytex VERSION 0.62
 
 - With `options(tinytex.verbose = TRUE)`, `latexmk()` now shows the output of the LaTeX engine, **makeindex**, and the bibliography engine (e.g., **biber**) as they run, instead of only the package-installation messages. Previously this option did not change the output of the commands (thanks, @dhicks, #196).
